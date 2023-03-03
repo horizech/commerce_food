@@ -5,6 +5,7 @@ import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
@@ -16,6 +17,7 @@ import 'package:shop/constants.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/restaurant.dart';
+import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/appbar/food_appbar.dart';
 import 'package:shop/widgets/media/media_widget.dart';
@@ -63,6 +65,32 @@ class _AllProductsState extends State<Products> {
     }
   }
 
+  Widget _variationItems(int productId, Function onClick) {
+    return FutureBuilder<Product?>(
+      future: ProductDetailService.getProductById(productId),
+      initialData: null,
+      builder: (BuildContext context, AsyncSnapshot<Product?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Container(
+            child: UpButton(
+              text:
+                  "${snapshot.data?.name}      -     Price  £ ${snapshot.data?.price}",
+              onPressed: () => {
+                onClick(snapshot.data?.id ?? -1),
+              },
+            ),
+          );
+        } else {
+          return Container(
+            child: const Text(
+              'Loading...',
+            ),
+          );
+        }
+      },
+    );
+  }
+
   _showDialog(Product product) {
     showDialog(
       context: context,
@@ -75,7 +103,12 @@ class _AllProductsState extends State<Products> {
               children:
                   product.meta != null && product.meta!["Variations"] != null
                       ? ((product.meta!["Variations"]) as List<dynamic>)
-                          .map((e) => Text(e["Product"].toString()))
+                          .map(
+                            (e) => _variationItems(
+                              e["Product"],
+                              (selection) => {debugPrint(selection.toString())},
+                            ),
+                          )
                           .toList()
                       : const [
                           SizedBox(),
@@ -184,14 +217,35 @@ class _AllProductsState extends State<Products> {
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            UpText(
-                                              restaurant!.address,
+                                            Row(
+                                              children: [
+                                                const Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 8),
+                                                  child:
+                                                      Icon(Icons.location_on),
+                                                ),
+                                                UpText(
+                                                  restaurant!.address,
+                                                ),
+                                              ],
                                             ),
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            UpText(
-                                                restaurant!.phoneNo.toString()),
+                                            Row(
+                                              children: [
+                                                const Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 8),
+                                                  child: Icon(
+                                                    Icons.phone,
+                                                  ),
+                                                ),
+                                                UpText(restaurant!.phoneNo
+                                                    .toString()),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -278,9 +332,14 @@ class _AllProductsState extends State<Products> {
                                                                           CrossAxisAlignment
                                                                               .start,
                                                                       children: [
-                                                                        const UpIcon(
-                                                                          icon:
-                                                                              Icons.circle,
+                                                                        const Padding(
+                                                                          padding:
+                                                                              EdgeInsets.only(right: 8),
+                                                                          child:
+                                                                              UpIcon(
+                                                                            icon:
+                                                                                Icons.circle,
+                                                                          ),
                                                                         ),
                                                                         Expanded(
                                                                           child:
