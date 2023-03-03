@@ -8,7 +8,7 @@ import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditProductOptionDialog extends StatelessWidget {
+class AddEditProductOptionDialog extends StatefulWidget {
   final List<ProductOption>? productOptions;
   final int? currentCollection;
   final ProductOption? productOption;
@@ -20,20 +20,29 @@ class AddEditProductOptionDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AddEditProductOptionDialog> createState() =>
+      _AddEditProductOptionDialogState();
+}
+
+class _AddEditProductOptionDialogState
+    extends State<AddEditProductOptionDialog> {
+  @override
   Widget build(BuildContext context) {
     TextEditingController productOptioncontroller = TextEditingController();
     TextEditingController productOptionValuecontroller =
         TextEditingController();
 
-    if (productOption != null) {
-      productOptioncontroller.text = productOption!.name;
+    if (widget.productOption != null) {
+      productOptioncontroller.text = widget.productOption!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          productOption != null ? "Edit Product Option" : "Add Product Option",
+          widget.productOption != null
+              ? "Edit Product Option"
+              : "Add Product Option",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -55,7 +64,8 @@ class AddEditProductOptionDialog extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: currentCollection != null && productOption == null,
+                visible: widget.currentCollection != null &&
+                    widget.productOption == null,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: UpTextField(
@@ -86,10 +96,10 @@ class AddEditProductOptionDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
-                text: productOption != null ? "Edit" : "Add",
+                text: widget.productOption != null ? "Edit" : "Add",
                 onPressed: () async {
-                  if (productOptions != null &&
-                      !productOptions!.any(
+                  if (widget.productOptions != null &&
+                      !widget.productOptions!.any(
                         (element) =>
                             element.name.toLowerCase() ==
                             productOptioncontroller.text.toLowerCase(),
@@ -100,23 +110,24 @@ class AddEditProductOptionDialog extends StatelessWidget {
                     ProductOption? productOption1 =
                         await AddEditProductService.addEditProductOption(
                       data: newProductOption.toJson(newProductOption),
-                      productOptionId:
-                          productOption != null ? productOption!.id! : null,
+                      productOptionId: widget.productOption != null
+                          ? widget.productOption!.id!
+                          : null,
                     );
                     if (productOption1 != null) {
-                      if (currentCollection == null) {
+                      if (widget.currentCollection == null) {
                         showUpToast(
                           context: context,
                           text: "Product Option Updated Successfully",
                         );
-                        // context.read<StoreCubit>().getStore();
+                        if (mounted) {}
                         Navigator.pop(context, "success");
                       } else {
                         ProductOptionValue newProductOptionValue =
                             ProductOptionValue(
                           name: productOptionValuecontroller.text,
                           productOption: productOption1.id!,
-                          collection: currentCollection!,
+                          collection: widget.currentCollection!,
                         );
                         APIResult? result = await AddEditProductService
                             .addEditProductOptionValues(
@@ -128,6 +139,7 @@ class AddEditProductOptionDialog extends StatelessWidget {
                             context: context,
                             text: "Product Option Added Successfully",
                           );
+                          if (mounted) {}
                           Navigator.pop(context, "success");
                         } else {
                           showUpToast(

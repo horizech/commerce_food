@@ -11,7 +11,6 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return UpAppBar(
       titleWidget: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -32,16 +31,6 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        IconButton(
-          onPressed: () {
-            ServiceManager<UpNavigationService>()
-                .navigateToNamed(Routes.searchAutomobile);
-          },
-          icon: const Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
-        ),
         IconButton(
           onPressed: () {
             ServiceManager<UpNavigationService>()

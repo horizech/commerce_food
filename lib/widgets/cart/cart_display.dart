@@ -10,10 +10,10 @@ import 'package:shop/widgets/cart/empty_cart.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/price/price.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
-import 'package:shop/widgets/variations/color_variation.dart';
-import 'package:shop/widgets/variations/size_variation.dart';
-import 'package:shop/widgets/variations/variation_selection_mode.dart';
-import 'package:shop/widgets/variations/variation_types.dart';
+// import 'package:shop/widgets/variations/color_variation.dart';
+// import 'package:shop/widgets/variations/size_variation.dart';
+// import 'package:shop/widgets/variations/variation_selection_mode.dart';
+// import 'package:shop/widgets/variations/variation_types.dart';
 
 class CartDisplay extends StatelessWidget {
   final List<CartItem> cartItem;
@@ -111,18 +111,18 @@ Widget _cartItemsList(BuildContext context, CartItem item) {
   return BlocConsumer<StoreCubit, StoreState>(
       listener: (context, state) {},
       builder: (context, state) {
-        sizeVariation = state.productOptionValues!
-            .map((e) => e)
-            .where((element) =>
-                element.id ==
-                item.selectedVariationsValues[VariationTypes.size.index])
-            .first;
-        colorVariation = state.productOptionValues!
-            .map((e) => e)
-            .where((element) =>
-                element.id ==
-                item.selectedVariationsValues[VariationTypes.color.index])
-            .first;
+        // sizeVariation = state.productOptionValues!
+        //     .map((e) => e)
+        //     .where((element) =>
+        //         element.id ==
+        //         item.selectedVariationsValues[VariationTypes.size.index])
+        //     .first;
+        // colorVariation = state.productOptionValues!
+        //     .map((e) => e)
+        //     .where((element) =>
+        //         element.id ==
+        //         item.selectedVariationsValues[VariationTypes.color.index])
+        //     .first;
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -171,29 +171,29 @@ Widget _cartItemsList(BuildContext context, CartItem item) {
                                     .headline6!
                                     .copyWith(color: Colors.black)),
                           ),
-                          Visibility(
-                            visible: item.selectedVariationsValues.isNotEmpty,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizeVariationWidget(
-                                  sizeVariations: sizeVariation != null
-                                      ? [sizeVariation!]
-                                      : [],
-                                  mode: VariationSelectionMode.cart,
-                                  selectedValues: [sizeVariation?.id ?? -1],
-                                ),
-                                ColorVariationWidget(
-                                  colorVariations: colorVariation != null
-                                      ? [colorVariation!]
-                                      : [],
-                                  mode: VariationSelectionMode.cart,
-                                  selectedValues: [colorVariation?.id ?? -1],
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Visibility(
+                          //   visible: item.selectedVariationsValues.isNotEmpty,
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.start,
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: [
+                          //       SizeVariationWidget(
+                          //         sizeVariations: sizeVariation != null
+                          //             ? [sizeVariation!]
+                          //             : [],
+                          //         mode: VariationSelectionMode.cart,
+                          //         selectedValues: [sizeVariation?.id ?? -1],
+                          //       ),
+                          //       ColorVariationWidget(
+                          //         colorVariations: colorVariation != null
+                          //             ? [colorVariation!]
+                          //             : [],
+                          //         mode: VariationSelectionMode.cart,
+                          //         selectedValues: [colorVariation?.id ?? -1],
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Text("Quantity : ${item.quantity}",
                               style: Theme.of(context)
                                   .textTheme

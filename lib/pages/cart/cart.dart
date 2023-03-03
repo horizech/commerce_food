@@ -10,14 +10,9 @@ import 'package:shop/widgets/appbar/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/cart/empty_cart.dart';
 import 'package:shop/widgets/counter.dart';
-
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/price/price.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
-import 'package:shop/widgets/variations/color_variation.dart';
-import 'package:shop/widgets/variations/size_variation.dart';
-import 'package:shop/widgets/variations/variation_selection_mode.dart';
-import 'package:shop/widgets/variations/variation_types.dart';
 
 class CartPage extends StatelessWidget {
   CartPage({Key? key}) : super(key: key);
@@ -35,9 +30,7 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       key: scaffoldKey,
-      appBar: FoodAppbar(
-        scaffoldKey: scaffoldKey,
-      ),
+      appBar: FoodAppbar(),
       drawerEnableOpenDragGesture: false,
       endDrawerEnableOpenDragGesture: false,
       body: SingleChildScrollView(
@@ -116,26 +109,26 @@ Widget cartListDisplay(
   return BlocConsumer<StoreCubit, StoreState>(
     listener: (context, state) {},
     builder: (context, state) {
-      if (state.productOptionValues!.any((element) =>
-          element.id ==
-          item.selectedVariationsValues[VariationTypes.size.index])) {
-        sizeVariation = state.productOptionValues!
-            .map((e) => e)
-            .where((element) =>
-                element.id ==
-                item.selectedVariationsValues[VariationTypes.size.index])
-            .first;
-      }
-      if (state.productOptionValues!.any((element) =>
-          element.id ==
-          item.selectedVariationsValues[VariationTypes.color.index])) {
-        colorVariation = state.productOptionValues!
-            .map((e) => e)
-            .where((element) =>
-                element.id ==
-                item.selectedVariationsValues[VariationTypes.color.index])
-            .first;
-      }
+      // if (state.productOptionValues!.any((element) =>
+      //     element.id ==
+      //     item.selectedVariationsValues[VariationTypes.size.index])) {
+      //   sizeVariation = state.productOptionValues!
+      //       .map((e) => e)
+      //       .where((element) =>
+      //           element.id ==
+      //           item.selectedVariationsValues[VariationTypes.size.index])
+      //       .first;
+      // }
+      // if (state.productOptionValues!.any((element) =>
+      //   element.id ==
+      //   item.selectedVariationsValues[VariationTypes.color.index])) {
+      // colorVariation = state.productOptionValues!
+      //     .map((e) => e)
+      //     .where((element) =>
+      //         element.id ==
+      //         item.selectedVariationsValues[VariationTypes.color.index])
+      //     .first;
+      // }
       return Container(
         width: width - 80,
         decoration: const BoxDecoration(
@@ -174,26 +167,26 @@ Widget cartListDisplay(
                 // const SizedBox(
                 //   width: 50,
                 // ),
-                Visibility(
-                  visible:
-                      item.product.isVariedProduct && sizeVariation != null,
-                  child: SizeVariationWidget(
-                    sizeVariations:
-                        sizeVariation != null ? [sizeVariation!] : [],
-                    mode: VariationSelectionMode.cart,
-                    selectedValues: [sizeVariation?.id ?? -1],
-                  ),
-                ),
-                Visibility(
-                  visible:
-                      item.product.isVariedProduct && colorVariation != null,
-                  child: ColorVariationWidget(
-                    colorVariations:
-                        colorVariation != null ? [colorVariation!] : [],
-                    mode: VariationSelectionMode.cart,
-                    selectedValues: [colorVariation?.id ?? -1],
-                  ),
-                ),
+                // Visibility(
+                //   visible:
+                //       item.product.isVariedProduct && sizeVariation != null,
+                //   child: SizeVariationWidget(
+                //     sizeVariations:
+                //         sizeVariation != null ? [sizeVariation!] : [],
+                //     mode: VariationSelectionMode.cart,
+                //     selectedValues: [sizeVariation?.id ?? -1],
+                //   ),
+                // ),
+                // Visibility(
+                //   visible:
+                //       item.product.isVariedProduct && colorVariation != null,
+                //   child: ColorVariationWidget(
+                //     colorVariations:
+                //         colorVariation != null ? [colorVariation!] : [],
+                //     mode: VariationSelectionMode.cart,
+                //     selectedValues: [colorVariation?.id ?? -1],
+                //   ),
+                // ),
                 Counter(
                   onChange: (quantity) {
                     try {
@@ -243,26 +236,26 @@ Widget cartGridDisplay(
   return BlocConsumer<StoreCubit, StoreState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (state.productOptionValues!.any((element) =>
-            element.id ==
-            item.selectedVariationsValues[VariationTypes.size.index])) {
-          sizeVariation = state.productOptionValues!
-              .map((e) => e)
-              .where((element) =>
-                  element.id ==
-                  item.selectedVariationsValues[VariationTypes.size.index])
-              .first;
-        }
-        if (state.productOptionValues!.any((element) =>
-            element.id ==
-            item.selectedVariationsValues[VariationTypes.color.index])) {
-          colorVariation = state.productOptionValues!
-              .map((e) => e)
-              .where((element) =>
-                  element.id ==
-                  item.selectedVariationsValues[VariationTypes.color.index])
-              .first;
-        }
+        // if (state.productOptionValues!.any((element) =>
+        //     element.id ==
+        //     item.selectedVariationsValues[VariationTypes.size.index])) {
+        //   sizeVariation = state.productOptionValues!
+        //       .map((e) => e)
+        //       .where((element) =>
+        //           element.id ==
+        //           item.selectedVariationsValues[VariationTypes.size.index])
+        //       .first;
+        // }
+        // if (state.productOptionValues!.any((element) =>
+        //     element.id ==
+        //     item.selectedVariationsValues[VariationTypes.color.index])) {
+        //   colorVariation = state.productOptionValues!
+        //       .map((e) => e)
+        //       .where((element) =>
+        //           element.id ==
+        //           item.selectedVariationsValues[VariationTypes.color.index])
+        //       .first;
+        // }
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -316,29 +309,29 @@ Widget cartGridDisplay(
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Visibility(
-                              visible: item.product.isVariedProduct &&
-                                  sizeVariation != null,
-                              child: SizeVariationWidget(
-                                sizeVariations: sizeVariation != null
-                                    ? [sizeVariation!]
-                                    : [],
-                                mode: VariationSelectionMode.cart,
-                                selectedValues: [sizeVariation?.id ?? -1],
-                              ),
-                            ),
-                            Visibility(
-                              visible: item.product.isVariedProduct &&
-                                  colorVariation != null,
-                              child: ColorVariationWidget(
-                                colorVariations: colorVariation != null
-                                    ? [colorVariation!]
-                                    : [],
-                                mode: VariationSelectionMode.cart,
-                                selectedValues: [colorVariation?.id ?? -1],
-                              ),
-                            ),
+                          children: const [
+                            // Visibility(
+                            //   visible: item.product.isVariedProduct &&
+                            //       sizeVariation != null,
+                            //   child: SizeVariationWidget(
+                            //     sizeVariations: sizeVariation != null
+                            //         ? [sizeVariation!]
+                            //         : [],
+                            //     mode: VariationSelectionMode.cart,
+                            //     selectedValues: [sizeVariation?.id ?? -1],
+                            //   ),
+                            // ),
+                            // Visibility(
+                            //   visible: item.product.isVariedProduct &&
+                            //       colorVariation != null,
+                            //   child: ColorVariationWidget(
+                            //     colorVariations: colorVariation != null
+                            //         ? [colorVariation!]
+                            //         : [],
+                            //     mode: VariationSelectionMode.cart,
+                            //     selectedValues: [colorVariation?.id ?? -1],
+                            //   ),
+                            // ),
                             // SizeVariationWidget(
                             //   sizeVariations:
                             //       sizeVariation != null ? [sizeVariation!] : [],

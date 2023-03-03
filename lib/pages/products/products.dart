@@ -8,14 +8,13 @@ import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
-// import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/widgets/up_orientational_column_row.dart';
+// import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/appbar/food_appbar.dart';
@@ -38,12 +37,10 @@ class _AllProductsState extends State<Products> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
   List<Product>? products;
+  List<Collection> collections = [];
   int? restaurantId;
   Restaurant? restaurant;
-  List<ProductOptionValue> productOptionValues = [];
-  List<ProductOption> productOptions = [];
-
-  List<GlobalKey> categoryKeys = [];
+  List<GlobalKey> collectionKeys = [];
   @override
   void initState() {
     super.initState();
@@ -66,6 +63,33 @@ class _AllProductsState extends State<Products> {
     }
   }
 
+  _showDialog(Product product) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children:
+                  product.meta != null && product.meta!["Variations"] != null
+                      ? ((product.meta!["Variations"]) as List<dynamic>)
+                          .map((e) => Text(e["Product"].toString()))
+                          .toList()
+                      : const [
+                          SizedBox(),
+                        ],
+            ),
+          ),
+          actionsPadding: const EdgeInsets.all(0),
+          titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -86,46 +110,42 @@ class _AllProductsState extends State<Products> {
                 child: BlocConsumer<StoreCubit, StoreState>(
                     listener: (context, state) {},
                     builder: (context, state) {
-                      if (state.productOptions != null &&
-                          state.productOptions!.isNotEmpty) {
-                        productOptions = state.productOptions!.toList();
-                      }
                       if (state.restaurants != null &&
                           state.restaurants!.isNotEmpty) {
                         restaurant = state.restaurants!
                             .where(((element) => element.id == restaurantId))
                             .first;
                       }
-                      if (products != null && products!.isNotEmpty) {
-                        List<int> filteredOptionValues = [];
-                        for (var element in products!) {
-                          if (element.options != null &&
-                              element.options!.isNotEmpty) {
-                            element.options!.forEach((key, value) {
-                              filteredOptionValues.add(value);
-                            });
+
+                      if (state.collections != null &&
+                          state.collections!.isNotEmpty) {
+                        int parentId = state.collections!
+                            .where((element) => element.name == "Main")
+                            .first
+                            .id;
+                        for (var product in products!) {
+                          if (state.collections!
+                                  .where((element) =>
+                                      element.id == product.collection)
+                                  .first
+                                  .parent ==
+                              parentId) {
+                            collections.add(state.collections!
+                                .where((element) =>
+                                    element.id == product.collection)
+                                .first);
                           }
+                          collections = collections.toSet().toList();
                         }
-                        filteredOptionValues.toSet();
-                        if (filteredOptionValues.isNotEmpty) {
-                          if (state.productOptionValues != null &&
-                              state.productOptionValues!.isNotEmpty) {
-                            for (var optionValue in filteredOptionValues) {
-                              productOptionValues.add(state.productOptionValues!
-                                  .where((element) => element.id == optionValue)
-                                  .first);
-                            }
-                          }
-                        }
-                        if (productOptionValues.isNotEmpty) {
-                          for (var element in productOptionValues) {
-                            categoryKeys.add(GlobalKey());
+
+                        if (collections.isNotEmpty) {
+                          for (var element in collections.toSet()) {
+                            collectionKeys.add(GlobalKey());
                           }
                         }
                       }
 
-                      return restaurant != null &&
-                              productOptionValues.isNotEmpty
+                      return restaurant != null && collections.isNotEmpty
                           ? Column(
                               children: [
                                 Container(
@@ -202,14 +222,14 @@ class _AllProductsState extends State<Products> {
                                   widths: const [300, 600],
                                   children: [
                                     FoodCategoriesListWidget(
-                                      productOptionValues: productOptionValues,
+                                      collections: collections,
                                       onChange: (value) {
-                                        int index =
-                                            productOptionValues.indexWhere(
-                                                (element) => element == value);
-                                        categoryKeys[index].currentContext;
+                                        int index = collections.indexWhere(
+                                            (element) => element == value);
+                                        collectionKeys[index].currentContext;
                                         Scrollable.ensureVisible(
-                                            categoryKeys[index].currentContext!,
+                                            collectionKeys[index]
+                                                .currentContext!,
                                             duration:
                                                 const Duration(seconds: 2),
                                             curve: Curves.easeInOutCubic);
@@ -217,11 +237,11 @@ class _AllProductsState extends State<Products> {
                                     ),
                                     Column(
                                       children: [
-                                        ...productOptionValues
+                                        ...collections
                                             .asMap()
                                             .entries
                                             .map((e) => Container(
-                                                  key: categoryKeys[e.key],
+                                                  key: collectionKeys[e.key],
                                                   child: Column(
                                                     children: [
                                                       Theme(
@@ -248,8 +268,8 @@ class _AllProductsState extends State<Products> {
                                                             children: [
                                                               ...products!
                                                                   .where((element) =>
-                                                                      element.options![
-                                                                          "Type"] ==
+                                                                      element
+                                                                          .collection ==
                                                                       e.value
                                                                           .id)
                                                                   .map(
@@ -286,18 +306,28 @@ class _AllProductsState extends State<Products> {
                                                                               const SizedBox(
                                                                                 height: 20,
                                                                               ),
-                                                                              UpText(
-                                                                                "£${e.price}",
-                                                                                style: UpStyle(
-                                                                                  textColor: UpConfig.of(context).theme.primaryColor[900],
-                                                                                ),
-                                                                              ),
+                                                                              e.price! > 0
+                                                                                  ? UpText(
+                                                                                      "£${e.price}",
+                                                                                      style: UpStyle(
+                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                      ),
+                                                                                    )
+                                                                                  : const Text("")
                                                                             ],
                                                                           ),
                                                                         ),
                                                                         const SizedBox(
                                                                           width:
                                                                               20,
+                                                                        ),
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            _showDialog(e);
+                                                                          },
+                                                                          child:
+                                                                              const Icon(Icons.add),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -320,6 +350,9 @@ class _AllProductsState extends State<Products> {
                                                 ))
                                             .toList(),
                                       ],
+                                    ),
+                                    SizedBox(
+                                      child: Column(children: const []),
                                     ),
                                   ],
                                 ),
@@ -345,11 +378,11 @@ class _AllProductsState extends State<Products> {
 
 class FoodCategoriesListWidget extends StatefulWidget {
   final Function? onChange;
-  final List<ProductOptionValue> productOptionValues;
+  final List<Collection> collections;
   const FoodCategoriesListWidget({
     Key? key,
     this.onChange,
-    required this.productOptionValues,
+    required this.collections,
   }) : super(key: key);
 
   @override
@@ -365,7 +398,7 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
   void initState() {
     super.initState();
 
-    for (var element in widget.productOptionValues) {
+    for (var element in widget.collections) {
       optionValuesHovered.add(false);
     }
   }
@@ -390,7 +423,7 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ...widget.productOptionValues
+            ...widget.collections
                 .asMap()
                 .entries
                 .map((e) => MouseRegion(
@@ -445,5 +478,19 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
         ),
       ),
     );
+  }
+}
+
+class CartWidget extends StatefulWidget {
+  const CartWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CartWidget> createState() => _CartWidgetState();
+}
+
+class _CartWidgetState extends State<CartWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

@@ -13,7 +13,7 @@ import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter_up/models/up_route.dart';
 import 'package:flutter_up/models/up_router_state.dart';
 import 'package:shop/pages/authentication/loginsignup.dart';
-import 'package:shop/pages/cart/food_cart.dart';
+import 'package:shop/pages/cart/cart.dart';
 import 'package:shop/pages/home/home_page.dart';
 
 import 'package:shop/pages/products/products.dart';
