@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/up_app.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/pages/admin/add_edit_product.dart';
+import 'package:shop/pages/admin/admin_combos.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -53,7 +55,7 @@ class ShopApp extends StatelessWidget {
               secondaryColor: Colors.white,
             ),
             title: 'Shop',
-            initialRoute: Routes.home,
+            initialRoute: Routes.loginSignup,
             upRoutes: [
               UpRoute(
                 path: Routes.home,
@@ -79,7 +81,7 @@ class ShopApp extends StatelessWidget {
                     const LoginSignupPage(),
                 name: Routes.loginSignup,
                 shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
-                redirectRoute: Routes.adminProduct,
+                redirectRoute: Routes.addEditProduct,
               ),
               UpRoute(
                 name: Routes.cart,
@@ -87,6 +89,26 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     StoreDependantPage(
                   page: CartPage(),
+                ),
+              ),
+              UpRoute(
+                path: Routes.addEditProduct,
+                name: Routes.addEditProduct,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    StoreDependantPage(
+                  page: AddEditProduct(
+                    queryParams: state.queryParams,
+                  ),
+                ),
+              ),
+              UpRoute(
+                path: Routes.adminCombos,
+                name: Routes.adminCombos,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    StoreDependantPage(
+                  page: AdminCombos(
+                    queryParams: state.queryParams,
+                  ),
                 ),
               ),
             ],

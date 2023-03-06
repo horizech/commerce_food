@@ -1,6 +1,8 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:shop/models/collection.dart';
+import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:http/http.dart' as http;
@@ -270,5 +272,86 @@ class AddEditProductService {
     //     File(filePath).readAsBytes().asStream(), File(filePath).lengthSync(),
     //     filename: filePath.split("/").last));
     // var res = await request.send();
+  }
+
+  static Future<APIResult?> addEditProductVariations(
+    List<Map<String, dynamic>> data,
+    int? productVariationId,
+  ) async {
+    APIResult result;
+    if (productVariationId != null) {
+      result = await Apiraiser.data
+          .update("ProductVariations", productVariationId, {});
+    } else {
+      result = await Apiraiser.data.insertList("ProductVariations", data);
+    }
+
+    if (result.success) {
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List<Product>?> getProductByIds(List<int> productIds) async {
+    List<QuerySearchItem> conditions = [
+      QuerySearchItem(
+          name: "Id", condition: ColumnCondition.includes, value: productIds)
+    ];
+    APIResult result =
+        await Apiraiser.data.getByConditions("Products", conditions);
+
+    if (result.success) {
+      List<Product> products = (result.data as List<dynamic>)
+          .map((p) => Product.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return products;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<APIResult?> addEditCombos(
+      {required Map<String, dynamic> data, int? comboId}) async {
+    APIResult? result;
+    if (comboId != null) {
+      result = await Apiraiser.data.update("Combos", comboId, data);
+    } else {
+      result = await Apiraiser.data.insert("Combos", data);
+    }
+
+    return result;
+  }
+
+  static Future<List<Combo>?> getCombos() async {
+    APIResult result = await Apiraiser.data.get("Combos", -1);
+
+    if (result.success) {
+      List<Combo> combos = (result.data as List<dynamic>)
+          .map((p) => Combo.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return combos;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List<ProductCombo>?> getProductCombos() async {
+    APIResult result = await Apiraiser.data.get("ProductCombos", -1);
+
+    if (result.success) {
+      List<ProductCombo> productCombos = (result.data as List<dynamic>)
+          .map((p) => ProductCombo.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return productCombos;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<APIResult?> deleteCombo(int comboId) async {
+    APIResult result = await Apiraiser.data.delete("Combos", comboId);
+
+    return result;
   }
 }

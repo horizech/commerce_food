@@ -169,7 +169,7 @@ class FilterBox extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: MediaWidget(
-                mediaId: productOptionValue.media,
+                // mediaId: productOptionValue.media,
                 onChange: () {
                   onChange(productOptionValue);
                 },

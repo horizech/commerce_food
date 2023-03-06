@@ -12,6 +12,8 @@ class StoreState {
   final List<ProductOptionValue>? productOptionValues;
   final List<Gallery>? mediaGroups;
   final List<Restaurant>? restaurants;
+  final List<ProductCombo>? productCombos;
+  final List<Combo>? combos;
 
   StoreState(
     this.isLoading,
@@ -26,6 +28,8 @@ class StoreState {
     this.productOptionValues,
     this.mediaGroups,
     this.restaurants,
+    this.combos,
+    this.productCombos,
   );
 
   get productOptionsValuesMod => null;

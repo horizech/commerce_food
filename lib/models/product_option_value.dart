@@ -10,7 +10,6 @@ class ProductOptionValue extends Equatable {
   final String name;
   final int productOption;
   final int collection;
-  final int? media;
 
   const ProductOptionValue({
     this.id,
@@ -21,7 +20,6 @@ class ProductOptionValue extends Equatable {
     required this.name,
     required this.productOption,
     required this.collection,
-    this.media,
   });
 
   factory ProductOptionValue.fromJson(Map<String, dynamic> json) {
@@ -39,7 +37,6 @@ class ProductOptionValue extends Equatable {
         name: json['Name'] as String,
         productOption: json['ProductOption'] as int,
         collection: json['Collection'] as int,
-        media: json['Media'] as int,
       );
       return size;
     } catch (e) {
@@ -57,7 +54,6 @@ class ProductOptionValue extends Equatable {
         'Name': instance.name,
         'ProductOption': instance.productOption,
         'Collection': instance.collection,
-        'Media': instance.media
       };
 
   @override
