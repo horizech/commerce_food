@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
@@ -20,9 +21,9 @@ import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/appbar/food_appbar.dart';
+import 'package:shop/widgets/cart/cart_widget.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
-
 class Products extends StatefulWidget {
   final Map<String, String>? queryParams;
   const Products({
@@ -186,7 +187,9 @@ class _AllProductsState extends State<Products> {
                                   height: 300,
                                   child: Center(
                                     child: UpOrientationalColumnRow(
-                                      widths: const [300, 0],
+                                      widths: const [
+                                        250,
+                                      ],
                                       children: [
                                         Column(
                                           crossAxisAlignment:
@@ -273,7 +276,7 @@ class _AllProductsState extends State<Products> {
                                   ),
                                 ),
                                 UpOrientationalColumnRow(
-                                  widths: const [300, 600],
+                                  widths: const [200, 1000],
                                   children: [
                                     FoodCategoriesListWidget(
                                       collections: collections,
@@ -289,125 +292,138 @@ class _AllProductsState extends State<Products> {
                                             curve: Curves.easeInOutCubic);
                                       },
                                     ),
-                                    Column(
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        ...collections
-                                            .asMap()
-                                            .entries
-                                            .map((e) => Container(
-                                                  key: collectionKeys[e.key],
-                                                  child: Column(
-                                                    children: [
-                                                      Theme(
-                                                        data: ThemeData().copyWith(
-                                                            dividerColor: Colors
-                                                                .transparent),
-                                                        child: UpExpansionTile(
-                                                            initiallyExpanded:
-                                                                true,
-                                                            title: e.value.name,
-                                                            textType: UpTextType
-                                                                .heading5,
-                                                            expandedAlignment:
-                                                                Alignment
-                                                                    .topLeft,
-                                                            childrenPadding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0,
-                                                                    top: 4.0,
-                                                                    bottom: 4.0,
-                                                                    right:
-                                                                        20.0),
-                                                            children: [
-                                                              ...products!
-                                                                  .where((element) =>
-                                                                      element
-                                                                          .collection ==
-                                                                      e.value
-                                                                          .id)
-                                                                  .map(
-                                                                    (e) => Row(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        const Padding(
-                                                                          padding:
-                                                                              EdgeInsets.only(right: 8),
-                                                                          child:
-                                                                              UpIcon(
-                                                                            icon:
-                                                                                Icons.circle,
-                                                                          ),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child:
-                                                                              Column(
+                                        Expanded(
+                                          flex: 8,
+                                          child: Column(
+                                            children: [
+                                              ...collections
+                                                  .asMap()
+                                                  .entries
+                                                  .map((e) => Container(
+                                                        key: collectionKeys[
+                                                            e.key],
+                                                        child: Column(
+                                                          children: [
+                                                            Theme(
+                                                              data: ThemeData()
+                                                                  .copyWith(
+                                                                      dividerColor:
+                                                                          Colors
+                                                                              .transparent),
+                                                              child: UpExpansionTile(
+                                                                  initiallyExpanded:
+                                                                      true,
+                                                                  title: e.value
+                                                                      .name,
+                                                                  textType:
+                                                                      UpTextType
+                                                                          .heading5,
+                                                                  expandedAlignment:
+                                                                      Alignment
+                                                                          .topLeft,
+                                                                  childrenPadding: const EdgeInsets.only(
+                                                                      left:
+                                                                          20.0,
+                                                                      top: 4.0,
+                                                                      bottom:
+                                                                          4.0,
+                                                                      right:
+                                                                          20.0),
+                                                                  children: [
+                                                                    ...products!
+                                                                        .where((element) =>
+                                                                            element.collection ==
+                                                                            e.value.id)
+                                                                        .map(
+                                                                          (e) =>
+                                                                              Row(
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
-                                                                              UpText(
-                                                                                e.name,
-                                                                                style: UpStyle(
-                                                                                  textColor: UpConfig.of(context).theme.primaryColor[600],
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.only(right: 8),
+                                                                                child: UpIcon(
+                                                                                  icon: Icons.circle,
                                                                                 ),
                                                                               ),
-                                                                              const SizedBox(
-                                                                                height: 10,
-                                                                              ),
-                                                                              UpText(
-                                                                                e.description ?? "",
-                                                                                style: UpStyle(
-                                                                                  textColor: UpConfig.of(context).theme.primaryColor[200],
-                                                                                ),
-                                                                              ),
-                                                                              const SizedBox(
-                                                                                height: 20,
-                                                                              ),
-                                                                              e.price! > 0
-                                                                                  ? UpText(
-                                                                                      "£${e.price}",
+                                                                              Expanded(
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    UpText(
+                                                                                      e.name,
                                                                                       style: UpStyle(
-                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                        textColor: UpConfig.of(context).theme.primaryColor[600],
                                                                                       ),
-                                                                                    )
-                                                                                  : const Text("")
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      height: 10,
+                                                                                    ),
+                                                                                    UpText(
+                                                                                      e.description ?? "",
+                                                                                      style: UpStyle(
+                                                                                        textColor: UpConfig.of(context).theme.primaryColor[200],
+                                                                                      ),
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      height: 20,
+                                                                                    ),
+                                                                                    e.price! > 0
+                                                                                        ? UpText(
+                                                                                            "£${e.price}",
+                                                                                            style: UpStyle(
+                                                                                              textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                            ),
+                                                                                          )
+                                                                                        : const Text("")
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                width: 20,
+                                                                              ),
+                                                                              GestureDetector(
+                                                                                onTap: () {
+                                                                                  _showDialog(e);
+                                                                                },
+                                                                                child: const Icon(Icons.add),
+                                                                              ),
                                                                             ],
                                                                           ),
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              20,
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            _showDialog(e);
-                                                                          },
-                                                                          child:
-                                                                              const Icon(Icons.add),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                  .toList()
-                                                            ]),
-                                                      ),
-                                                      const Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 8.0,
-                                                                horizontal: 0),
-                                                        child: Divider(
-                                                          thickness: 2,
-                                                          color: Colors.black,
+                                                                        )
+                                                                        .toList()
+                                                                  ]),
+                                                            ),
+                                                            const Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          8.0,
+                                                                      horizontal:
+                                                                          0),
+                                                              child: Divider(
+                                                                thickness: 2,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ))
-                                            .toList(),
+                                                      ))
+                                                  .toList(),
+                                            ],
+                                          ),
+                                        ),
+                                        const Expanded(
+                                          flex: 6,
+                                          child: CartWidget1(),
+                                        )
                                       ],
                                     ),
                                     SizedBox(

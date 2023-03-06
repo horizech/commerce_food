@@ -13,6 +13,8 @@ class Routes {
   static const String addEditProduct = '/add_edit_product';
   static const String addEditProductVariaton = '/add_edit_product_variation';
   static const String searchAutomobile = '/search';
+  static const String foodCartPage = '/cart_food';
+
 }
 
 class Constant {

@@ -8,6 +8,7 @@ import 'package:flutter_up/up_app.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/pages/admin/add_edit_product.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
+import 'package:shop/pages/cart/food_cart_page.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -89,6 +90,14 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     StoreDependantPage(
                   page: CartPage(),
+                ),
+              ),
+              UpRoute(
+                name: Routes.foodCartPage,
+                path: Routes.foodCartPage,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: FoodCartPage(),
                 ),
               ),
               UpRoute(
