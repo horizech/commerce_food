@@ -278,19 +278,25 @@ class AddEditProductService {
     List<Map<String, dynamic>> data,
     int? productVariationId,
   ) async {
-    APIResult result;
+    // APIResult result;
+    List<APIResult> result = [];
     if (productVariationId != null) {
-      result = await Apiraiser.data
-          .update("ProductVariations", productVariationId, {});
+      dynamic futureResult = await Future.wait([
+        ...data
+            .map((e) => Apiraiser.data.update("ProductVariations", e["Id"], e))
+            .toList()
+      ]);
+      result = futureResult as List<APIResult>;
     } else {
-      result = await Apiraiser.data.insertList("ProductVariations", data);
+      dynamic futureResult = await Future.wait([
+        ...data
+            .map((e) => Apiraiser.data.insert("ProductVariations", e))
+            .toList()
+      ]);
+      result = futureResult as List<APIResult>;
     }
 
-    if (result.success) {
-      return result;
-    } else {
-      return null;
-    }
+    return result.first;
   }
 
   static Future<List<Product>?> getProductByIds(List<int> productIds) async {
@@ -352,6 +358,26 @@ class AddEditProductService {
   static Future<APIResult?> deleteCombo(int comboId) async {
     APIResult result = await Apiraiser.data.delete("Combos", comboId);
 
+    return result;
+  }
+
+  static Future<APIResult?> insertProductCombo(
+    Map<String, dynamic> data,
+  ) async {
+    APIResult result;
+
+    result = await Apiraiser.data.insert("ProductCombos", data);
+
+    if (result.success) {
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<APIResult?> deleteProductCombo(int productComboId) async {
+    APIResult? result =
+        await Apiraiser.data.delete("ProductCombos", productComboId);
     return result;
   }
 }

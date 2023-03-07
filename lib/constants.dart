@@ -5,7 +5,7 @@ class Routes {
   static const String product = '/product';
   static const String cart = '/cart';
   static const String payment = '/payment';
-  static const String adminProduct = '/admin_products';
+  static const String adminProducts = '/admin_products';
   static const String adminCombos = '/admin_combos';
 
   static const String adminProductOptions = '/admin_product_options';

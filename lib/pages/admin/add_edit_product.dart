@@ -437,50 +437,7 @@ class _AddEditProductState extends State<AddEditProduct> {
                               .toList(),
                         ),
                       ),
-                      // Visibility(
-                      //   visible: currentCollection.isNotEmpty &&
-                      //       isVariedProduct == false,
-                      //   child: AddEditProductOptionsWidget(
-                      //     change: (newOptions) {
-                      //       options = newOptions;
-                      //     },
-                      //     options: options,
-                      //     currentCollection: currentCollection.isNotEmpty
-                      //         ? int.parse(currentCollection)
-                      //         : null,
-                      //   ),
-                      // ),
-                      // thumbnail
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: SizedBox(
-                      //     child: UpButton(
-                      //       onPressed: () => _uploadThumbnail(context),
-                      //       text: 'Upload thumbnail',
-                      //     ),
-                      //   ),
-                      // ),
-                      // productId != null
-                      //     ? product != null
-                      //         ? Padding(
-                      //             padding: const EdgeInsets.all(8.0),
-                      //             child: AddEditProductMetaWidget(
-                      //               meta: meta,
-                      //               onChange: (value) {
-                      //                 meta = value;
-                      //               },
-                      //             ),
-                      //           )
-                      //         : const SizedBox()
-                      //     : Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: AddEditProductMetaWidget(
-                      //           meta: meta,
-                      //           onChange: (value) {
-                      //             meta = value;
-                      //           },
-                      //         ),
-                      //       ),
+
                       // add edit button
                       Padding(
                         padding: const EdgeInsets.all(8.0),

@@ -8,6 +8,7 @@ import 'package:flutter_up/up_app.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/pages/admin/add_edit_product.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
+import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -109,6 +110,14 @@ class ShopApp extends StatelessWidget {
                   page: AdminCombos(
                     queryParams: state.queryParams,
                   ),
+                ),
+              ),
+              UpRoute(
+                path: Routes.adminProducts,
+                name: Routes.adminProducts,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: AdminProducts(),
                 ),
               ),
             ],

@@ -5,7 +5,6 @@ import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/models/up_row.dart';
 import 'package:flutter_up/services/up_navigation.dart';
-import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
@@ -18,14 +17,14 @@ import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
 
-class AdminPage extends StatefulWidget {
-  const AdminPage({Key? key}) : super(key: key);
+class AdminProducts extends StatefulWidget {
+  const AdminProducts({Key? key}) : super(key: key);
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
+  State<AdminProducts> createState() => _AdminProductsState();
 }
 
-class _AdminPageState extends State<AdminPage> {
+class _AdminProductsState extends State<AdminProducts> {
   User? user;
   List<int>? selectedCollection;
   String currentCollection = "";
@@ -131,7 +130,6 @@ class _AdminPageState extends State<AdminPage> {
                                       "Name",
                                       "Price",
                                       'IsVariedProduct',
-                                      'Variations'
                                     ],
                                     rows: [
                                       ...snapshot.data!.map(
@@ -157,36 +155,6 @@ class _AdminPageState extends State<AdminPage> {
                                                 e.isVariedProduct.toString(),
                                               ),
                                             ),
-                                            e.isVariedProduct == false
-                                                ? SizedBox(
-                                                    child: UpText(
-                                                      e.options.toString(),
-                                                    ),
-                                                  )
-                                                : SizedBox(
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        ServiceManager<
-                                                                UpNavigationService>()
-                                                            .navigateToNamed(
-                                                          Routes
-                                                              .adminProductVariations,
-                                                          queryParams: {
-                                                            'productId':
-                                                                '${e.id}',
-                                                          },
-                                                        );
-                                                      },
-                                                      child: UpText(
-                                                        "View Variations",
-                                                        style: UpStyle(
-                                                          textDecoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
                                           ],
                                         ),
                                       ),
