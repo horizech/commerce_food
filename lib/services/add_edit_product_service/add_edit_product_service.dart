@@ -89,7 +89,7 @@ class AddEditProductService {
     }
   }
 
-  static Future<ProductOption?> addEditProductOption(
+  static Future<APIResult?> addEditProductOption(
       {required Map<String, dynamic> data, int? productOptionId}) async {
     APIResult? result;
     if (productOptionId != null) {
@@ -100,8 +100,7 @@ class AddEditProductService {
     }
 
     if (result.success) {
-      ProductOption? productOption = await getProductOptionByName(data["Name"]);
-      return productOption;
+      return result;
     } else {
       return null;
     }
@@ -164,31 +163,8 @@ class AddEditProductService {
     }
   }
 
-  static Future<List<ProductOptionValue>?> getProductOptionValues(
-      int? currentCollection, int? currentProductOption) async {
-    List<QuerySearchItem> conditions = [];
-    if (currentProductOption != null) {
-      conditions.add(
-        QuerySearchItem(
-          name: "ProductOption",
-          condition: ColumnCondition.equal,
-          value: currentProductOption,
-        ),
-      );
-    }
-
-    if (currentCollection != null) {
-      conditions.add(
-        QuerySearchItem(
-          name: "Collection",
-          condition: ColumnCondition.equal,
-          value: currentCollection,
-        ),
-      );
-    }
-
-    APIResult result =
-        await Apiraiser.data.getByConditions("ProductOptionValues", conditions);
+  static Future<List<ProductOptionValue>?> getProductOptionValues() async {
+    APIResult result = await Apiraiser.data.get("ProductOptionValues", -1);
 
     if (result.success) {
       List<ProductOptionValue> productOptionValues = (result.data
@@ -379,5 +355,42 @@ class AddEditProductService {
     APIResult? result =
         await Apiraiser.data.delete("ProductCombos", productComboId);
     return result;
+  }
+
+  static Future<List<ProductOptionValue>?> getProductOptionValuesByConditions(
+      int? currentCollection, int? currentProductOption) async {
+    List<QuerySearchItem> conditions = [];
+    if (currentProductOption != null) {
+      conditions.add(
+        QuerySearchItem(
+          name: "ProductOption",
+          condition: ColumnCondition.equal,
+          value: currentProductOption,
+        ),
+      );
+    }
+
+    if (currentCollection != null) {
+      conditions.add(
+        QuerySearchItem(
+          name: "Collection",
+          condition: ColumnCondition.equal,
+          value: currentCollection,
+        ),
+      );
+    }
+
+    APIResult result =
+        await Apiraiser.data.getByConditions("ProductOptionValues", conditions);
+
+    if (result.success) {
+      List<ProductOptionValue> productOptionValues = (result.data
+              as List<dynamic>)
+          .map((p) => ProductOptionValue.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return productOptionValues;
+    } else {
+      return null;
+    }
   }
 }

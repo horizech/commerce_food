@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/enums/up_button_type.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_button.dart';
-import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/dialogs/add_edit_product_option_dialog.dart';
@@ -81,7 +80,7 @@ class _AddEditProductOptionsWidgetState
 
   getProductOptionValues() async {
     List<ProductOptionValue>? newProductOptionsValues =
-        await AddEditProductService.getProductOptionValues(
+        await AddEditProductService.getProductOptionValuesByConditions(
             widget.currentCollection, null);
     if (newProductOptionsValues != null && newProductOptionsValues.isNotEmpty) {
       productOptionValues = newProductOptionsValues;
@@ -171,7 +170,7 @@ class _AddEditProductOptionsWidgetState
                 ),
               ],
             ))
-        : const UpCircularProgress();
+        : const SizedBox();
   }
 }
 

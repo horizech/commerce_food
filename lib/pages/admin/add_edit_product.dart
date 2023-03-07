@@ -16,6 +16,7 @@ import 'package:shop/models/product.dart';
 import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/models/product_variation.dart';
+import 'package:shop/pages/admin/add_edit_product_options_widget.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -381,6 +382,20 @@ class _AddEditProductState extends State<AddEditProduct> {
                       ),
                       // options value
                       Visibility(
+                        visible: currentCollection.isNotEmpty &&
+                            isVariedProduct == false,
+                        child: AddEditProductOptionsWidget(
+                          change: (newOptions) {
+                            options = newOptions;
+                          },
+                          options: options,
+                          currentCollection: currentCollection.isNotEmpty
+                              ? int.parse(currentCollection)
+                              : null,
+                        ),
+                      ),
+
+                      Visibility(
                         visible:
                             isVariedProduct && productOptionValues.isNotEmpty,
                         child: Column(
@@ -437,6 +452,28 @@ class _AddEditProductState extends State<AddEditProduct> {
                               .toList(),
                         ),
                       ),
+
+                      //  productId != null
+                      //   ? product != null
+                      //       ? Padding(
+                      //           padding: const EdgeInsets.all(8.0),
+                      //           child: AddEditProductMetaWidget(
+                      //             meta: meta,
+                      //             onChange: (value) {
+                      //               meta = value;
+                      //             },
+                      //           ),
+                      //         )
+                      //       : const SizedBox()
+                      //   : Padding(
+                      //       padding: const EdgeInsets.all(8.0),
+                      //       child: AddEditProductMetaWidget(
+                      //         meta: meta,
+                      //         onChange: (value) {
+                      //           meta = value;
+                      //         },
+                      //       ),
+                      //     ),
 
                       // add edit button
                       Padding(

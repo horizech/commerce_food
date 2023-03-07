@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
@@ -17,6 +16,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
@@ -24,6 +24,7 @@ import 'package:shop/widgets/appbar/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
+
 class Products extends StatefulWidget {
   final Map<String, String>? queryParams;
   const Products({
@@ -42,6 +43,7 @@ class _AllProductsState extends State<Products> {
   List<Product>? products;
   List<Collection> collections = [];
   int? restaurantId;
+  List<ProductVariation> productVariations = [];
   Restaurant? restaurant;
   List<GlobalKey> collectionKeys = [];
   @override
@@ -66,24 +68,60 @@ class _AllProductsState extends State<Products> {
     }
   }
 
-  Widget _variationItems(int productId, Function onClick) {
-    return FutureBuilder<Product?>(
-      future: ProductDetailService.getProductById(productId),
+  // Widget _variationItems(int productId, Function onClick) {
+  //   return FutureBuilder<Product?>(
+  //     future: ProductDetailService.getProductById(productId),
+  //     initialData: null,
+  //     builder: (BuildContext context, AsyncSnapshot<Product?> snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         return Container(
+  //           child: UpButton(
+  //             text:
+  //                 "${snapshot.data?.name}      -     Price  £ ${snapshot.data?.price}",
+  //             onPressed: () => {
+  //               onClick(snapshot.data?.id ?? -1),
+  //             },
+  //           ),
+  //         );
+  //       } else {
+  //         return Container(
+  //           child: const Text(
+  //             'Loading...',
+  //           ),
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
+
+  Widget _getProductVariations(int productId, Function onClick) {
+    return FutureBuilder<List<ProductVariation>?>(
+      future: ProductDetailService.getProductVariationsById(productId),
       initialData: null,
-      builder: (BuildContext context, AsyncSnapshot<Product?> snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<List<ProductVariation>?> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Container(
-            child: UpButton(
-              text:
-                  "${snapshot.data?.name}      -     Price  £ ${snapshot.data?.price}",
-              onPressed: () => {
-                onClick(snapshot.data?.id ?? -1),
-              },
-            ),
-          );
+          return snapshot.hasData &&
+                  snapshot.data != null &&
+                  snapshot.data!.isNotEmpty
+              ? Column(
+                  children: [
+                    ...snapshot.data!.map(
+                      (e) {
+                        return UpButton(
+                          text: "${e.name}      -     Price  £ ${e.price}",
+                          onPressed: () => {
+                            onClick(e.id ?? -1),
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                )
+              : const SizedBox();
         } else {
-          return Container(
-            child: const Text(
+          return const SizedBox(
+            child: Text(
               'Loading...',
             ),
           );
@@ -99,26 +137,35 @@ class _AllProductsState extends State<Products> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children:
-                  product.meta != null && product.meta!["Variations"] != null
-                      ? ((product.meta!["Variations"]) as List<dynamic>)
-                          .map(
-                            (e) => _variationItems(
-                              e["Product"],
-                              (selection) => {debugPrint(selection.toString())},
-                            ),
-                          )
-                          .toList()
-                      : const [
-                          SizedBox(),
-                        ],
-            ),
-          ),
+              padding: const EdgeInsets.all(8.0),
+              child: _getProductVariations(product.id!, () {})),
           actionsPadding: const EdgeInsets.all(0),
           titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: SizedBox(
+                width: 100,
+                child: UpButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  text: "Cancel",
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+              child: SizedBox(
+                width: 100,
+                child: UpButton(
+                  text: "Add to cart",
+                  onPressed: () async {},
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

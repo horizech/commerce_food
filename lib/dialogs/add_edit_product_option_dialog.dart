@@ -8,7 +8,7 @@ import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditProductOptionDialog extends StatefulWidget {
+class AddEditProductOptionDialog extends StatelessWidget {
   final List<ProductOption>? productOptions;
   final int? currentCollection;
   final ProductOption? productOption;
@@ -20,29 +20,20 @@ class AddEditProductOptionDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AddEditProductOptionDialog> createState() =>
-      _AddEditProductOptionDialogState();
-}
-
-class _AddEditProductOptionDialogState
-    extends State<AddEditProductOptionDialog> {
-  @override
   Widget build(BuildContext context) {
     TextEditingController productOptioncontroller = TextEditingController();
     TextEditingController productOptionValuecontroller =
         TextEditingController();
 
-    if (widget.productOption != null) {
-      productOptioncontroller.text = widget.productOption!.name;
+    if (productOption != null) {
+      productOptioncontroller.text = productOption!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          widget.productOption != null
-              ? "Edit Product Option"
-              : "Add Product Option",
+          productOption != null ? "Edit Product Option" : "Add Product Option",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -64,8 +55,7 @@ class _AddEditProductOptionDialogState
                 ),
               ),
               Visibility(
-                visible: widget.currentCollection != null &&
-                    widget.productOption == null,
+                visible: currentCollection != null && productOption == null,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: UpTextField(
@@ -96,10 +86,10 @@ class _AddEditProductOptionDialogState
           child: SizedBox(
             width: 100,
             child: UpButton(
-                text: widget.productOption != null ? "Edit" : "Add",
+                text: productOption != null ? "Edit" : "Add",
                 onPressed: () async {
-                  if (widget.productOptions != null &&
-                      !widget.productOptions!.any(
+                  if (productOptions != null &&
+                      !productOptions!.any(
                         (element) =>
                             element.name.toLowerCase() ==
                             productOptioncontroller.text.toLowerCase(),
@@ -107,40 +97,36 @@ class _AddEditProductOptionDialogState
                     ProductOption newProductOption = ProductOption(
                       name: productOptioncontroller.text,
                     );
-                    ProductOption? productOption1 =
+                    APIResult? result =
                         await AddEditProductService.addEditProductOption(
                       data: newProductOption.toJson(newProductOption),
-                      productOptionId: widget.productOption != null
-                          ? widget.productOption!.id!
-                          : null,
+                      productOptionId:
+                          productOption != null ? productOption!.id! : null,
                     );
-                    if (productOption1 != null) {
-                      if (widget.currentCollection == null) {
+                    if (result != null) {
+                      if (currentCollection == null) {
                         showUpToast(
                           context: context,
                           text: "Product Option Updated Successfully",
                         );
-                        if (mounted) {}
                         Navigator.pop(context, "success");
                       } else {
                         ProductOptionValue newProductOptionValue =
                             ProductOptionValue(
                           name: productOptionValuecontroller.text,
-                          productOption: productOption1.id!,
-                          collection: widget.currentCollection!,
+                          productOption: result.data!,
+                          collection: currentCollection!,
                         );
-                        APIResult? result = await AddEditProductService
+                        APIResult? result1 = await AddEditProductService
                             .addEditProductOptionValues(
                           data: newProductOptionValue
                               .toJson(newProductOptionValue),
                         );
-                        if (result != null && result.success) {
+                        if (result1 != null && result1.success) {
                           showUpToast(
                             context: context,
                             text: "Product Option Added Successfully",
                           );
-                          if (mounted) {}
-                          Navigator.pop(context, "success");
                         } else {
                           showUpToast(
                             context: context,

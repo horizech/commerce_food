@@ -1,66 +1,122 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_up/enums/up_button_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_up/config/up_config.dart';
+import 'package:flutter_up/enums/text_style.dart';
+import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/models/up_label_value.dart';
-import 'package:flutter_up/models/up_row.dart';
+import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
-import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
-import 'package:flutter_up/widgets/up_table.dart';
+import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
-import 'package:shop/dialogs/add_edit_product_option_dialog.dart';
-import 'package:shop/dialogs/add_edit_product_option_value_dialog.dart';
-import 'package:shop/dialogs/delete_product_option_dialog.dart';
-import 'package:shop/dialogs/delete_product_option_value_dialog.dart';
+import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
 
-class AdminProductOptionsPage extends StatefulWidget {
-  const AdminProductOptionsPage({Key? key}) : super(key: key);
+class AdminProductOptions extends StatefulWidget {
+  const AdminProductOptions({Key? key}) : super(key: key);
 
   @override
-  State<AdminProductOptionsPage> createState() =>
-      _AdminProductOptionsPageState();
+  State<AdminProductOptions> createState() => _AdminProductOptionsState();
 }
 
-class _AdminProductOptionsPageState extends State<AdminProductOptionsPage> {
+class _AdminProductOptionsState extends State<AdminProductOptions> {
   String currentCollection = "", currentProductOption = "";
   List<ProductOption> productOptions = [];
+  TextEditingController nameController = TextEditingController();
+  TextEditingController productOptionValueNameController =
+      TextEditingController();
+
   List<ProductOptionValue> productOptionValues = [];
   List<UpLabelValuePair> collectionDropdown = [];
   List<UpLabelValuePair> productOptionDropdown = [];
   User? user;
+  ProductOption selectedProductOption = const ProductOption(name: "", id: -1);
   bool isProductOptinsLoading = false;
-  //  product option add dialog
-  _productOptionAddDialog({ProductOption? productOption}) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AddEditProductOptionDialog(
-          productOption: productOption,
-          productOptions: productOptions,
-          currentCollection: currentCollection.isNotEmpty
-              ? int.parse(currentCollection)
-              : null,
-        );
-      },
-    ).then((result) {
-      if (result == "success") {
-        getProductOptions();
-      }
-    });
-  }
-
+  List<ProductOptionValue> filteredProductOptionValues = [];
   @override
   void initState() {
     super.initState();
     user ??= Apiraiser.authentication.getCurrentUser();
 
     getProductOptions();
+  }
+
+  Widget leftSide() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Container(
+        color: Colors.grey[200],
+        width: 300,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            GestureDetector(
+                onTap: (() {
+                  selectedProductOption = const ProductOption(name: "", id: -1);
+                  nameController.text = selectedProductOption.name;
+
+                  setState(() {});
+                }),
+                child: Container(
+                  color: selectedProductOption.id == -1
+                      ? UpConfig.of(context).theme.primaryColor[100]
+                      : Colors.transparent,
+                  child: const ListTile(
+                    title: UpText("Create a new product option"),
+                  ),
+                )),
+            ...productOptions
+                .map(
+                  (e) => GestureDetector(
+                    onTap: (() {
+                      selectedProductOption = e;
+                      nameController.text = selectedProductOption.name;
+
+                      setState(() {});
+                    }),
+                    child: Container(
+                      color: selectedProductOption.id == e.id
+                          ? UpConfig.of(context).theme.primaryColor[100]
+                          : Colors.transparent,
+                      child: ListTile(
+                        title: UpText(e.name),
+                      ),
+                    ),
+                  ),
+                )
+                .toList()
+          ],
+        ),
+      ),
+    );
+  }
+
+  _updateProductOption(ProductOption? option) async {
+    ProductOption newProductOption = ProductOption(
+      name: nameController.text,
+    );
+    APIResult? result = await AddEditProductService.addEditProductOption(
+        data: newProductOption.toJson(newProductOption),
+        productOptionId: option?.id);
+
+    if (result != null) {
+      showUpToast(
+        context: context,
+        text: result.message ?? "",
+      );
+      getProductOptions();
+    } else {
+      showUpToast(
+        context: context,
+        text: "An Error Occurred",
+      );
+    }
   }
 
   //by api
@@ -107,76 +163,92 @@ class _AdminProductOptionsPageState extends State<AdminProductOptionsPage> {
   }
 
   getProductOptionValues() async {
-    if (currentCollection.isNotEmpty && currentProductOption.isNotEmpty) {
+    if (currentCollection.isNotEmpty && selectedProductOption.id != -1) {
       List<ProductOptionValue>? newProductOptionValues =
-          await AddEditProductService.getProductOptionValues(
-        int.parse(currentCollection),
-        int.parse(currentProductOption),
-      );
+          await AddEditProductService.getProductOptionValues();
       if (newProductOptionValues != null && newProductOptionValues.isNotEmpty) {
         productOptionValues = newProductOptionValues;
-
-        isProductOptinsLoading = false;
-        setState(() {});
-      } else {
-        productOptionValues = [];
-        isProductOptinsLoading = false;
+        _setProductOptionValues();
         setState(() {});
       }
     }
   }
 
-  _productOptionValueAddDialog(
-      {ProductOption? productOption, ProductOptionValue? productOptionValue}) {
-    if (currentCollection.isNotEmpty) {
-      showDialog(
+  _deleteProductOption(int productOptionId) async {
+    APIResult? result =
+        await AddEditProductService.deleteProductOption(productOptionId);
+    if (result != null && result.success) {
+      showUpToast(context: context, text: result.message ?? "");
+      nameController.text = "";
+      selectedProductOption = const ProductOption(name: "", id: -1);
+      getProductOptions();
+    } else {
+      showUpToast(
         context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AddEditProductOptionValueDialog(
-            productOptionValue: productOptionValue,
-            productOption: productOption!,
-            currentCollection: int.parse(currentCollection),
-          );
-        },
-      ).then((result) {
-        if (result == "success") {
-          getProductOptionValues();
-        }
-      });
+        text: "An Error Occurred",
+      );
     }
   }
 
-  _deleteProductOptionValueDialog(int productOptionValueId) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return DeleteProductOptionValueDialog(
-          productOptionValueId: productOptionValueId,
-        );
-      },
-    ).then((result) {
-      if (result == "success") {
-        getProductOptionValues();
-      }
-    });
+  _deleteProductOptionValue(int productOptionValueId) async {
+    APIResult? result = await AddEditProductService.deleteProductOptionValue(
+        productOptionValueId);
+    if (result != null && result.success) {
+      showUpToast(context: context, text: result.message ?? "");
+      getProductOptionValues();
+    } else {
+      showUpToast(
+        context: context,
+        text: "An Error Occurred",
+      );
+    }
   }
 
-  _deleteProductOptionDialog(int productOptionId) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return DeleteProductOptionDialog(
-          productOptionId: productOptionId,
+  _updateProductOptionValue() async {
+    if (currentCollection.isNotEmpty &&
+        productOptionValueNameController.text.isNotEmpty &&
+        selectedProductOption.id != -1) {
+      ProductOptionValue newProductOptionValue = ProductOptionValue(
+        name: productOptionValueNameController.text,
+        productOption: selectedProductOption.id!,
+        collection: int.parse(currentCollection),
+      );
+      APIResult? result =
+          await AddEditProductService.addEditProductOptionValues(
+        data: newProductOptionValue.toJson(newProductOptionValue),
+      );
+      if (result != null) {
+        showUpToast(
+          context: context,
+          text: result.message ?? "",
         );
-      },
-    ).then((result) {
-      if (result == "success") {
-        getProductOptions();
+        productOptionValueNameController.text = "";
+        getProductOptionValues();
+      } else {
+        showUpToast(
+          context: context,
+          text: "An Error Occurred",
+        );
       }
-    });
+    } else {
+      showUpToast(
+        context: context,
+        text: "Please enter all fields",
+      );
+    }
+  }
+
+  _setProductOptionValues() {
+    filteredProductOptionValues = [];
+
+    if (currentCollection.isNotEmpty && selectedProductOption.id! > -1) {
+      for (var element in productOptionValues) {
+        if (element.collection == int.parse(currentCollection) &&
+            selectedProductOption.id == element.productOption) {
+          filteredProductOptionValues.add(element);
+        }
+      }
+    }
   }
 
   @override
@@ -188,225 +260,244 @@ class _AdminProductOptionsPageState extends State<AdminProductOptionsPage> {
       body: user != null &&
               user!.roleIds != null &&
               (user!.roleIds!.contains(2) || user!.roleIds!.contains(1))
-          ? productOptionDropdown.isNotEmpty
-              ? SingleChildScrollView(
+          ? BlocConsumer<StoreCubit, StoreState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                if (productOptionValues.isEmpty) {
+                  if (state.productOptionValues != null &&
+                      state.productOptionValues!.isNotEmpty) {
+                    productOptionValues = state.productOptionValues!.toList();
+                  }
+                }
+                return SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Column(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      leftSide(),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                width: 200,
-                                child: UpDropDown(
-                                  label: "Product Option",
-                                  value: currentProductOption,
-                                  itemList: productOptionDropdown,
-                                  onChanged: (value) {
-                                    currentProductOption = value.toString();
-                                    getProductOptionValues();
-                                    if (currentCollection.isNotEmpty &&
-                                        currentProductOption.isNotEmpty) {
-                                      isProductOptinsLoading = true;
-                                    }
-                                    setState(() {});
-                                  },
+                        padding: const EdgeInsets.only(
+                          left: 50.0,
+                          right: 20,
+                          top: 10,
+                        ),
+                        child: SizedBox(
+                          width: 800,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: UpText(
+                                    "Product Option",
+                                    type: UpTextType.heading5,
+                                  ),
                                 ),
                               ),
-                            ),
-                            UpButton(
-                              onPressed: () {
-                                _productOptionAddDialog();
-                              },
-                              type: UpButtonType.icon,
-                              child: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: UpTable(
-                            columns: const [
-                              "Id",
-                              "Name",
-                              "Actions",
-                            ],
-                            rows: currentProductOption.isNotEmpty
-                                ? productOptions
-                                    .where((element) =>
-                                        element.id ==
-                                        int.parse(currentProductOption))
-                                    .map(
-                                      (e) => UpRow(
-                                        [
-                                          SizedBox(
-                                            child: UpText(
-                                              e.id.toString(),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            child: UpText(
-                                              e.name.toString(),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              UpButton(
-                                                onPressed: () {
-                                                  _productOptionAddDialog(
-                                                    productOption: e,
-                                                  );
-                                                },
-                                                type: UpButtonType.icon,
-                                                child: const Icon(Icons.edit),
-                                              ),
-                                              SizedBox(
-                                                child: UpButton(
-                                                  type: UpButtonType.icon,
-                                                  onPressed: () {
-                                                    _deleteProductOptionDialog(
-                                                        e.id!);
-                                                  },
-                                                  child:
-                                                      const Icon(Icons.delete),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: UpTextField(
+                                  controller: nameController,
+                                  label: 'Name',
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      width: 200,
+                                      child: UpButton(
+                                        onPressed: () {
+                                          _updateProductOption(
+                                            selectedProductOption.id != -1
+                                                ? selectedProductOption
+                                                : null,
+                                          );
+                                        },
+                                        text: "Save",
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: selectedProductOption.id != -1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: 200,
+                                        child: UpButton(
+                                          onPressed: () {
+                                            _deleteProductOption(
+                                                selectedProductOption.id!);
+                                          },
+                                          text: "Delete",
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Visibility(
+                                visible: selectedProductOption.id != -1,
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: UpText(
+                                          "Product Option Values",
+                                          type: UpTextType.heading5,
+                                        ),
+                                      ),
+                                    ),
+                                    collectionDropdown.isNotEmpty
+                                        ? Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Visibility(
+                                                visible: currentProductOption
+                                                    .isNotEmpty,
+                                                child: SizedBox(
+                                                  width: 200,
+                                                  child: UpDropDown(
+                                                    label: "Collection",
+                                                    value: currentCollection,
+                                                    itemList:
+                                                        collectionDropdown,
+                                                    onChanged: (value) {
+                                                      currentCollection =
+                                                          value.toString();
+                                                      _setProductOptionValues();
+                                                      setState(() {});
+                                                    },
+                                                  ),
                                                 ),
                                               ),
-                                            ],
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: UpText(
+                                          "Add new product option value",
+                                          type: UpTextType.heading6,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 200,
+                                            child: UpTextField(
+                                              controller:
+                                                  productOptionValueNameController,
+                                              label: "Product Option Value",
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              width: 100,
+                                              child: UpButton(
+                                                onPressed: () {
+                                                  _updateProductOptionValue();
+                                                },
+                                                text: "Add",
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    )
-                                    .toList()
-                                : const []),
-                      ),
-                      Visibility(
-                        visible: currentProductOption.isNotEmpty,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 200,
-                            child: UpDropDown(
-                              label: "Collection",
-                              value: currentCollection,
-                              itemList: collectionDropdown,
-                              onChanged: (value) {
-                                currentCollection = value.toString();
-                                getProductOptionValues();
-                                if (currentCollection.isNotEmpty &&
-                                    currentProductOption.isNotEmpty) {
-                                  isProductOptinsLoading = true;
-                                  setState(() {});
-                                }
-                                // setState(() {});
-                              },
-                            ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Visibility(
+                                          visible: filteredProductOptionValues
+                                              .isNotEmpty,
+                                          child: SizedBox(
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  ...filteredProductOptionValues
+                                                      .map((e) => Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              bottom: 8.0,
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: 500,
+                                                                    child:
+                                                                        UpText(
+                                                                      e.name,
+                                                                      style:
+                                                                          UpStyle(
+                                                                        textSize:
+                                                                            16,
+                                                                        textWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    _deleteProductOptionValue(
+                                                                        e.id!);
+                                                                  },
+                                                                  child: UpIcon(
+                                                                    icon: Icons
+                                                                        .delete,
+                                                                    style: UpStyle(
+                                                                        iconSize:
+                                                                            20),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ))
+                                                ]),
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Visibility(
-                        visible: currentCollection.isNotEmpty &&
-                            currentProductOption.isNotEmpty,
-                        child: Row(
-                          children: [
-                            const UpText("Product Option Value"),
-                            UpButton(
-                              onPressed: () {
-                                _productOptionValueAddDialog(
-                                    productOption: productOptions
-                                        .where((element) =>
-                                            element.id ==
-                                            int.parse(currentProductOption))
-                                        .first);
-                              },
-                              type: UpButtonType.icon,
-                              child: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ),
-                      isProductOptinsLoading
-                          ? const UpCircularProgress()
-                          : Visibility(
-                              visible: currentCollection.isNotEmpty &&
-                                  currentProductOption.isNotEmpty,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: UpTable(
-                                  columns: const [
-                                    "Id",
-                                    "Name",
-                                    "Actions",
-                                  ],
-                                  rows: productOptionValues.isNotEmpty
-                                      ? productOptionValues
-                                          .map(
-                                            (p) => UpRow(
-                                              [
-                                                SizedBox(
-                                                  child: UpText(
-                                                    p.id.toString(),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  child: UpText(
-                                                    p.name.toString(),
-                                                  ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      child: UpButton(
-                                                        type: UpButtonType.icon,
-                                                        onPressed: () {
-                                                          _productOptionValueAddDialog(
-                                                              productOption:
-                                                                  productOptions
-                                                                      .where(
-                                                                        (element) =>
-                                                                            element.id ==
-                                                                            int.parse(currentProductOption),
-                                                                      )
-                                                                      .first,
-                                                              productOptionValue:
-                                                                  p);
-                                                        },
-                                                        child: const Icon(
-                                                            Icons.edit),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      child: UpButton(
-                                                        type: UpButtonType.icon,
-                                                        onPressed: () {
-                                                          _deleteProductOptionValueDialog(
-                                                              p.id!);
-                                                        },
-                                                        child: const Icon(
-                                                            Icons.delete),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                          .toList()
-                                      : [],
-                                ),
-                              ),
-                            )
                     ],
                   ),
-                )
-              : const Center(
-                  child: UpCircularProgress(),
-                )
+                );
+              },
+            )
           : const UnAuthorizedWidget(),
     );
   }
