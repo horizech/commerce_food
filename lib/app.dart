@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/up_app.dart';
 import 'package:shop/constants.dart';
-import 'package:shop/pages/admin/add_edit_product.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
 import 'package:shop/pages/admin/admin_product_options.dart';
+import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
@@ -102,16 +102,17 @@ class ShopApp extends StatelessWidget {
                   page: FoodCartPage(),
                 ),
               ),
-              UpRoute(
-                path: Routes.addEditProduct,
-                name: Routes.addEditProduct,
-                pageBuilder: (BuildContext context, UpRouterState state) =>
-                    StoreDependantPage(
-                  page: AddEditProduct(
-                    queryParams: state.queryParams,
-                  ),
-                ),
-              ),
+
+              // UpRoute(
+              //   path: Routes.addEditProduct,
+              //   name: Routes.addEditProduct,
+              //   pageBuilder: (BuildContext context, UpRouterState state) =>
+              //       StoreDependantPage(
+              //     page: AddEditProduct(
+              //       queryParams: state.queryParams,
+              //     ),
+              //   ),
+              // ),
               UpRoute(
                 path: Routes.adminCombos,
                 name: Routes.adminCombos,
@@ -136,6 +137,14 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const StoreDependantPage(
                   page: AdminProductOptions(),
+                ),
+              ),
+              UpRoute(
+                path: Routes.adminProductVariations,
+                name: Routes.adminProductVariations,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: AdminProductVariations(),
                 ),
               ),
             ],

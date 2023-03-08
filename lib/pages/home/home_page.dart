@@ -9,7 +9,7 @@ import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/products_service.dart';
-import 'package:shop/widgets/appbar/food_appbar.dart';
+import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/restaurant/restaurant_grid.dart';
 import 'package:shop/widgets/store/store_cubit.dart';

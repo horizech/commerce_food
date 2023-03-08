@@ -20,7 +20,7 @@ import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
-import 'package:shop/widgets/appbar/food_appbar.dart';
+import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -203,7 +203,7 @@ class _AllProductsState extends State<Products> {
                         int parentId = state.collections!
                             .where((element) => element.name == "Main")
                             .first
-                            .id;
+                            .id!;
                         for (var product in products!) {
                           if (state.collections!
                                   .where((element) =>

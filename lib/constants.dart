@@ -14,7 +14,6 @@ class Routes {
   static const String addEditProductVariaton = '/add_edit_product_variation';
   static const String searchAutomobile = '/search';
   static const String foodCartPage = '/cart_food';
-
 }
 
 class Constant {
@@ -22,4 +21,13 @@ class Constant {
   static const String authLogin = "Login";
   static const String authLogout = "Logout";
   static const String authSignup = "Signup";
+  static const String products = "Products";
+  static const String combos = "Combos";
+  static const String productOptions = "Product Options";
+  static const String productVariations = "Product Variations";
 }
+
+Map<String, String> flavours = {
+  "Apple": "Apple",
+  "Banana": "Banana",
+};

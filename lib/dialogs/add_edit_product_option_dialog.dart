@@ -1,6 +1,7 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
+import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
@@ -42,7 +43,7 @@ class AddEditProductOptionDialog extends StatelessWidget {
       content: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          height: 200,
+          height: 250,
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,14 +55,16 @@ class AddEditProductOptionDialog extends StatelessWidget {
                   label: 'Product Option',
                 ),
               ),
-              Visibility(
-                visible: currentCollection != null && productOption == null,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: UpTextField(
-                    controller: productOptionValuecontroller,
-                    label: 'Product Option Value',
-                  ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: UpText(
+                    "Enter first product option value to create product option"),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: UpTextField(
+                  controller: productOptionValuecontroller,
+                  label: 'Product Option Value',
                 ),
               ),
             ],
@@ -86,31 +89,27 @@ class AddEditProductOptionDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
+                style: UpStyle(),
                 text: productOption != null ? "Edit" : "Add",
                 onPressed: () async {
-                  if (productOptions != null &&
-                      !productOptions!.any(
-                        (element) =>
-                            element.name.toLowerCase() ==
-                            productOptioncontroller.text.toLowerCase(),
-                      )) {
-                    ProductOption newProductOption = ProductOption(
-                      name: productOptioncontroller.text,
-                    );
-                    APIResult? result =
-                        await AddEditProductService.addEditProductOption(
-                      data: newProductOption.toJson(newProductOption),
-                      productOptionId:
-                          productOption != null ? productOption!.id! : null,
-                    );
-                    if (result != null) {
-                      if (currentCollection == null) {
-                        showUpToast(
-                          context: context,
-                          text: "Product Option Updated Successfully",
-                        );
-                        Navigator.pop(context, "success");
-                      } else {
+                  if (productOptioncontroller.text.isEmpty &&
+                      productOptionValuecontroller.text.isEmpty) {
+                    if (productOptions != null &&
+                        !productOptions!.any(
+                          (element) =>
+                              element.name.toLowerCase() ==
+                              productOptioncontroller.text.toLowerCase(),
+                        )) {
+                      ProductOption newProductOption = ProductOption(
+                        name: productOptioncontroller.text,
+                      );
+                      APIResult? result =
+                          await AddEditProductService.addEditProductOption(
+                        data: newProductOption.toJson(newProductOption),
+                        productOptionId:
+                            productOption != null ? productOption!.id! : null,
+                      );
+                      if (result != null) {
                         ProductOptionValue newProductOptionValue =
                             ProductOptionValue(
                           name: productOptionValuecontroller.text,
@@ -127,25 +126,32 @@ class AddEditProductOptionDialog extends StatelessWidget {
                             context: context,
                             text: "Product Option Added Successfully",
                           );
+                          Navigator.pop(context, "success");
                         } else {
                           showUpToast(
                             context: context,
                             text: "An Error Occurred",
                           );
+                          Navigator.pop(
+                            context,
+                          );
                         }
+                      } else {
+                        showUpToast(
+                          context: context,
+                          text: "An error occurred",
+                        );
+                        Navigator.pop(
+                          context,
+                        );
                       }
                     } else {
                       showUpToast(
                         context: context,
-                        text: "An error occurred",
+                        text: "Product Option Already Exits",
                       );
+                      Navigator.pop(context);
                     }
-                  } else {
-                    showUpToast(
-                      context: context,
-                      text: "Product Option Already Exits",
-                    );
-                    Navigator.pop(context);
                   }
                 }),
           ),

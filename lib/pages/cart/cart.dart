@@ -6,7 +6,7 @@ import 'package:flutter_up/services/up_navigation.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/product_option_value.dart';
-import 'package:shop/widgets/appbar/food_appbar.dart';
+import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/cart/empty_cart.dart';
 import 'package:shop/widgets/counter.dart';

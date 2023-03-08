@@ -6,15 +6,18 @@ import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
+import 'package:shop/dialogs/delete_dialog.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product_option_value.dart';
 import 'package:shop/models/product_options.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
 
@@ -77,7 +80,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                     onTap: (() {
                       selectedProductOption = e;
                       nameController.text = selectedProductOption.name;
-
+                      _setProductOptionValues();
                       setState(() {});
                     }),
                     child: Container(
@@ -191,17 +194,28 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   }
 
   _deleteProductOptionValue(int productOptionValueId) async {
-    APIResult? result = await AddEditProductService.deleteProductOptionValue(
-        productOptionValueId);
-    if (result != null && result.success) {
-      showUpToast(context: context, text: result.message ?? "");
-      getProductOptionValues();
-    } else {
-      showUpToast(
-        context: context,
-        text: "An Error Occurred",
-      );
-    }
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const DeleteDialog();
+      },
+    ).then((result) async {
+      if (result == "success") {
+        APIResult? result =
+            await AddEditProductService.deleteProductOptionValue(
+                productOptionValueId);
+        if (result != null && result.success) {
+          showUpToast(context: context, text: result.message ?? "");
+          getProductOptionValues();
+        } else {
+          showUpToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
+      }
+    });
   }
 
   _updateProductOptionValue() async {
@@ -257,6 +271,8 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       getCollection();
     }
     return Scaffold(
+      appBar: const UpAppBar(),
+      drawer: const NavDrawer(),
       body: user != null &&
               user!.roleIds != null &&
               (user!.roleIds!.contains(2) || user!.roleIds!.contains(1))
@@ -283,9 +299,9 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                           top: 10,
                         ),
                         child: SizedBox(
-                          width: 800,
+                          width: 500,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Align(
                                 alignment: Alignment.topLeft,
@@ -297,50 +313,61 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: UpTextField(
-                                  controller: nameController,
-                                  label: 'Name',
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 200,
-                                      child: UpButton(
-                                        onPressed: () {
-                                          _updateProductOption(
-                                            selectedProductOption.id != -1
-                                                ? selectedProductOption
-                                                : null,
-                                          );
-                                        },
-                                        text: "Save",
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: selectedProductOption.id != -1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SizedBox(
-                                        width: 200,
-                                        child: UpButton(
-                                          onPressed: () {
-                                            _deleteProductOption(
-                                                selectedProductOption.id!);
-                                          },
-                                          text: "Delete",
+                              SizedBox(
+                                  width: 300,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: UpTextField(
+                                          controller: nameController,
+                                          label: 'Name',
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              width: 70,
+                                              child: UpButton(
+                                                onPressed: () {
+                                                  _updateProductOption(
+                                                    selectedProductOption.id !=
+                                                            -1
+                                                        ? selectedProductOption
+                                                        : null,
+                                                  );
+                                                },
+                                                text: "Save",
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible:
+                                                selectedProductOption.id != -1,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                width: 70,
+                                                child: UpButton(
+                                                  onPressed: () {
+                                                    _deleteProductOption(
+                                                        selectedProductOption
+                                                            .id!);
+                                                  },
+                                                  text: "Delete",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -368,7 +395,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                 visible: currentProductOption
                                                     .isNotEmpty,
                                                 child: SizedBox(
-                                                  width: 200,
+                                                  width: 300,
                                                   child: UpDropDown(
                                                     label: "Collection",
                                                     value: currentCollection,
@@ -401,7 +428,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                       child: Row(
                                         children: [
                                           SizedBox(
-                                            width: 200,
+                                            width: 300,
                                             child: UpTextField(
                                               controller:
                                                   productOptionValueNameController,
@@ -453,7 +480,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                                 Flexible(
                                                                   child:
                                                                       SizedBox(
-                                                                    width: 500,
+                                                                    width: 400,
                                                                     child:
                                                                         UpText(
                                                                       e.name,

@@ -5,13 +5,13 @@ class CollectionTreeItem extends Collection {
 
   CollectionTreeItem(Collection collection)
       : super(
-          collection.id,
-          collection.createdOn,
-          collection.createdBy,
-          collection.lastUpdatedOn,
-          collection.lastUpdatedBy,
-          collection.name,
-          collection.media,
-          collection.parent,
+          id: collection.id,
+          createdOn: collection.createdOn,
+          createdBy: collection.createdBy,
+          lastUpdatedOn: collection.lastUpdatedOn,
+          lastUpdatedBy: collection.lastUpdatedBy,
+          name: collection.name,
+          media: collection.media,
+          parent: collection.parent,
         );
 }

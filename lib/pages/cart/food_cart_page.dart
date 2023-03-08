@@ -3,7 +3,7 @@ import 'package:flutter_up/enums/up_button_type.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_radio_button.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/widgets/appbar/food_appbar.dart';
+import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
 
 class FoodCartPage extends StatefulWidget {
@@ -52,7 +52,7 @@ class _FoodCartPageState extends State<FoodCartPage> {
             padding: const EdgeInsets.all(8.0),
             child: Expanded(
                 flex: 4,
-                child: Container(
+                child: SizedBox(
                     width: 400, height: 400, child: const CartWidget1())),
           )
         ],
