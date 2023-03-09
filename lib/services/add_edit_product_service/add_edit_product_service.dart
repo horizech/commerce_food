@@ -1,6 +1,8 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/combo.dart';
+import 'package:shop/models/gallery.dart';
+import 'package:shop/models/keyword.dart';
 import 'package:shop/models/media.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_combo.dart';
@@ -183,6 +185,26 @@ class AddEditProductService {
     }
   }
 
+  static Future<List<Product>> getProductBycollection(int collection) async {
+    List<QuerySearchItem> conditions = [
+      QuerySearchItem(
+          name: "Collection",
+          condition: ColumnCondition.equal,
+          value: collection)
+    ];
+    APIResult result =
+        await Apiraiser.data.getByConditions("Products", conditions);
+
+    if (result.success) {
+      List<Product> products = (result.data as List<dynamic>)
+          .map((p) => Product.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return products;
+    } else {
+      return [];
+    }
+  }
+
   static Future<List<Product>> getVariedProducts() async {
     List<QuerySearchItem> conditions = [
       QuerySearchItem(
@@ -217,6 +239,19 @@ class AddEditProductService {
     }
   }
 
+  static Future<List<Keyword>> getKeywords() async {
+    APIResult result = await Apiraiser.data.get("Keywords", -1);
+
+    if (result.success) {
+      List<Keyword> keywords = (result.data as List<dynamic>)
+          .map((p) => Keyword.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return keywords;
+    } else {
+      return [];
+    }
+  }
+
   static Future<List<Collection>?> getCollections() async {
     APIResult result = await Apiraiser.data.get("Collections", -1);
 
@@ -227,6 +262,19 @@ class AddEditProductService {
       return collections;
     } else {
       return null;
+    }
+  }
+
+  static Future<List<Gallery>> getGallery() async {
+    APIResult result = await Apiraiser.data.get("Gallery", -1);
+
+    if (result.success) {
+      List<Gallery> gallery = (result.data as List<dynamic>)
+          .map((p) => Gallery.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return gallery;
+    } else {
+      return [];
     }
   }
 
@@ -345,6 +393,18 @@ class AddEditProductService {
     return result;
   }
 
+  static Future<APIResult?> addEditGallery(
+      {required Map<String, dynamic> data, int? galleryId}) async {
+    APIResult? result;
+    if (galleryId != null) {
+      result = await Apiraiser.data.update("Gallery", galleryId, data);
+    } else {
+      result = await Apiraiser.data.insert("Gallery", data);
+    }
+
+    return result;
+  }
+
   static Future<List<Combo>?> getCombos() async {
     APIResult result = await Apiraiser.data.get("Combos", -1);
 
@@ -373,6 +433,18 @@ class AddEditProductService {
 
   static Future<APIResult?> deleteCombo(int comboId) async {
     APIResult result = await Apiraiser.data.delete("Combos", comboId);
+
+    return result;
+  }
+
+  static Future<APIResult?> deleteKeyword(int keywordId) async {
+    APIResult result = await Apiraiser.data.delete("Keywords", keywordId);
+
+    return result;
+  }
+
+  static Future<APIResult?> deleteGallery(int galleryId) async {
+    APIResult result = await Apiraiser.data.delete("Gallery", galleryId);
 
     return result;
   }
@@ -459,6 +531,18 @@ class AddEditProductService {
       result = await Apiraiser.data.update("Collections", collectionId, data);
     } else {
       result = await Apiraiser.data.insert("Collections", data);
+    }
+
+    return result;
+  }
+
+  static Future<APIResult?> addEditkeyword(
+      {required Map<String, dynamic> data, int? keywordId}) async {
+    APIResult? result;
+    if (keywordId != null) {
+      result = await Apiraiser.data.update("Keywords", keywordId, data);
+    } else {
+      result = await Apiraiser.data.insert("Keywords", data);
     }
 
     return result;

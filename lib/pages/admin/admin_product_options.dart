@@ -178,19 +178,29 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   }
 
   _deleteProductOption(int productOptionId) async {
-    APIResult? result =
-        await AddEditProductService.deleteProductOption(productOptionId);
-    if (result != null && result.success) {
-      showUpToast(context: context, text: result.message ?? "");
-      nameController.text = "";
-      selectedProductOption = const ProductOption(name: "", id: -1);
-      getProductOptions();
-    } else {
-      showUpToast(
-        context: context,
-        text: "An Error Occurred",
-      );
-    }
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const DeleteDialog();
+      },
+    ).then((result) async {
+      if (result == "success") {
+        APIResult? result =
+            await AddEditProductService.deleteProductOption(productOptionId);
+        if (result != null && result.success) {
+          showUpToast(context: context, text: result.message ?? "");
+          nameController.text = "";
+          selectedProductOption = const ProductOption(name: "", id: -1);
+          getProductOptions();
+        } else {
+          showUpToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
+      }
+    });
   }
 
   _deleteProductOptionValue(int productOptionValueId) async {

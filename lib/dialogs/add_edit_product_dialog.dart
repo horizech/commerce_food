@@ -1,21 +1,32 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/text_style.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
+import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
+import 'package:flutter_up/widgets/up_dropdown.dart';
+import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dateTimePicker.dart';
+import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/pages/admin/add_edit_keyword_widget.dart';
 import 'package:shop/pages/admin/add_edit_product_options_widget.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/add_media_widget.dart';
+import 'package:shop/widgets/gallery_dropdown.dart';
 
 class AddEditProductDialog extends StatefulWidget {
   final Product? currentProduct;
+  final List<Collection>? collections;
   final int currentCollection;
   const AddEditProductDialog({
     Key? key,
     this.currentProduct,
+    this.collections,
     required this.currentCollection,
   }) : super(key: key);
 
@@ -39,6 +50,7 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
   bool isVariedProduct = false;
   Map<String, int> options = {};
   Map<String, dynamic> meta = {};
+  int? selectedMedia;
 
   _initializeFields() {
     _nameController.text = widget.currentProduct!.name;
@@ -63,6 +75,7 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
     keywords = widget.currentProduct!.keywords ?? [];
     options = widget.currentProduct!.options ?? {};
     meta = widget.currentProduct!.meta ?? {};
+    selectedMedia = widget.currentProduct!.thumbnail;
 
     setState(() {});
   }
@@ -104,7 +117,7 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
       isVariedProduct: isVariedProduct,
       gallery: gallery ?? 1,
       keywords: keywords,
-      thumbnail: thumbnail ?? 1,
+      thumbnail: selectedMedia ?? 1,
       options: options,
       discountStartDate: _discountStartController.text.isNotEmpty
           ? DateTime.parse(_discountStartController.text)
@@ -231,6 +244,40 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
                               _discountEndDate();
                             }),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AddEditKeywordWidget(
+                          keywordList: keywords,
+                          change: (value) {
+                            if (value != null) {
+                              keywords.clear();
+
+                              for (var element in (value as List<String>)) {
+                                keywords.add(int.parse(element));
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AddMediaWidget(
+                          selectedMedia: selectedMedia,
+                          onChnage: (media) {
+                            selectedMedia = media;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GalleryDropdown(
+                          gallery: gallery,
+                          onChange: (value) {
+                            gallery = int.parse(value);
+                          },
+                        ),
+                      ),
                       // is varried checkbox
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -255,28 +302,37 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
                           currentCollection: widget.currentCollection,
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MetaWidget(
+                          collections: widget.collections,
+                          onChange: (value) {
+                            meta = {
+                              "AddOn": {(value as List<Map<String, dynamic>>)}
+                            };
+                          },
+                        ),
+                      )
 
-                      //  productId != null
-                      //   ? product != null
-                      //       ? Padding(
-                      //           padding: const EdgeInsets.all(8.0),
-                      //           child: AddEditProductMetaWidget(
-                      //             meta: meta,
-                      //             onChange: (value) {
-                      //               meta = value;
-                      //             },
-                      //           ),
-                      //         )
-                      //       : const SizedBox()
-                      //   : Padding(
-                      //       padding: const EdgeInsets.all(8.0),
-                      //       child: AddEditProductMetaWidget(
-                      //         meta: meta,
-                      //         onChange: (value) {
-                      //           meta = value;
-                      //         },
+                      // widget.currentProduct != null
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: AddEditProductMetaWidget(
+                      //           meta: meta,
+                      //           onChange: (value) {
+                      //             meta = value;
+                      //           },
+                      //         ),
+                      //       )
+                      //     : Padding(
+                      //         padding: const EdgeInsets.all(8.0),
+                      //         child: AddEditProductMetaWidget(
+                      //           meta: meta,
+                      //           onChange: (value) {
+                      //             meta = value;
+                      //           },
+                      //         ),
                       //       ),
-                      //     ),
                     ],
                   ),
                 ),
@@ -301,6 +357,7 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
           child: SizedBox(
             width: 100,
             child: UpButton(
+              colorType: UpColorType.success,
               text: "Save",
               onPressed: () {
                 addEditProduct();
@@ -310,5 +367,151 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
         ),
       ],
     );
+  }
+}
+
+class MetaWidget extends StatefulWidget {
+  final List<Collection>? collections;
+  final Function? onChange;
+  final List<Map<String, dynamic>>? meta;
+  const MetaWidget({Key? key, this.collections, this.onChange, this.meta})
+      : super(key: key);
+
+  @override
+  State<MetaWidget> createState() => _MetaWidgetState();
+}
+
+class _MetaWidgetState extends State<MetaWidget> {
+  List<Product> addOnProducts = [];
+  List<UpLabelValuePair> addOnProductDropdown = [];
+  int? selectedMedia;
+  String currentSelectedAddon = "";
+  final TextEditingController _addOnPriceController = TextEditingController();
+  List<Map<String, dynamic>> addOnMeta = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getAddOnProducts();
+  }
+
+  _getAddOnProducts() async {
+    if (widget.collections != null && widget.collections!.isNotEmpty) {
+      int collection = widget.collections!
+          .where((element) => element.name == "AddOn")
+          .first
+          .id!;
+
+      addOnProducts =
+          await AddEditProductService.getProductBycollection(collection);
+
+      if (addOnProducts.isNotEmpty) {
+        if (addOnProductDropdown.isEmpty) {
+          if (addOnProducts.isNotEmpty) {
+            for (var element in addOnProducts) {
+              addOnProductDropdown.add(UpLabelValuePair(
+                  label: element.name, value: "${element.id}"));
+            }
+          }
+        }
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return addOnProducts.isNotEmpty && addOnProductDropdown.isNotEmpty
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const UpText(
+                "Add on",
+                type: UpTextType.heading6,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 180,
+                      child: UpDropDown(
+                        label: "Product",
+                        value: currentSelectedAddon,
+                        itemList: addOnProductDropdown,
+                        onChanged: (value) {
+                          currentSelectedAddon = value ?? "";
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    SizedBox(
+                        width: 180,
+                        child: UpTextField(
+                          controller: _addOnPriceController,
+                          label: "Price",
+                        )),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    SizedBox(
+                        width: 60,
+                        child: UpButton(
+                          onPressed: () {
+                            addOnMeta.add({
+                              "Product": int.parse(currentSelectedAddon),
+                              "Price": _addOnPriceController.text.isEmpty
+                                  ? -1
+                                  : int.parse(_addOnPriceController.text),
+                            });
+                            if (widget.onChange != null) {
+                              widget.onChange!(addOnMeta);
+                            }
+
+                            setState(() {});
+                          },
+                          text: "Add",
+                        )),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Visibility(
+                  visible: addOnMeta.isNotEmpty,
+                  child: Column(
+                    children: addOnMeta
+                        .map(
+                          (e) => Row(
+                            children: [
+                              UpText(
+                                  type: UpTextType.heading6,
+                                  addOnProducts
+                                      .where((element) =>
+                                          element.id == e["Product"])
+                                      .first
+                                      .name),
+                              GestureDetector(
+                                  onTap: (() {
+                                    addOnMeta.remove(e);
+                                    if (widget.onChange != null) {
+                                      widget.onChange!(addOnMeta);
+                                    }
+                                    setState(() {});
+                                  }),
+                                  child: const UpIcon(icon: Icons.cancel)),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ))
+            ],
+          )
+        : const SizedBox();
   }
 }

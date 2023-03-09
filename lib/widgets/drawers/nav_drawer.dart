@@ -31,6 +31,16 @@ class NavDrawer extends StatelessWidget {
       ServiceManager<UpNavigationService>().navigateToNamed(Routes.adminCombos);
     }
 
+    void gallery(context) {
+      ServiceManager<UpNavigationService>()
+          .navigateToNamed(Routes.adminGallery);
+    }
+
+    void keywords(context) {
+      ServiceManager<UpNavigationService>()
+          .navigateToNamed(Routes.adminKeywords);
+    }
+
     actions = [
       ...actions,
       UpDrawerItem(
@@ -45,13 +55,23 @@ class NavDrawer extends StatelessWidget {
       ),
       UpDrawerItem(
         title: Constant.combos,
-        icon: Icons.multiple_stop,
+        icon: Icons.food_bank_sharp,
         onTap: combos,
       ),
       UpDrawerItem(
         title: Constant.productOptions,
         icon: Icons.merge_rounded,
         onTap: productOption,
+      ),
+      UpDrawerItem(
+        title: Constant.gallery,
+        icon: Icons.browse_gallery,
+        onTap: gallery,
+      ),
+      UpDrawerItem(
+        title: Constant.keywords,
+        icon: Icons.folder_special,
+        onTap: keywords,
       ),
     ];
 

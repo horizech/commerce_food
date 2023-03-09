@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 
@@ -22,7 +23,7 @@ class DeleteDialog extends StatelessWidget {
       content: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          height: 150,
+          height: 100,
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,6 +56,7 @@ class DeleteDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
+              colorType: UpColorType.warn,
               text: "Yes",
               onPressed: () {
                 Navigator.pop(context, "success");

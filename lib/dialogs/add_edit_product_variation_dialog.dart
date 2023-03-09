@@ -1,5 +1,6 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -8,6 +9,7 @@ import 'package:shop/dateTimePicker.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/pages/admin/add_edit_product_options_widget.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/gallery_dropdown.dart';
 
 class AddEditProductVariationDialog extends StatefulWidget {
   final int currentProduct;
@@ -234,6 +236,11 @@ class _AddEditProductVariationDialogState
                               _discountEndDate();
                             }),
                       ),
+                      GalleryDropdown(
+                          gallery: gallery,
+                          onChange: (value) {
+                            gallery = int.parse(value);
+                          }),
 
                       // options value
                       Visibility(
@@ -269,6 +276,7 @@ class _AddEditProductVariationDialogState
           child: SizedBox(
             width: 100,
             child: UpButton(
+              colorType: UpColorType.success,
               text: "Save",
               onPressed: () {
                 addEditProductVariation();

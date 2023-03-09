@@ -1,7 +1,7 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
-import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
@@ -89,7 +89,7 @@ class AddEditProductOptionDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
-                style: UpStyle(),
+                colorType: UpColorType.success,
                 text: productOption != null ? "Edit" : "Add",
                 onPressed: () async {
                   if (productOptioncontroller.text.isEmpty &&
@@ -121,20 +121,12 @@ class AddEditProductOptionDialog extends StatelessWidget {
                           data: newProductOptionValue
                               .toJson(newProductOptionValue),
                         );
-                        if (result1 != null && result1.success) {
+                        if (result1 != null) {
                           showUpToast(
                             context: context,
-                            text: "Product Option Added Successfully",
+                            text: result1.message ?? "",
                           );
                           Navigator.pop(context, "success");
-                        } else {
-                          showUpToast(
-                            context: context,
-                            text: "An Error Occurred",
-                          );
-                          Navigator.pop(
-                            context,
-                          );
                         }
                       } else {
                         showUpToast(

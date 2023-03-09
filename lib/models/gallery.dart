@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class Gallery extends Equatable {
-  final int id;
+  final int? id;
   final DateTime? createdOn;
   final int? createdBy;
   final DateTime? lastUpdatedOn;
@@ -9,33 +9,33 @@ class Gallery extends Equatable {
   final String? name;
   final List<int> mediaList;
 
-  const Gallery(
+  const Gallery({
     this.id,
     this.createdOn,
     this.createdBy,
     this.lastUpdatedOn,
     this.lastUpdatedBy,
     this.name,
-    this.mediaList,
-  );
+    required this.mediaList,
+  });
 
   factory Gallery.fromJson(Map<String, dynamic> json) {
     Gallery gallery = Gallery(
-      json['Id'] as int,
-      json['CreatedOn'] != null
+      id: json['Id'] as int,
+      createdOn: json['CreatedOn'] != null
           ? (json['CreatedOn'] is String)
               ? DateTime.parse(json['CreatedOn'] as String)
               : json['CreatedOn']
           : null,
-      json['CreatedBy'] as int?,
-      json['LastUpdatedOn'] != null
+      createdBy: json['CreatedBy'] as int?,
+      lastUpdatedOn: json['LastUpdatedOn'] != null
           ? (json['LastUpdatedOn'] is String)
               ? DateTime.parse(json['LastUpdatedOn'] as String)
               : json['LastUpdatedOn']
           : null,
-      json['LastUpdatedBy'] as int?,
-      json['Name'] as String?,
-      json['MediaList'] != null
+      lastUpdatedBy: json['LastUpdatedBy'] as int?,
+      name: json['Name'] as String?,
+      mediaList: json['MediaList'] != null
           ? (json['MediaList'] as List<dynamic>)
               .map((e) => convertToInt(e))
               .toList()
@@ -48,14 +48,14 @@ class Gallery extends Equatable {
     return int.parse(a.toString());
   }
 
-  Map<String, dynamic> toJson(Gallery instance) => <String, dynamic>{
+  static Map<String, dynamic> toJson(Gallery instance) => <String, dynamic>{
         'Id': instance.id,
         'CreatedOn': instance.createdOn,
         'CreatedBy': instance.createdBy,
         'LastUpdatedOn': instance.lastUpdatedOn,
         'LastUpdatedBy': instance.lastUpdatedBy,
         'Name': instance.name,
-        'Media': instance.mediaList,
+        'MediaList': instance.mediaList,
       };
 
   @override

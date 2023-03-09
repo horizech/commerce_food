@@ -135,7 +135,7 @@ class Product extends Equatable {
       'IsVariedProduct': instance.isVariedProduct,
       'Collection': instance.collection,
       'Thumbnail': instance.thumbnail,
-      'Keyword': instance.keywords,
+      'Keywords': instance.keywords,
       'Gallery': instance.gallery,
       'DiscountPrice': instance.discounPrice,
       'DiscountStartDate': instance.discountStartDate != null

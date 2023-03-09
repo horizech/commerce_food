@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/up_app.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/pages/admin/admin.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
+import 'package:shop/pages/admin/admin_gallery.dart';
+import 'package:shop/pages/admin/admin_keywords.dart';
 import 'package:shop/pages/admin/admin_product_options.dart';
 import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/pages/admin/admin_products.dart';
@@ -56,6 +59,9 @@ class ShopApp extends StatelessWidget {
               // primaryColor: Colors.greenAccent,
               primaryColor: const Color.fromRGBO(200, 16, 46, 1.0),
               secondaryColor: Colors.white,
+              tertiaryColor: const Color.fromARGB(255, 222, 84, 107),
+              warnColor: Colors.red,
+              successColor: Colors.green,
             ),
             title: 'Shop',
             initialRoute: Routes.loginSignup,
@@ -145,6 +151,30 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const StoreDependantPage(
                   page: AdminProductVariations(),
+                ),
+              ),
+              UpRoute(
+                path: Routes.adminGallery,
+                name: Routes.adminGallery,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: AdminGallery(),
+                ),
+              ),
+              UpRoute(
+                path: Routes.admin,
+                name: Routes.admin,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: Admin(),
+                ),
+              ),
+              UpRoute(
+                path: Routes.adminKeywords,
+                name: Routes.adminKeywords,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: AdminKeywords(),
                 ),
               ),
             ],

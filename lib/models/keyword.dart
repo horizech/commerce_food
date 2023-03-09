@@ -1,38 +1,38 @@
 import 'package:equatable/equatable.dart';
 
 class Keyword extends Equatable {
-  final int id;
+  final int? id;
   final DateTime? createdOn;
   final int? createdBy;
   final DateTime? lastUpdatedOn;
   final int? lastUpdatedBy;
   final String name;
 
-  const Keyword(
+  const Keyword({
     this.id,
     this.createdOn,
     this.createdBy,
     this.lastUpdatedOn,
     this.lastUpdatedBy,
-    this.name,
-  );
+    required this.name,
+  });
 
   factory Keyword.fromJson(Map<String, dynamic> json) {
     Keyword keyword = Keyword(
-      json['Id'] as int,
-      json['CreatedOn'] != null
+      id: json['Id'] as int,
+      createdOn: json['CreatedOn'] != null
           ? (json['CreatedOn'] is String)
               ? DateTime.parse(json['CreatedOn'] as String)
               : json['CreatedOn']
           : null,
-      json['CreatedBy'] as int?,
-      json['LastUpdatedOn'] != null
+      createdBy: json['CreatedBy'] as int?,
+      lastUpdatedOn: json['LastUpdatedOn'] != null
           ? (json['LastUpdatedOn'] is String)
               ? DateTime.parse(json['LastUpdatedOn'] as String)
               : json['LastUpdatedOn']
           : null,
-      json['LastUpdatedBy'] as int?,
-      json['Name'] as String,
+      lastUpdatedBy: json['LastUpdatedBy'] as int?,
+      name: json['Name'] as String,
 
       // const []);
     );

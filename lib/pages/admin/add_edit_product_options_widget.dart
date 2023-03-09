@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/enums/up_button_type.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
@@ -146,6 +147,7 @@ class _AddEditProductOptionsWidgetState
                         SizedBox(
                           width: 100,
                           child: UpButton(
+                            colorType: UpColorType.tertiary,
                             onPressed: () {
                               _productOptionAddDialog();
                             },

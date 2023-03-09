@@ -20,6 +20,7 @@ import 'package:shop/models/product_combo.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
+import 'package:shop/widgets/gallery_dropdown.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class AdminCombos extends StatefulWidget {
@@ -33,6 +34,7 @@ class AdminCombos extends StatefulWidget {
 
 class _AdminCombosState extends State<AdminCombos> {
   List<Product> products = [];
+
   List<UpLabelValuePair> productsDropdown = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -41,6 +43,7 @@ class _AdminCombosState extends State<AdminCombos> {
   List<ProductCombo> productCombos = [];
   String currentSelectedProduct = "";
   List<Product> comboBasedProducts = [];
+  int? gallery;
   Combo selectedCombo = const Combo(name: "", price: 0, id: -1);
   @override
   void initState() {
@@ -75,6 +78,7 @@ class _AdminCombosState extends State<AdminCombos> {
         price: priceController.text.isNotEmpty
             ? double.parse(priceController.text)
             : 0,
+        gallery: gallery,
         description: descriptionController.text);
     APIResult? result = await AddEditProductService.addEditCombos(
         data: Combo.toJson(combo), comboId: c != null ? c.id! : null);
@@ -93,20 +97,30 @@ class _AdminCombosState extends State<AdminCombos> {
   }
 
   _deleteCombo(int comboId) async {
-    APIResult? result = await AddEditProductService.deleteCombo(comboId);
-    if (result != null && result.success) {
-      showUpToast(context: context, text: result.message ?? "");
-      selectedCombo = const Combo(name: "", price: 0, id: -1);
-      nameController.text = "";
-      priceController = TextEditingController();
-      descriptionController.text = "";
-      getCombos();
-    } else {
-      showUpToast(
-        context: context,
-        text: "An Error Occurred",
-      );
-    }
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const DeleteDialog();
+      },
+    ).then((result) async {
+      if (result == "success") {
+        APIResult? result = await AddEditProductService.deleteCombo(comboId);
+        if (result != null && result.success) {
+          showUpToast(context: context, text: result.message ?? "");
+          selectedCombo = const Combo(name: "", price: 0, id: -1);
+          nameController.text = "";
+          priceController = TextEditingController();
+          descriptionController.text = "";
+          getCombos();
+        } else {
+          showUpToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
+      }
+    });
   }
 
   _addProductCombo() async {
@@ -148,7 +162,6 @@ class _AdminCombosState extends State<AdminCombos> {
                   nameController.text = selectedCombo.name;
                   priceController = TextEditingController();
                   descriptionController.text = selectedCombo.description ?? "";
-
                   setState(() {});
                 }),
                 child: Container(
@@ -168,6 +181,7 @@ class _AdminCombosState extends State<AdminCombos> {
                       priceController.text = selectedCombo.price.toString();
                       descriptionController.text =
                           selectedCombo.description ?? "";
+                      gallery = selectedCombo.gallery;
                       _setProducts();
                       setState(() {});
                     }),
@@ -337,6 +351,11 @@ class _AdminCombosState extends State<AdminCombos> {
                                             ),
                                           ),
                                         ),
+                                        GalleryDropdown(
+                                            gallery: gallery,
+                                            onChange: (value) {
+                                              gallery = int.parse(value);
+                                            }),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,

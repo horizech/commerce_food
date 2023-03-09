@@ -1,5 +1,6 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -59,6 +60,8 @@ class DeleteProductOptionDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
+              colorType: UpColorType.warn,
+
               text: "Yes",
               onPressed: () async {
                 APIResult? result =

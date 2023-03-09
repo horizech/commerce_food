@@ -15,13 +15,12 @@ import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/add_edit_product_dialog.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
-import 'package:shop/dialogs/media_dialog.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/services/products_service.dart';
+import 'package:shop/widgets/add_media_widget.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
-import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
 
@@ -115,19 +114,6 @@ class _AdminProductsState extends State<AdminProducts> {
     );
   }
 
-  _openMediaDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return const MediaDialog();
-        }).then((media) {
-      if (media != null) {
-        selectedMedia = media;
-        setState(() {});
-      }
-    });
-  }
-
   _updateCollection(Collection? c) async {
     Collection collection = Collection(
       name: nameController.text,
@@ -191,9 +177,9 @@ class _AdminProductsState extends State<AdminProducts> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AddEditProductDialog(
-            currentCollection: selectedCollection.id!,
-            currentProduct: product,
-          );
+              currentCollection: selectedCollection.id!,
+              currentProduct: product,
+              collections: collections);
         },
       ).then((result) async {
         if (result == "success") {
@@ -289,70 +275,12 @@ class _AdminProductsState extends State<AdminProducts> {
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                const UpText("Thumbnail"),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 5.0),
-                                                  child: SizedBox(
-                                                    width: 70,
-                                                    child: UpButton(
-                                                      text: "Select",
-                                                      onPressed: () {
-                                                        _openMediaDialog();
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Visibility(
-                                                    visible:
-                                                        selectedMedia == null,
-                                                    child: SizedBox(
-                                                      width: 100,
-                                                      height: 100,
-                                                      child: Image.asset(
-                                                        "ef3-placeholder-image.jpg",
-                                                      ),
-                                                      // color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Visibility(
-                                                    visible:
-                                                        selectedMedia != null,
-                                                    child: SizedBox(
-                                                      width: 100,
-                                                      height: 100,
-                                                      child: MediaWidget(
-                                                        mediaId: selectedMedia,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                      AddMediaWidget(
+                                        selectedMedia: selectedMedia,
+                                        onChnage: (media) {
+                                          selectedMedia = media;
+                                          setState(() {});
+                                        },
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

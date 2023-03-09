@@ -10,7 +10,7 @@ class StoreState {
   final List<Keyword>? keywords;
   final List<ProductOption>? productOptions;
   final List<ProductOptionValue>? productOptionValues;
-  final List<Gallery>? mediaGroups;
+  final List<Gallery>? gallery;
   final List<Restaurant>? restaurants;
   final List<ProductCombo>? productCombos;
   final List<Combo>? combos;
@@ -26,7 +26,7 @@ class StoreState {
     // this.genders,
     this.productOptions,
     this.productOptionValues,
-    this.mediaGroups,
+    this.gallery,
     this.restaurants,
     this.combos,
     this.productCombos,

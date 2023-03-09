@@ -4,22 +4,30 @@ import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
+import 'package:flutter_up/widgets/up_textfield.dart';
+import 'package:shop/models/keyword.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class DeleteProductOptionValueDialog extends StatelessWidget {
-  final int productOptionValueId;
-
-  const DeleteProductOptionValueDialog(
-      {Key? key, required this.productOptionValueId})
-      : super(key: key);
+class AddEditKeywordDialog extends StatelessWidget {
+  final Keyword? currentKeyword;
+  const AddEditKeywordDialog({
+    Key? key,
+    this.currentKeyword,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+
+    if (currentKeyword != null) {
+      nameController.text = currentKeyword!.name;
+    }
+
     return AlertDialog(
-      title: const Padding(
-        padding: EdgeInsets.all(8.0),
+      title: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: UpText(
-          "Delete Product Option Value",
+          currentKeyword != null ? "Edit Keyword" : "Add Keyword",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -32,11 +40,12 @@ class DeleteProductOptionValueDialog extends StatelessWidget {
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Padding(
-                padding: EdgeInsets.all(8.0),
-                child: UpText(
-                  "Are you sure you want to delete product option value",
+                padding: const EdgeInsets.all(8.0),
+                child: UpTextField(
+                  controller: nameController,
+                  label: 'Name',
                 ),
               ),
             ],
@@ -52,7 +61,7 @@ class DeleteProductOptionValueDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              text: "No",
+              text: "Cancel",
             ),
           ),
         ),
@@ -61,15 +70,27 @@ class DeleteProductOptionValueDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
-              colorType: UpColorType.warn,
-              text: "Yes",
+              colorType: UpColorType.success,
+              text: currentKeyword != null ? "Edit" : "Add",
               onPressed: () async {
-                APIResult? result =
-                    await AddEditProductService.deleteProductOptionValue(
-                        productOptionValueId);
-                if (result != null && result.success) {
-                  showUpToast(context: context, text: result.message ?? "");
-                  Navigator.pop(context, "success");
+                Keyword newKeyword = Keyword(
+                  name: nameController.text,
+                );
+                APIResult? result = await AddEditProductService.addEditkeyword(
+                    data: Keyword.toJson(newKeyword),
+                    keywordId:
+                        currentKeyword != null && currentKeyword!.id != null
+                            ? currentKeyword!.id
+                            : null);
+                if (result != null) {
+                  showUpToast(
+                    context: context,
+                    text: result.message ?? "",
+                  );
+                  Navigator.pop(
+                    context,
+                    "success",
+                  );
                 } else {
                   showUpToast(
                     context: context,

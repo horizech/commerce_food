@@ -1,6 +1,7 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_up/enums/text_style.dart';
+import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -85,6 +86,7 @@ class AddEditProductOptionValueDialog extends StatelessWidget {
           child: SizedBox(
             width: 100,
             child: UpButton(
+              colorType: UpColorType.success,
               text: productOptionValue != null ? "Edit" : "Add",
               onPressed: () async {
                 ProductOptionValue newProductOptionValue = ProductOptionValue(
