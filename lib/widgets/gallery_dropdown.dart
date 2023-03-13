@@ -29,37 +29,35 @@ class _GalleryDropdownState extends State<GalleryDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: BlocConsumer<StoreCubit, StoreState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              if (gallery.isEmpty) {
-                if (state.gallery != null && state.gallery!.isNotEmpty) {
-                  gallery = state.gallery!.toList();
-                }
-                if (galleryDropdown.isEmpty) {
-                  if (gallery.isNotEmpty) {
-                    for (var g in gallery) {
-                      galleryDropdown.add(
-                        UpLabelValuePair(label: g.name ?? "", value: "${g.id}"),
-                      );
-                    }
-                  }
+    return BlocConsumer<StoreCubit, StoreState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (gallery.isEmpty) {
+            if (state.gallery != null && state.gallery!.isNotEmpty) {
+              gallery = state.gallery!.toList();
+            }
+            if (galleryDropdown.isEmpty) {
+              if (gallery.isNotEmpty) {
+                for (var g in gallery) {
+                  galleryDropdown.add(
+                    UpLabelValuePair(label: g.name ?? "", value: "${g.id}"),
+                  );
                 }
               }
-              return UpDropDown(
-                label: "Gallery",
-                itemList: galleryDropdown,
-                value: currentSelectedGallery,
-                onChanged: ((value) {
-                  currentSelectedGallery = value;
-                  if (widget.onChange != null) {
-                    widget.onChange!(value);
-                  }
-                  setState(() {});
-                }),
-              );
-            }));
+            }
+          }
+          return UpDropDown(
+            label: "Gallery",
+            itemList: galleryDropdown,
+            value: currentSelectedGallery,
+            onChanged: ((value) {
+              currentSelectedGallery = value;
+              if (widget.onChange != null) {
+                widget.onChange!(value);
+              }
+              setState(() {});
+            }),
+          );
+        });
   }
 }

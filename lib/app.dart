@@ -90,7 +90,7 @@ class ShopApp extends StatelessWidget {
                     const LoginSignupPage(),
                 name: Routes.loginSignup,
                 shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
-                redirectRoute: Routes.addEditProduct,
+                redirectRoute: Routes.admin,
               ),
               UpRoute(
                 name: Routes.cart,
@@ -128,6 +128,8 @@ class ShopApp extends StatelessWidget {
                     queryParams: state.queryParams,
                   ),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.adminProducts,
@@ -136,6 +138,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: AdminProducts(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.adminProductOptions,
@@ -144,6 +148,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: AdminProductOptions(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.adminProductVariations,
@@ -152,6 +158,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: AdminProductVariations(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.adminGallery,
@@ -160,6 +168,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: AdminGallery(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.admin,
@@ -168,6 +178,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: Admin(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
                 path: Routes.adminKeywords,
@@ -176,6 +188,8 @@ class ShopApp extends StatelessWidget {
                     const StoreDependantPage(
                   page: AdminKeywords(),
                 ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
               ),
             ],
           ),

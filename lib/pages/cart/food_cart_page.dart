@@ -48,12 +48,11 @@ class _FoodCartPageState extends State<FoodCartPage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Expanded(
                 flex: 4,
-                child: SizedBox(
-                    width: 400, height: 400, child: const CartWidget1())),
+                child: SizedBox(width: 400, height: 400, child: CartWidget1())),
           )
         ],
       ),

@@ -90,6 +90,7 @@ flutter:
   assets:
     - assets/loading.gif
     - assets/ef3-placeholder-image.jpg
+    - assets/logo.png
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

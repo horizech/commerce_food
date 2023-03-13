@@ -35,69 +35,66 @@ class _AddMediaWidgetState extends State<AddMediaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              const UpText("Thumbnail"),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            const UpText("Thumbnail"),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: SizedBox(
+                width: 70,
+                child: UpButton(
+                  text: "Select",
+                  style: UpStyle(
+                    buttonHoverBackgroundColor:
+                        UpConfig.of(context).theme.primaryColor[200],
+                    buttonBorderColor: Colors.transparent,
+                    buttonHoverBorderColor: Colors.transparent,
+                    buttonBackgroundColor:
+                        UpConfig.of(context).theme.primaryColor[100],
+                  ),
+                  onPressed: () {
+                    _openMediaDialog();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Visibility(
+                visible: widget.selectedMedia == null,
                 child: SizedBox(
-                  width: 70,
-                  child: UpButton(
-                    text: "Select",
-                    style: UpStyle(
-                      buttonHoverBackgroundColor:
-                          UpConfig.of(context).theme.primaryColor[200],
-                      buttonBorderColor: Colors.transparent,
-                      buttonHoverBorderColor: Colors.transparent,
-                      buttonBackgroundColor:
-                          UpConfig.of(context).theme.primaryColor[100],
-                    ),
-                    onPressed: () {
-                      _openMediaDialog();
-                    },
+                  width: 100,
+                  height: 100,
+                  child: Image.asset(
+                    "ef3-placeholder-image.jpg",
+                  ),
+                  // color: Colors.grey,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Visibility(
+                visible: widget.selectedMedia != null,
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: MediaWidget(
+                    mediaId: widget.selectedMedia,
                   ),
                 ),
               ),
-            ],
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Visibility(
-                  visible: widget.selectedMedia == null,
-                  child: SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Image.asset(
-                      "ef3-placeholder-image.jpg",
-                    ),
-                    // color: Colors.grey,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Visibility(
-                  visible: widget.selectedMedia != null,
-                  child: SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: MediaWidget(
-                      mediaId: widget.selectedMedia,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

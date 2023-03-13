@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/widgets/up_button.dart';
-import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:shop/constants.dart';
@@ -14,7 +13,7 @@ class CartWidget1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
           border: Border.all(
               width: 1,

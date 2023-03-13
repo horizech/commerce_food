@@ -127,87 +127,85 @@ class _AddEditProductOptionsWidgetState
         }
 
         return productOptions.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //product option
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //product option
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: UpText(
-                            "Product Options",
-                            type: UpTextType.heading6,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: UpText(
+                          "Product Options",
+                          type: UpTextType.heading6,
                         ),
-                        SizedBox(
-                          width: 100,
-                          child: UpButton(
-                            colorType: UpColorType.tertiary,
-                            onPressed: () {
-                              _productOptionAddDialog();
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: UpButton(
+                          colorType: UpColorType.tertiary,
+                          onPressed: () {
+                            _productOptionAddDialog();
+                          },
+                          text: "Create",
+                          icon: Icons.add,
+                        ),
+                      ),
+                    ],
+                  ),
+                  // product option values
+                  productOptions.isNotEmpty && productOptionValues.isNotEmpty
+                      ? Wrap(
+                          children: productOptions.map(
+                            (element) {
+                              if (productOptionValues
+                                  .any((v) => v.productOption == element.id)) {
+                                return Wrap(
+                                  alignment: WrapAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    ProductOptionDropdownWidget(
+                                      productOption: element,
+                                      productOptionValues: productOptionValues,
+                                      change: (value) {
+                                        newOptions[element.name] =
+                                            int.parse(value);
+                                        if (widget.change != null) {
+                                          widget.change!(newOptions);
+                                        }
+                                      },
+                                      initialValue: widget.options != null &&
+                                              widget.options![element.name] !=
+                                                  null
+                                          ? widget.options![element.name]
+                                              .toString()
+                                          : null,
+                                    ),
+                                    UpButton(
+                                      onPressed: () {
+                                        _productOptionValueAddDialog(element);
+                                      },
+                                      type: UpButtonType.icon,
+                                      child: const Icon(Icons.add),
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return Container();
+                              }
                             },
-                            text: "Create",
-                            icon: Icons.add,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // product option values
-                    productOptions.isNotEmpty && productOptionValues.isNotEmpty
-                        ? Wrap(
-                            children: productOptions.map(
-                              (element) {
-                                if (productOptionValues.any(
-                                    (v) => v.productOption == element.id)) {
-                                  return Wrap(
-                                    alignment: WrapAlignment.center,
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      ProductOptionDropdownWidget(
-                                        productOption: element,
-                                        productOptionValues:
-                                            productOptionValues,
-                                        change: (value) {
-                                          newOptions[element.name] =
-                                              int.parse(value);
-                                          if (widget.change != null) {
-                                            widget.change!(newOptions);
-                                          }
-                                        },
-                                        initialValue: widget.options != null &&
-                                                widget.options![element.name] !=
-                                                    null
-                                            ? widget.options![element.name]
-                                                .toString()
-                                            : null,
-                                      ),
-                                      UpButton(
-                                        onPressed: () {
-                                          _productOptionValueAddDialog(element);
-                                        },
-                                        type: UpButtonType.icon,
-                                        child: const Icon(Icons.add),
-                                      ),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            ).toList(),
-                          )
-                        : const SizedBox(),
-                  ],
-                ))
+                          ).toList(),
+                        )
+                      : const SizedBox(),
+                ],
+              )
             : const SizedBox();
       },
     );
@@ -267,7 +265,7 @@ class _ProductOptionDropdownWidgetState
       initialize();
     }
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
       child: Visibility(
         visible: productOptionDropdown.isNotEmpty,
         child: SizedBox(

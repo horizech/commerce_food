@@ -1,4 +1,5 @@
 import 'package:apiraiser/apiraiser.dart';
+import 'package:shop/models/add_on.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/combo.dart';
 import 'package:shop/models/gallery.dart';
@@ -53,6 +54,17 @@ class AddEditProductService {
     } else {
       return null;
     }
+  }
+
+  static Future<APIResult?> deleteAddon(int addOnId) async {
+    APIResult? result = await Apiraiser.data.delete("ProductAddons", addOnId);
+
+    return result;
+  }
+
+  static Future<APIResult?> addProductAddon(Map<String, dynamic> data) async {
+    APIResult? result = await Apiraiser.data.insert("ProductAddons", data);
+    return result;
   }
 
   static Future<APIResult?> addEditProduct(
@@ -234,6 +246,19 @@ class AddEditProductService {
           .map((p) => ProductOptionValue.fromJson(p as Map<String, dynamic>))
           .toList();
       return productOptionValues;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List<AddOn>?> getAddons() async {
+    APIResult result = await Apiraiser.data.get("ProductAddons", -1);
+
+    if (result.success) {
+      List<AddOn> addons = (result.data as List<dynamic>)
+          .map((p) => AddOn.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return addons;
     } else {
       return null;
     }

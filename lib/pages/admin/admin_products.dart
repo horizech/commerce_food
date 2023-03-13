@@ -177,9 +177,9 @@ class _AdminProductsState extends State<AdminProducts> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AddEditProductDialog(
-              currentCollection: selectedCollection.id!,
-              currentProduct: product,
-              collections: collections);
+            currentCollection: selectedCollection.id!,
+            currentProduct: product,
+          );
         },
       ).then((result) async {
         if (result == "success") {
@@ -275,12 +275,15 @@ class _AdminProductsState extends State<AdminProducts> {
                                           ),
                                         ),
                                       ),
-                                      AddMediaWidget(
-                                        selectedMedia: selectedMedia,
-                                        onChnage: (media) {
-                                          selectedMedia = media;
-                                          setState(() {});
-                                        },
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: AddMediaWidget(
+                                          selectedMedia: selectedMedia,
+                                          onChnage: (media) {
+                                            selectedMedia = media;
+                                            setState(() {});
+                                          },
+                                        ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

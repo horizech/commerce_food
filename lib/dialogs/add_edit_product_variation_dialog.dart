@@ -5,7 +5,7 @@ import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/dateTimePicker.dart';
+import 'package:shop/date_time_picker.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/pages/admin/add_edit_product_options_widget.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
@@ -101,7 +101,9 @@ class _AddEditProductVariationDialogState
       id: widget.currentProductVariation != null
           ? widget.currentProductVariation!.id
           : null,
-      price: double.parse(_priceController.text),
+      price: _priceController.text.isNotEmpty
+          ? double.parse(_priceController.text)
+          : null,
       description: _descriptionController.text,
       sku: _skuController.text,
       product: widget.currentProduct,
@@ -236,20 +238,26 @@ class _AddEditProductVariationDialogState
                               _discountEndDate();
                             }),
                       ),
-                      GalleryDropdown(
-                          gallery: gallery,
-                          onChange: (value) {
-                            gallery = int.parse(value);
-                          }),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GalleryDropdown(
+                            gallery: gallery,
+                            onChange: (value) {
+                              gallery = int.parse(value);
+                            }),
+                      ),
 
                       // options value
                       Visibility(
-                        child: AddEditProductOptionsWidget(
-                          change: (newOptions) {
-                            options = newOptions;
-                          },
-                          options: options,
-                          currentCollection: widget.currentCollection,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AddEditProductOptionsWidget(
+                            change: (newOptions) {
+                              options = newOptions;
+                            },
+                            options: options,
+                            currentCollection: widget.currentCollection,
+                          ),
                         ),
                       ),
                     ],

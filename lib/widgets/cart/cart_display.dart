@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/models/cart_item.dart';
-import 'package:shop/models/product_option_value.dart';
 import 'package:shop/widgets/cart/empty_cart.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/price/price.dart';
@@ -105,8 +104,8 @@ class CartDisplay extends StatelessWidget {
 }
 
 Widget _cartItemsList(BuildContext context, CartItem item) {
-  ProductOptionValue? sizeVariation;
-  ProductOptionValue? colorVariation;
+  // ProductOptionValue? sizeVariation;
+  // ProductOptionValue? colorVariation;
 
   return BlocConsumer<StoreCubit, StoreState>(
       listener: (context, state) {},

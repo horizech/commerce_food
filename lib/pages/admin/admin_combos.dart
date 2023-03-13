@@ -34,7 +34,6 @@ class AdminCombos extends StatefulWidget {
 
 class _AdminCombosState extends State<AdminCombos> {
   List<Product> products = [];
-
   List<UpLabelValuePair> productsDropdown = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -467,79 +466,81 @@ class _AdminCombosState extends State<AdminCombos> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Visibility(
-                                            visible:
-                                                comboBasedProducts.isNotEmpty,
-                                            child: SizedBox(
-                                              child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    ...comboBasedProducts
-                                                        .map((e) => Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                bottom: 8.0,
-                                                              ),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Flexible(
-                                                                    child:
-                                                                        SizedBox(
-                                                                      width:
-                                                                          400,
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.start,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          UpText(
-                                                                            e.name,
-                                                                            style:
-                                                                                UpStyle(
-                                                                              textSize: 16,
-                                                                              textWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          UpText(
-                                                                            e.description ??
-                                                                                "",
-                                                                            style:
-                                                                                UpStyle(textSize: 12),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                          visible:
+                                              comboBasedProducts.isNotEmpty,
+                                          child: SizedBox(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ...comboBasedProducts.map(
+                                                  (e) => Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      bottom: 8.0,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Flexible(
+                                                          child: SizedBox(
+                                                            width: 400,
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                UpText(
+                                                                  e.name,
+                                                                  style:
+                                                                      UpStyle(
+                                                                    textSize:
+                                                                        16,
+                                                                    textWeight:
+                                                                        FontWeight
+                                                                            .bold,
                                                                   ),
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      _deleteProductCombo(
-                                                                          e.id!);
-                                                                    },
-                                                                    child:
-                                                                        UpIcon(
-                                                                      icon: Icons
-                                                                          .delete,
-                                                                      style: UpStyle(
-                                                                          iconSize:
-                                                                              20),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ))
-                                                  ]),
-                                            )),
+                                                                ),
+                                                                UpText(
+                                                                  e.description ??
+                                                                      "",
+                                                                  style: UpStyle(
+                                                                      textSize:
+                                                                          12),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            _deleteProductCombo(
+                                                                e.id!);
+                                                          },
+                                                          child: UpIcon(
+                                                            icon: Icons.delete,
+                                                            style: UpStyle(
+                                                                iconSize: 20),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
