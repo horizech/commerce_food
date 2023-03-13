@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/enums/up_button_type.dart';
+import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_radio_button.dart';
+import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
@@ -23,24 +26,56 @@ class _FoodCartPageState extends State<FoodCartPage> {
           Expanded(
             flex: 6,
             child: Container(
+              padding: EdgeInsets.all(24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Need to know your details"),
-                  const UpTextField(label: 'YOUR NAME'),
-                  const UpTextField(label: 'TELEPHONE'),
-                  const UpTextField(label: 'EMAIL'),
-                  const Text("Pay by cash or card"),
-                  Row(
+                  const UpText(
+                    "Need to know your details",
+                    type: UpTextType.heading4,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    runSpacing: 8,
+                    spacing: 8,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child:
+                            UpTextField(label: 'YOUR NAME', style: UpStyle()),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        child:
+                            UpTextField(label: 'TELEPHONE', style: UpStyle()),
+                      ),
+                      SizedBox(
+                        width: 300,
+                        child: UpTextField(label: 'EMAIL', style: UpStyle()),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const UpText(
+                    "Pay by cash or card",
+                    type: UpTextType.heading4,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    runSpacing: 8,
+                    spacing: 8,
                     children: [
                       UpButton(
                         onPressed: () {},
                         text: "CASH",
                         icon: Icons.money,
+                        style: UpStyle(buttonWidth: 300),
                       ),
                       UpButton(
                         onPressed: () {},
                         text: "CARD",
                         icon: Icons.credit_card,
+                        style: UpStyle(buttonWidth: 300),
                       ),
                     ],
                   )

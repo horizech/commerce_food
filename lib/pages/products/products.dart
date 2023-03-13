@@ -18,6 +18,7 @@ import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
+import 'package:shop/pages/cart/cart_widget.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
@@ -60,8 +61,8 @@ class _AllProductsState extends State<Products> {
 
   getProducts() async {
     if (restaurantId != null) {
-      Map<String, dynamic> meta = {"Restaurant": restaurantId};
-      products = await ProductService.getProducts([], {}, null, null, meta);
+      // Map<String, dynamic> meta = {"Restaurant": restaurantId};
+      products = await ProductService.getProducts([], {}, null, null, {});
       if (products != null && products!.isNotEmpty) {
         setState(() {});
       }
@@ -136,36 +137,40 @@ class _AllProductsState extends State<Products> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _getProductVariations(product.id!, () {})),
+          contentPadding: EdgeInsets.zero,
+          content: Padding(
+              padding: const EdgeInsets.all(0),
+              child: SingleChildScrollView(
+                  child: SizedBox(
+                      width: 600, child: CartWidget(product: product)))),
+
           actionsPadding: const EdgeInsets.all(0),
-          titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-              child: SizedBox(
-                width: 100,
-                child: UpButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  text: "Cancel",
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-              child: SizedBox(
-                width: 100,
-                child: UpButton(
-                  text: "Add to cart",
-                  onPressed: () async {},
-                ),
-              ),
-            ),
-          ],
+          // titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          // contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          // actions: <Widget>[
+          //   Padding(
+          //     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+          //     child: SizedBox(
+          //       width: 100,
+          //       child: UpButton(
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //         },
+          //         text: "Cancel",
+          //       ),
+          //     ),
+          //   ),
+          //   Padding(
+          //     padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+          //     child: SizedBox(
+          //       width: 100,
+          //       child: UpButton(
+          //         text: "Add to cart",
+          //         onPressed: () async {},
+          //       ),
+          //     ),
+          //   ),
+          // ],
         );
       },
     );
@@ -600,19 +605,5 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
         ),
       ),
     );
-  }
-}
-
-class CartWidget extends StatefulWidget {
-  const CartWidget({Key? key}) : super(key: key);
-
-  @override
-  State<CartWidget> createState() => _CartWidgetState();
-}
-
-class _CartWidgetState extends State<CartWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
