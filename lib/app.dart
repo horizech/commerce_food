@@ -5,6 +5,7 @@ import 'package:flutter_up/themes/up_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/up_app.dart';
+import 'package:flutter_up/widgets/up_responsive_page.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/pages/admin/admin.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
@@ -14,6 +15,7 @@ import 'package:shop/pages/admin/admin_product_options.dart';
 import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
+import 'package:shop/pages/products/products_mob.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -79,7 +81,7 @@ class ShopApp extends StatelessWidget {
                 name: Routes.products,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     StoreDependantPage(
-                  page: Products(
+                  page: ProductsMob(
                     queryParams: state.queryParams,
                   ),
                 ),

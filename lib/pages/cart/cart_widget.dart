@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
+import 'package:flutter_up/enums/direction.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/enums/up_text_direction.dart';
 import 'package:flutter_up/models/up_label_value.dart';
@@ -77,14 +78,29 @@ class _CartWidgetState extends State<CartWidget> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: UpRadioButton(
-                            items: snapshot.data!
-                                .map(
-                                  (el) => UpRadioButtonItem(
-                                    label: "${el.name ?? ''} £ ${el.price}",
-                                    value: el.id,
+                          items: snapshot.data!
+                              .map(
+                                (el) => UpRadioButtonItem(
+                                  value: el.id,
+                                  widget: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        UpText(el.name ?? ''),
+                                        UpText("£" + el.price.toString()),
+                                      ],
+                                    ),
                                   ),
-                                )
-                                .toList()),
+                                ),
+                              )
+                              .toList(),
+                          labelDirection: UpTextDirection.right,
+                          direction: UpDirection.vertical,
+                        ),
                       ),
                       // ...snapshot.data!.map(
                       //   (e) {
@@ -139,35 +155,6 @@ class _CartWidgetState extends State<CartWidget> {
                               value: _currentSelection,
                               itemList: _items,
                               onChanged: (value) => _onChange(value),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 12, 14, 8),
-                                  child: SizedBox(
-                                    width: 100,
-                                    child: UpButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      text: "Cancel",
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 12, 8, 8),
-                                  child: SizedBox(
-                                    width: 100,
-                                    child: UpButton(
-                                      text: "Add to cart",
-                                      onPressed: () async {},
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
                           ],
                         ),
