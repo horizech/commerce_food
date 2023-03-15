@@ -15,28 +15,28 @@ class CartCubit extends Cubit<CartState> {
   void addToCart(CartItem item) async {
     Cart cart = state.cart;
 
-    List<int> alreadyMatchingItems = [];
+    // List<int> alreadyMatchingItems = [];
 
-    cart.items.asMap().entries.forEach((x) {
-      if (x.value.product.id == item.product.id) {
-        if (CartItem.areVariationsEqual(
-            x.value.selectedVariationsValues, item.selectedVariationsValues)) {
-          alreadyMatchingItems.add(x.key);
-        }
-      }
-    });
+    // cart.items.asMap().entries.forEach((x) {
+    //   if (x.value.product.id == item.product.id) {
+    //     if (CartItem.areVariationsEqual(
+    //         x.value.selectedVariationsValues, item.selectedVariationsValues)) {
+    //       alreadyMatchingItems.add(x.key);
+    //     }
+    //   }
+    // });
 
-    if (alreadyMatchingItems.isNotEmpty) {
-      for (int i in alreadyMatchingItems) {
-        cart.items[i].quantity += item.quantity;
-      }
-    } else {
-      try {
-        cart.items.add(CartItem.fromJson(item.toJson()));
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+    // if (alreadyMatchingItems.isNotEmpty) {
+    //   for (int i in alreadyMatchingItems) {
+    //     cart.items[i].quantity += item.quantity;
+    //   }
+    // } else {
+    try {
+      cart.items.add(CartItem.fromJson(item.toJson()));
+    } catch (e) {
+      debugPrint(e.toString());
     }
+    // }
 
     emit(CartState(cart));
   }

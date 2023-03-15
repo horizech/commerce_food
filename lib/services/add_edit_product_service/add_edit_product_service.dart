@@ -388,7 +388,7 @@ class AddEditProductService {
     return result.first;
   }
 
-  static Future<List<Product>?> getProductByIds(List<int> productIds) async {
+  static Future<List<Product>?> getProductByIds(List<int>? productIds) async {
     List<QuerySearchItem> conditions = [
       QuerySearchItem(
           name: "Id", condition: ColumnCondition.includes, value: productIds)

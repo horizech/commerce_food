@@ -18,7 +18,7 @@ import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
-import 'package:shop/pages/cart/cart_widget.dart';
+import 'package:shop/pages/cart/cart_dialog_widget.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
@@ -132,6 +132,7 @@ class _AllProductsState extends State<Products> {
   }
 
   _showDialog(Product product) {
+    List<int> addonsProductIds = [];
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -139,41 +140,30 @@ class _AllProductsState extends State<Products> {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           content: Padding(
-              padding: const EdgeInsets.all(0),
-              child: SingleChildScrollView(
-                  child: SizedBox(
-                      width: 600, child: CartWidget(product: product)))),
+            padding: const EdgeInsets.all(0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SizedBox(
+                width: 600,
+                child: CartDialogWidget(
+                  product: product,
+                  onChange: () {},
+                ),
+              ),
+            ),
+          ),
 
           actionsPadding: const EdgeInsets.all(0),
           // titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           // contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           // actions: <Widget>[
-          //   Padding(
-          //     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-          //     child: SizedBox(
-          //       width: 100,
-          //       child: UpButton(
-          //         onPressed: () {
-          //           Navigator.pop(context);
-          //         },
-          //         text: "Cancel",
-          //       ),
-          //     ),
-          //   ),
-          //   Padding(
-          //     padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-          //     child: SizedBox(
-          //       width: 100,
-          //       child: UpButton(
-          //         text: "Add to cart",
-          //         onPressed: () async {},
-          //       ),
-          //     ),
-          //   ),
-          // ],
         );
       },
-    );
+    ).then((value) {
+      if (value == "success") {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -474,7 +464,7 @@ class _AllProductsState extends State<Products> {
                                         ),
                                         const Expanded(
                                           flex: 6,
-                                          child: CartWidget1(),
+                                          child: CartWidget(),
                                         )
                                       ],
                                     ),

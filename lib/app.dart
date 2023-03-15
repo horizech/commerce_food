@@ -80,9 +80,16 @@ class ShopApp extends StatelessWidget {
                 path: Routes.products,
                 name: Routes.products,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
-                    StoreDependantPage(
-                  page: ProductsMob(
-                    queryParams: state.queryParams,
+                    UpResponsivePage(
+                  desktopPage: StoreDependantPage(
+                    page: Products(
+                      queryParams: state.queryParams,
+                    ),
+                  ),
+                  mobilePage: StoreDependantPage(
+                    page: ProductsMob(
+                      queryParams: state.queryParams,
+                    ),
                   ),
                 ),
               ),

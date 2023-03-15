@@ -42,21 +42,27 @@ class _CounterState extends State<Counter> {
     return Row(
       children: [
         Container(
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
               width: 1,
             ),
           ),
-          child: IconButton(
-            onPressed: _increment,
-            icon: const Icon(
-              Icons.add,
-              size: 15,
+          child: Center(
+            child: IconButton(
+              onPressed: _increment,
+              icon: const Icon(
+                Icons.add,
+                size: 15,
+              ),
             ),
           ),
         ),
         Container(
+            width: 40,
+            height: 40,
             decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(
@@ -69,22 +75,23 @@ class _CounterState extends State<Counter> {
                 ),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text("${widget.defaultValue}"),
-            )),
+            child: Center(child: Text("${widget.defaultValue}"))),
         Container(
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
               width: 1,
             ),
           ),
-          child: IconButton(
-            onPressed: _decrement,
-            icon: const Icon(
-              Icons.remove,
-              size: 15,
+          child: Center(
+            child: IconButton(
+              onPressed: _decrement,
+              icon: const Icon(
+                Icons.remove,
+                size: 15,
+              ),
             ),
           ),
         ),

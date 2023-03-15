@@ -6,7 +6,7 @@ class AddOn {
   final int? lastUpdatedBy;
   final int product;
   final int addOn;
-  final double price;
+  final double? price;
 
   const AddOn({
     this.id,
@@ -36,7 +36,7 @@ class AddOn {
       lastUpdatedBy: json['LastUpdatedBy'] as int?,
       product: json['Product'] as int,
       addOn: json['Addon'] as int,
-      price: json['Price'] as double,
+      price: json['Price'] as double?,
     );
     return addOn;
   }

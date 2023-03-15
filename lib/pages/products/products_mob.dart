@@ -19,11 +19,9 @@ import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
-import 'package:shop/pages/cart/cart_widget.dart';
+import 'package:shop/pages/cart/cart_dialog_widget.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
-import 'package:shop/widgets/app_bars/food_appbar.dart';
-import 'package:shop/widgets/cart/cart_widget.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
@@ -120,39 +118,40 @@ class _AllProductsState extends State<ProductsMob> {
                 padding: const EdgeInsets.all(0),
                 child: SizedBox(
                     width: 600,
-                    child: CartWidget(
+                    child: CartDialogWidget(
+                      onChange: () {},
                       product: product,
                     ))),
             actionsPadding: const EdgeInsets.all(0),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 14, 8),
-                child: SizedBox(
-                  width: 100,
-                  child: UpButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    text: "Cancel",
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 8, 8),
-                child: SizedBox(
-                  width: 100,
-                  child: UpButton(
-                    text: "Add to cart",
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      setState(() {
-                        counter++;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ],
+            // actions: [
+            //   Padding(
+            //     padding: const EdgeInsets.fromLTRB(0, 12, 14, 8),
+            //     child: SizedBox(
+            //       width: 100,
+            //       child: UpButton(
+            //         onPressed: () {
+            //           Navigator.pop(context);
+            //         },
+            //         text: "Cancel",
+            //       ),
+            //     ),
+            //   ),
+            //   Padding(
+            //     padding: const EdgeInsets.fromLTRB(0, 12, 8, 8),
+            //     child: SizedBox(
+            //       width: 100,
+            //       child: UpButton(
+            //         text: "Add to cart",
+            //         onPressed: () async {
+            //           Navigator.pop(context);
+            //           setState(() {
+            //             counter++;
+            //           });
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            // ],
           ),
         );
       },
@@ -392,7 +391,7 @@ class _AllProductsState extends State<ProductsMob> {
                                 UpOrientationalColumnRow(
                                   widths: const [200, 1000],
                                   children: [
-                                    FoodCategoriesListWidget(
+                                    FoodCategoriesListWidgetMobile(
                                       collections: collections,
                                       onChange: (value) {
                                         int index = collections.indexWhere(
@@ -561,21 +560,22 @@ class _AllProductsState extends State<ProductsMob> {
   }
 }
 
-class FoodCategoriesListWidget extends StatefulWidget {
+class FoodCategoriesListWidgetMobile extends StatefulWidget {
   final Function? onChange;
   final List<Collection> collections;
-  const FoodCategoriesListWidget({
+  const FoodCategoriesListWidgetMobile({
     Key? key,
     this.onChange,
     required this.collections,
   }) : super(key: key);
 
   @override
-  State<FoodCategoriesListWidget> createState() =>
-      _FoodCategoriesListWidgetState();
+  State<FoodCategoriesListWidgetMobile> createState() =>
+      _FoodCategoriesListWidgetMobileState();
 }
 
-class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
+class _FoodCategoriesListWidgetMobileState
+    extends State<FoodCategoriesListWidgetMobile> {
   List<bool> optionValuesHovered = [];
   int? currentSelected;
 

@@ -26,7 +26,7 @@ class _FoodCartPageState extends State<FoodCartPage> {
           Expanded(
             flex: 6,
             child: Container(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,7 +87,7 @@ class _FoodCartPageState extends State<FoodCartPage> {
             padding: EdgeInsets.all(8.0),
             child: Expanded(
                 flex: 4,
-                child: SizedBox(width: 400, height: 400, child: CartWidget1())),
+                child: SizedBox(width: 400, height: 400, child: CartWidget())),
           )
         ],
       ),
