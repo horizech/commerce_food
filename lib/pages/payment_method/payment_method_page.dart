@@ -10,7 +10,6 @@ import 'package:shop/models/customer_info.dart';
 import 'package:shop/pages/payment_method/card_payment_page.dart';
 
 import 'package:shop/widgets/cart/cart_cubit.dart';
-import 'package:shop/widgets/cart/cart_display.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
   static const routeName = '/payment_method';
@@ -27,25 +26,27 @@ class PaymentMethodsPage extends StatelessWidget {
           builder: (context, state) {
             return width > 1000
                 ? Row(
-                    children: [
-                      const Expanded(
+                    children: const [
+                      Expanded(
                         child: PaymentMethodsForm(),
                       ),
-                      CartDisplay(cartItem: state.cart.items),
+                      // CartDisplay(cartItem: state.cart.items),
                     ],
                   )
                 : Column(
-                    children: [
+                    children: const [
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, left: 10, right: 10),
+                        padding:
+                            EdgeInsets.only(top: 20.0, left: 10, right: 10),
                         child: ExpansionTile(
-                          leading: const Icon(Icons.shopping_cart),
-                          title: const Text("Order Summary"),
-                          children: [CartDisplay(cartItem: state.cart.items)],
+                          leading: Icon(Icons.shopping_cart),
+                          title: Text("Order Summary"),
+                          children: [
+                            // CartDisplay(cartItem: state.cart.items),
+                          ],
                         ),
                       ),
-                      const PaymentMethodsForm(),
+                      PaymentMethodsForm(),
                     ],
                   );
           }),

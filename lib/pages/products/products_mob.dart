@@ -6,7 +6,6 @@ import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
-import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
@@ -20,7 +19,6 @@ import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/pages/cart/cart_dialog_widget.dart';
-import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -67,42 +65,6 @@ class _AllProductsState extends State<ProductsMob> {
         setState(() {});
       }
     }
-  }
-
-  Widget _getProductVariations(int productId, Function onClick) {
-    return FutureBuilder<List<ProductVariation>?>(
-      future: ProductDetailService.getProductVariationsById(productId),
-      initialData: null,
-      builder: (BuildContext context,
-          AsyncSnapshot<List<ProductVariation>?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data!.isNotEmpty
-              ? Column(
-                  children: [
-                    ...snapshot.data!.map(
-                      (e) {
-                        return UpButton(
-                          text: "${e.name}      -     Price  £ ${e.price}",
-                          onPressed: () => {
-                            onClick(e.id ?? -1),
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                )
-              : const SizedBox();
-        } else {
-          return const SizedBox(
-            child: Text(
-              'Loading...',
-            ),
-          );
-        }
-      },
-    );
   }
 
   _showDialog(Product product) {

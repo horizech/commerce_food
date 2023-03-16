@@ -1,35 +1,36 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 
 class CartItem extends Equatable {
-  Product product;
+  Product? product;
   ProductVariation? selectedVariation;
+  Combo? combo;
+  String type;
   int quantity;
   String? instructions;
 
-  CartItem({
-    required this.product,
-    this.selectedVariation,
-    required this.quantity,
-    this.instructions,
-  });
+  CartItem(
+      {this.product,
+      this.selectedVariation,
+      this.combo,
+      required this.quantity,
+      this.instructions,
+      this.type = "product"});
 
   Map<String, dynamic> toJson() {
     try {
-      Map<String, dynamic> newVariations = {};
-      // for (var entry in selectedVariationsValues.entries) {
-      //   newVariations['${entry.key}'] = entry.value;
-      // }
-
       Map<String, dynamic> item = {
-        'Product': Product.toJson(product),
+        'Product': product != null ? Product.toJson(product!) : null,
         'Variations': selectedVariation != null
             ? ProductVariation.toJson(selectedVariation!)
             : null,
+        'Combo': combo != null ? Combo.toJson(combo!) : null,
         'Quantity': '$quantity',
-        'Instructions': '$instructions'
+        'Instructions': '$instructions',
+        'Type': type
       };
       return item;
     } catch (e) {
@@ -41,9 +42,17 @@ class CartItem extends Equatable {
   factory CartItem.fromJson(Map<String, dynamic> instance) {
     try {
       CartItem item = CartItem(
-          product:
-              Product.fromJson(instance['Product'] as Map<String, dynamic>),
-          selectedVariation: ProductVariation.fromJson(instance['Variations']),
+          product: instance['Product'] != null
+              ? Product.fromJson(instance['Product'] as Map<String, dynamic>)
+              : null,
+          selectedVariation: instance['Variations'] != null
+              ? ProductVariation.fromJson(
+                  instance['Variations'] as Map<String, dynamic>)
+              : null,
+          combo: instance['Combo'] != null
+              ? Combo.fromJson(instance['Combo'] as Map<String, dynamic>)
+              : null,
+          type: instance['Type'] as String,
           quantity: int.parse(instance['Quantity'] as String),
           instructions: instance['Instructions'] as String?);
       return item;

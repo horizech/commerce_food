@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_up/enums/text_style.dart';
-import 'package:flutter_up/enums/up_button_type.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
-import 'package:flutter_up/widgets/up_radio_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';

@@ -18,7 +18,6 @@ import 'package:shop/models/customer_info.dart';
 import 'package:shop/pages/payment_method/payment_method_page.dart';
 
 import 'package:shop/widgets/cart/cart_cubit.dart';
-import 'package:shop/widgets/cart/cart_display.dart';
 import 'package:shop/services/customer_profile/customer_profile_services.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -36,27 +35,27 @@ class PaymentPage extends StatelessWidget {
             return !Apiraiser.authentication.isSignedIn()
                 ? width > 1000
                     ? Row(
-                        children: [
-                          const Expanded(
+                        children: const [
+                          Expanded(
                             child: PaymentForm(),
                           ),
-                          CartDisplay(cartItem: state.cart.items),
+                          // CartDisplay(cartItem: state.cart.items),
                         ],
                       )
                     : Column(
-                        children: [
+                        children: const [
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 20.0, left: 10, right: 10),
+                            padding:
+                                EdgeInsets.only(top: 20.0, left: 10, right: 10),
                             child: ExpansionTile(
-                              leading: const Icon(Icons.shopping_cart),
-                              title: const Text("Order Summary"),
+                              leading: Icon(Icons.shopping_cart),
+                              title: Text("Order Summary"),
                               children: [
-                                CartDisplay(cartItem: state.cart.items)
+                                // CartDisplay(cartItem: state.cart.items)
                               ],
                             ),
                           ),
-                          const PaymentForm(),
+                          PaymentForm(),
                         ],
                       )
                 : FutureBuilder<CustomerProfile?>(
@@ -72,21 +71,20 @@ class PaymentPage extends StatelessWidget {
                                         customerProfile: snapshot.data,
                                       ),
                                     ),
-                                    CartDisplay(cartItem: state.cart.items),
+                                    // CartDisplay(cartItem: state.cart.items),
                                   ],
                                 )
                               : Column(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
+                                    const Padding(
+                                      padding: EdgeInsets.only(
                                           top: 20.0, left: 10, right: 10),
                                       child: ExpansionTile(
-                                        leading:
-                                            const Icon(Icons.shopping_cart),
-                                        title: const Text("Order Summary"),
+                                        leading: Icon(Icons.shopping_cart),
+                                        title: Text("Order Summary"),
                                         children: [
-                                          CartDisplay(
-                                              cartItem: state.cart.items)
+                                          // CartDisplay(
+                                          //     cartItem: state.cart.items)
                                         ],
                                       ),
                                     ),

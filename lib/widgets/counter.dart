@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/widgets/up_icon.dart';
+import 'package:flutter_up/widgets/up_text.dart';
 
 class Counter extends StatefulWidget {
   final Function onChange;
@@ -40,57 +43,166 @@ class _CounterState extends State<Counter> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-              width: 1,
-            ),
-          ),
-          child: Center(
-            child: IconButton(
-              onPressed: _increment,
-              icon: const Icon(
-                Icons.add,
-                size: 15,
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SizedBox(
+              child: GestureDetector(
+                onTap: _decrement,
+                child: const UpIcon(
+                  icon: Icons.remove,
+                ),
               ),
             ),
           ),
         ),
-        Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                bottom: BorderSide(
-                  color: Colors.black,
-                  width: 1,
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: SizedBox(
+            child: UpText(
+              "${widget.defaultValue}",
+              style: UpStyle(
+                textWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SizedBox(
+              child: GestureDetector(
+                onTap: _increment,
+                child: const UpIcon(
+                  icon: Icons.add,
                 ),
               ),
             ),
-            child: Center(child: Text("${widget.defaultValue}"))),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-              width: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DeleteCounter extends StatefulWidget {
+  final Function onChange;
+  int defaultValue;
+  final int? maxItems;
+  DeleteCounter(
+      {Key? key,
+      required this.onChange,
+      this.defaultValue = 1,
+      this.maxItems = 0})
+      : super(key: key);
+
+  @override
+  State<DeleteCounter> createState() => _DeleteCounterState();
+}
+
+class _DeleteCounterState extends State<DeleteCounter> {
+  bool isDeleteIconShow = false;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _increment() {
+    if (widget.defaultValue == 0) {
+      isDeleteIconShow = false;
+    }
+    if (widget.defaultValue < widget.maxItems! ||
+        widget.defaultValue > widget.maxItems! ||
+        isDeleteIconShow == false) {
+      widget.defaultValue++;
+      widget.onChange(widget.defaultValue);
+      setState(() {
+        widget.defaultValue;
+      });
+    }
+  }
+
+  void _decrement() {
+    widget.defaultValue = max(widget.defaultValue - 1, 0);
+    widget.onChange(widget.defaultValue);
+    setState(() {
+      if (widget.defaultValue == 0) {
+        isDeleteIconShow = true;
+      }
+      widget.defaultValue;
+    });
+  }
+
+  void _onDeleteClick() {
+    widget.onChange(-1);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.defaultValue == 0) {
+      isDeleteIconShow = true;
+    } else {
+      isDeleteIconShow = false;
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        isDeleteIconShow
+            ? Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: SizedBox(
+                    child: GestureDetector(
+                      onTap: _onDeleteClick,
+                      child: const UpIcon(
+                        icon: Icons.delete,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: SizedBox(
+                    child: GestureDetector(
+                      onTap: _decrement,
+                      child: const UpIcon(
+                        icon: Icons.remove,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: SizedBox(
+            child: UpText(
+              "${widget.defaultValue}",
+              style: UpStyle(
+                textWeight: FontWeight.bold,
+              ),
             ),
           ),
-          child: Center(
-            child: IconButton(
-              onPressed: _decrement,
-              icon: const Icon(
-                Icons.remove,
-                size: 15,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SizedBox(
+              child: GestureDetector(
+                onTap: _increment,
+                child: const UpIcon(
+                  icon: Icons.add,
+                ),
               ),
             ),
           ),

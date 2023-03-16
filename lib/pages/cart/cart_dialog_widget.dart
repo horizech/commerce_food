@@ -8,12 +8,14 @@ import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/models/up_radio_button_items.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_checkbox.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_radio_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/models/add_on.dart';
 import 'package:shop/models/cart_item.dart';
+import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
@@ -30,28 +32,33 @@ List<UpLabelValuePair> _items = [
 ];
 
 class CartDialogWidget extends StatefulWidget {
+  final Combo? combo;
   final Function onChange;
-  const CartDialogWidget(
-      {super.key, required this.onChange, required this.product});
-  final Product product;
+  final List<Product>? products;
+  const CartDialogWidget({
+    super.key,
+    required this.onChange,
+    this.product,
+    this.combo,
+    this.products,
+  });
+  final Product? product;
 
   @override
   State<CartDialogWidget> createState() => _CartDialogWidgetState();
 }
 
 class _CartDialogWidgetState extends State<CartDialogWidget> {
-  @override
-  String currentSelection = _items.first.value;
   List<UpRadioButtonItem> variationRadios = [];
+
   final TextEditingController _instructionsController = TextEditingController();
   List<Product>? addonsProducts;
-  List<Widget> variationWidgets = [];
   List<ProductVariation> productVariations = [];
   List<AddOn> addons = [];
   int? selectedVariationId;
   ProductVariation? selectedVariation;
-
   int quantity = 1;
+  List<bool> addonCheckboxes = [];
 
   @override
   void initState() {
@@ -60,8 +67,10 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   }
 
   getProductVariationsByApi() async {
-    productVariations = await ProductDetailService.getProductVariationsById(
-            widget.product.id!) ??
+    productVariations = await ProductDetailService.getProductVariationsByIds(
+            (widget.products != null && widget.products!.isNotEmpty
+                ? widget.products!.map((e) => e.id!).toList()
+                : [widget.product!.id!])) ??
         [];
     if (productVariations.isNotEmpty) {
       initalizeRadios();
@@ -80,18 +89,6 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     }
     return price;
   }
-
-  // setVariationWidget() {
-  //   variationWidgets = [];
-  //   for (int i = 0; i < quantity; i++) {
-  //     variationWidgets.add(variationWidget(i + 1));
-  //   }
-  // }
-
-  // Widget variationWidget(int index) {
-  //   return
-
-  // }
 
   initalizeRadios() {
     if (productVariations.isNotEmpty) {
@@ -118,34 +115,11 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     selectedVariationId = variationRadios.first.value;
   }
 
-  Widget _getProductVariations() {
+  Widget getComboVariationView() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 600,
-          height: 350,
-          child: MediaWidget(
-            mediaId: widget.product.thumbnail,
-            height: 350,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(widget.product.name),
-              Text("£${widget.product.price}")
-            ],
-          ),
-        ),
-
-        const Divider(),
-        productVariations.isNotEmpty && variationRadios.isNotEmpty
-            ? Visibility(
-                child: Column(
+        ...widget.products!
+            .map((e) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
@@ -154,7 +128,7 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const UpText("Select variation",
+                          UpText("Select ${e.name} variation",
                               type: UpTextType.heading5),
                           UpText(
                             "1 Required",
@@ -166,22 +140,129 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: UpRadioButton(
-                        items: variationRadios,
-                        labelDirection: UpTextDirection.right,
-                        direction: UpDirection.vertical,
-                        onChange: (radiovalue) {
-                          selectedVariationId = radiovalue;
-
-                          setState(() {});
-                        },
-                      ),
-                    ),
+                    getVariationRadioButton(e.id!)
                   ],
-                ),
+                ))
+            .toList(),
+      ],
+    );
+  }
+
+  Widget getVariationRadioButton(int product) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: productVariations.any((element) => element.product == product)
+          ? UpRadioButton(
+              items: productVariations
+                  .where((variation) => variation.product == product)
+                  .map((e) => UpRadioButtonItem(
+                        value: e.id,
+                        widget: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, top: 12.0, right: 8.0, bottom: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              UpText(e.name ?? ''),
+                              UpText("£${e.price}"),
+                            ],
+                          ),
+                        ),
+                      ))
+                  .toList(),
+              labelDirection: UpTextDirection.right,
+              direction: UpDirection.vertical,
+              onChange: (radiovalue) {
+                selectedVariationId = radiovalue;
+
+                setState(() {});
+              },
+            )
+          : const SizedBox(),
+    );
+  }
+
+  Widget _getDialogView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 600,
+          height: 350,
+          child: MediaWidget(
+            mediaId: widget.combo != null
+                ? widget.combo!.thumbnail
+                : widget.product!.thumbnail,
+            height: 350,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.combo != null
+                    ? widget.combo!.name
+                    : widget.product!.name,
+              ),
+              Text(
+                  "£${widget.combo != null ? widget.combo!.price : widget.product!.price}")
+            ],
+          ),
+        ),
+
+        const Divider(),
+
+        // in case of single product
+        productVariations.isNotEmpty &&
+                variationRadios.isNotEmpty &&
+                widget.product != null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const UpText("Select variation",
+                            type: UpTextType.heading5),
+                        UpText(
+                          "1 Required",
+                          style: UpStyle(
+                              textColor:
+                                  UpConfig.of(context).theme.primaryColor[200]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpRadioButton(
+                      items: variationRadios,
+                      labelDirection: UpTextDirection.right,
+                      direction: UpDirection.vertical,
+                      onChange: (radiovalue) {
+                        selectedVariationId = radiovalue;
+
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
               )
+            : const SizedBox(),
+
+        // in case of combo
+
+        productVariations.isNotEmpty &&
+                widget.products != null &&
+                widget.products!.isNotEmpty
+            ? getComboVariationView()
             : const SizedBox(),
         // addon
         addonsProducts != null && addonsProducts!.isNotEmpty
@@ -206,29 +287,28 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: UpRadioButton(
-                      initialValue: false,
-                      items: addonsProducts!
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: addonsProducts!
+                          .asMap()
+                          .entries
                           .map(
-                            (addon) => UpRadioButtonItem(
-                              value: addon.id,
-                              widget: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    UpText(addon.name),
-                                    UpText(getAddonPrice(addon)),
-                                  ],
+                            (addon) => Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                UpCheckbox(
+                                  label: addon.value.name,
+                                  initialValue: addonCheckboxes[addon.key],
+                                  onChange: (newCheck) {
+                                    addonCheckboxes[addon.key] = newCheck;
+                                  },
                                 ),
-                              ),
+                                UpText(getAddonPrice(addon.value)),
+                              ],
                             ),
                           )
                           .toList(),
-                      labelDirection: UpTextDirection.right,
-                      direction: UpDirection.vertical,
                     ),
                   ),
                 ],
@@ -263,15 +343,6 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const UpText("If this product is not available",
-              //     type: UpTextType.heading5),
-              // const SizedBox(height: 4),
-              // UpDropDown(
-              //   label: '',
-              //   value: currentSelection,
-              //   itemList: _items,
-              //   onChanged: (value) => _onChange(value),
-              // ),
               const SizedBox(
                 height: 30,
               ),
@@ -307,32 +378,70 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                         onPressed: () {
                           CartCubit cubit = context.read<CartCubit>();
 
-                          if (productVariations.isNotEmpty) {
+                          //add on products add to cart
+                          if (addonCheckboxes
+                              .any((element) => element == true)) {
+                            for (var c in addonCheckboxes.asMap().entries) {
+                              if (addonCheckboxes[c.key] == true) {
+                                CartItem item = CartItem(
+                                  product: addonsProducts!
+                                      .asMap()
+                                      .entries
+                                      .where((element) => element.key == c.key)
+                                      .first
+                                      .value,
+                                  quantity: 1,
+                                );
+                                cubit.addToCart(item);
+                              }
+                            }
+                          }
+
+                          //product add to cart
+                          if (productVariations.isNotEmpty &&
+                              widget.product != null) {
                             if (selectedVariationId != null) {
                               selectedVariation = productVariations
                                   .where((element) =>
                                       element.id == selectedVariationId!)
                                   .first;
                               CartItem item = CartItem(
-                                product: widget.product,
+                                product: widget.product!,
                                 selectedVariation: selectedVariation,
                                 quantity: quantity,
                                 instructions: _instructionsController.text,
                               );
-                              item;
-
                               cubit.addToCart(item);
                               Navigator.pop(context, "Success");
                             }
-                          } else {
+                          } else if (widget.product != null) {
                             CartItem item = CartItem(
-                              product: widget.product,
+                              product: widget.product!,
                               selectedVariation: selectedVariation,
                               quantity: quantity,
                               instructions: _instructionsController.text,
                             );
                             cubit.addToCart(item);
                             Navigator.pop(context, "Success");
+                          }
+
+                          //combo add to cart
+                          if (productVariations.isNotEmpty &&
+                              widget.products != null) {
+                            if (selectedVariationId != null) {
+                              selectedVariation = productVariations
+                                  .where((element) =>
+                                      element.id == selectedVariationId!)
+                                  .first;
+                              CartItem item = CartItem(
+                                product: widget.product!,
+                                selectedVariation: selectedVariation,
+                                quantity: quantity,
+                                instructions: _instructionsController.text,
+                              );
+                              cubit.addToCart(item);
+                              Navigator.pop(context, "Success");
+                            }
                           }
                         },
                       ),
@@ -351,6 +460,9 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     addonsProducts =
         await AddEditProductService.getProductByIds(addonProductIds) ?? [];
     if (addonsProducts != null && addonsProducts!.isNotEmpty) {
+      for (var addonP in addonsProducts!) {
+        addonCheckboxes.add(false);
+      }
       setState(() {});
     } else {
       addonsProducts = [];
@@ -367,23 +479,33 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
               state.addOns!.isNotEmpty &&
               addonsProducts == null) {
             List<int> addonProductIds = [];
-            addons = state.addOns!
-                .where((element) => element.product == widget.product.id!)
-                .toList();
-            addonProductIds = state.addOns!
-                .where((element) => element.product == widget.product.id!)
-                .map((e) => e.addOn)
-                .toList();
+            if (widget.product != null) {
+              addons = state.addOns!
+                  .where((element) => element.product == widget.product!.id!)
+                  .toList();
+              addonProductIds = state.addOns!
+                  .where((element) => element.product == widget.product!.id!)
+                  .map((e) => e.addOn)
+                  .toList();
+            } else {}
 
             getAddOnProductsApiCall(addonProductIds);
           }
-          return widget.product.isVariedProduct && productVariations.isNotEmpty
+          return (widget.product != null && widget.product!.isVariedProduct) ||
+                  (widget.products != null &&
+                          widget.products!
+                              .any((element) => element.isVariedProduct)) &&
+                      productVariations.isNotEmpty
               ? SizedBox(
-                  child: _getProductVariations(),
+                  child: _getDialogView(),
                 )
-              : widget.product.isVariedProduct == false
+              : (widget.product != null &&
+                          widget.product!.isVariedProduct == false) ||
+                      (widget.products != null &&
+                          widget.products!.every(
+                              (element) => element.isVariedProduct == false))
                   ? SizedBox(
-                      child: _getProductVariations(),
+                      child: _getDialogView(),
                     )
                   : const SizedBox(
                       width: 600,

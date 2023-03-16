@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/validation/up_valdation.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
-import 'package:shop/widgets/cart/cart_display.dart';
 
 class CardPaymentPage extends StatelessWidget {
   static const routeName = '/cardpayment';
@@ -23,27 +22,27 @@ class CardPaymentPage extends StatelessWidget {
               builder: (context, state) {
                 return width > 1000
                     ? Row(
-                        children: [
-                          const Expanded(
+                        children: const [
+                          Expanded(
                             child: CardPaymentForm(),
                           ),
-                          CartDisplay(cartItem: state.cart.items),
+                          // CartDisplay(cartItem: state.cart.items),
                         ],
                       )
                     : Column(
-                        children: [
+                        children: const [
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 20.0, left: 10, right: 10),
+                            padding:
+                                EdgeInsets.only(top: 20.0, left: 10, right: 10),
                             child: ExpansionTile(
-                              leading: const Icon(Icons.shopping_cart),
-                              title: const Text("Order Summary"),
+                              leading: Icon(Icons.shopping_cart),
+                              title: Text("Order Summary"),
                               children: [
-                                CartDisplay(cartItem: state.cart.items)
+                                // CartDisplay(cartItem: state.cart.items)
                               ],
                             ),
                           ),
-                          const CardPaymentForm(),
+                          CardPaymentForm(),
                         ],
                       );
               },

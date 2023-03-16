@@ -5,7 +5,6 @@ import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
-import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
@@ -15,11 +14,12 @@ import 'package:flutter_up/widgets/up_text.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/models/collection.dart';
+import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/pages/cart/cart_dialog_widget.dart';
-import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
@@ -43,10 +43,13 @@ class _AllProductsState extends State<Products> {
       ItemPositionsListener.create();
   List<Product>? products;
   List<Collection> collections = [];
+
   int? restaurantId;
   List<ProductVariation> productVariations = [];
   Restaurant? restaurant;
   List<GlobalKey> collectionKeys = [];
+  List<Combo> combos = [];
+  List<ProductCombo> productCombos = [];
   @override
   void initState() {
     super.initState();
@@ -61,7 +64,6 @@ class _AllProductsState extends State<Products> {
 
   getProducts() async {
     if (restaurantId != null) {
-      // Map<String, dynamic> meta = {"Restaurant": restaurantId};
       products = await ProductService.getProducts([], {}, null, null, {});
       if (products != null && products!.isNotEmpty) {
         setState(() {});
@@ -69,70 +71,20 @@ class _AllProductsState extends State<Products> {
     }
   }
 
-  // Widget _variationItems(int productId, Function onClick) {
-  //   return FutureBuilder<Product?>(
-  //     future: ProductDetailService.getProductById(productId),
-  //     initialData: null,
-  //     builder: (BuildContext context, AsyncSnapshot<Product?> snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.done) {
-  //         return Container(
-  //           child: UpButton(
-  //             text:
-  //                 "${snapshot.data?.name}      -     Price  £ ${snapshot.data?.price}",
-  //             onPressed: () => {
-  //               onClick(snapshot.data?.id ?? -1),
-  //             },
-  //           ),
-  //         );
-  //       } else {
-  //         return Container(
-  //           child: const Text(
-  //             'Loading...',
-  //           ),
-  //         );
-  //       }
-  //     },
-  //   );
-  // }
-
-  Widget _getProductVariations(int productId, Function onClick) {
-    return FutureBuilder<List<ProductVariation>?>(
-      future: ProductDetailService.getProductVariationsById(productId),
-      initialData: null,
-      builder: (BuildContext context,
-          AsyncSnapshot<List<ProductVariation>?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data!.isNotEmpty
-              ? Column(
-                  children: [
-                    ...snapshot.data!.map(
-                      (e) {
-                        return UpButton(
-                          text: "${e.name}      -     Price  £ ${e.price}",
-                          onPressed: () => {
-                            onClick(e.id ?? -1),
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                )
-              : const SizedBox();
-        } else {
-          return const SizedBox(
-            child: Text(
-              'Loading...',
-            ),
-          );
+  _showDialog({Product? product, Combo? combo}) {
+    List<Product> gProducts = [];
+    if (combo != null) {
+      List<int> productIds = productCombos
+          .where(((element) => element.combo == combo.id))
+          .map((e) => e.product)
+          .toList();
+      if (productIds.isNotEmpty && products != null && products!.isNotEmpty) {
+        for (var element in productIds) {
+          gProducts
+              .add(products!.where((product) => product.id == element).first);
         }
-      },
-    );
-  }
-
-  _showDialog(Product product) {
-    List<int> addonsProductIds = [];
+      }
+    }
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -147,16 +99,14 @@ class _AllProductsState extends State<Products> {
                 width: 600,
                 child: CartDialogWidget(
                   product: product,
+                  combo: combo,
+                  products: gProducts,
                   onChange: () {},
                 ),
               ),
             ),
           ),
-
           actionsPadding: const EdgeInsets.all(0),
-          // titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          // contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          // actions: <Widget>[
         );
       },
     ).then((value) {
@@ -186,6 +136,17 @@ class _AllProductsState extends State<Products> {
                 child: BlocConsumer<StoreCubit, StoreState>(
                     listener: (context, state) {},
                     builder: (context, state) {
+                      if (productCombos.isEmpty) {
+                        if (state.productCombos != null &&
+                            state.productCombos!.isNotEmpty) {
+                          productCombos = state.productCombos!.toList();
+                        }
+                      }
+                      if (combos.isEmpty) {
+                        if (state.combos != null && state.combos!.isNotEmpty) {
+                          combos = state.combos!.toList();
+                        }
+                      }
                       if (state.restaurants != null &&
                           state.restaurants!.isNotEmpty) {
                         restaurant = state.restaurants!
@@ -210,6 +171,10 @@ class _AllProductsState extends State<Products> {
                                 .where((element) =>
                                     element.id == product.collection)
                                 .first);
+                          }
+                          if (combos.isNotEmpty) {
+                            collections
+                                .add(const Collection(name: "Combos", id: -1));
                           }
                           collections = collections.toSet().toList();
                         }
@@ -318,7 +283,7 @@ class _AllProductsState extends State<Products> {
                                   ),
                                 ),
                                 UpOrientationalColumnRow(
-                                  widths: const [200, 1000],
+                                  widths: const [300, 0, 400],
                                   children: [
                                     FoodCategoriesListWidget(
                                       collections: collections,
@@ -334,31 +299,22 @@ class _AllProductsState extends State<Products> {
                                             curve: Curves.easeInOutCubic);
                                       },
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 8,
-                                          child: Column(
-                                            children: [
-                                              ...collections
-                                                  .asMap()
-                                                  .entries
-                                                  .map((e) => Container(
-                                                        key: collectionKeys[
-                                                            e.key],
-                                                        child: Column(
-                                                          children: [
-                                                            Theme(
-                                                              data: ThemeData()
-                                                                  .copyWith(
-                                                                      dividerColor:
-                                                                          Colors
-                                                                              .transparent),
-                                                              child: UpExpansionTile(
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          ...collections
+                                              .asMap()
+                                              .entries
+                                              .map((e) => Container(
+                                                    key: collectionKeys[e.key],
+                                                    child: Column(
+                                                      children: [
+                                                        Theme(
+                                                          data: ThemeData().copyWith(
+                                                              dividerColor: Colors
+                                                                  .transparent),
+                                                          child:
+                                                              UpExpansionTile(
                                                                   initiallyExpanded:
                                                                       true,
                                                                   title: e.value
@@ -377,100 +333,162 @@ class _AllProductsState extends State<Products> {
                                                                           4.0,
                                                                       right:
                                                                           20.0),
-                                                                  children: [
-                                                                    ...products!
-                                                                        .where((element) =>
-                                                                            element.collection ==
-                                                                            e.value.id)
-                                                                        .map(
-                                                                          (e) =>
-                                                                              Row(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              const Padding(
-                                                                                padding: EdgeInsets.only(right: 8),
-                                                                                child: UpIcon(
-                                                                                  icon: Icons.circle,
-                                                                                ),
-                                                                              ),
-                                                                              Expanded(
-                                                                                child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    UpText(
-                                                                                      e.name,
-                                                                                      style: UpStyle(
-                                                                                        textColor: UpConfig.of(context).theme.primaryColor[600],
-                                                                                      ),
+                                                                  children:
+                                                                      e.value.id ==
+                                                                              -1
+                                                                          ? [
+                                                                              ...combos
+                                                                                  .map(
+                                                                                    (combo) => Row(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        const Padding(
+                                                                                          padding: EdgeInsets.only(right: 8),
+                                                                                          child: UpIcon(
+                                                                                            icon: Icons.circle,
+                                                                                          ),
+                                                                                        ),
+                                                                                        Expanded(
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              UpText(
+                                                                                                combo.name,
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[600],
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                height: 5,
+                                                                                              ),
+                                                                                              UpText(
+                                                                                                combo.description ?? "",
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[200],
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                height: 10,
+                                                                                              ),
+                                                                                              combo.price > 0
+                                                                                                  ? UpText(
+                                                                                                      "£${combo.price}",
+                                                                                                      style: UpStyle(
+                                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  : const Text(""),
+                                                                                              const SizedBox(
+                                                                                                height: 20,
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        GestureDetector(
+                                                                                          onTap: () {
+                                                                                            _showDialog(
+                                                                                              combo: combo,
+                                                                                            );
+                                                                                          },
+                                                                                          child: const Icon(Icons.add),
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                    const SizedBox(
-                                                                                      height: 10,
+                                                                                  )
+                                                                                  .toList()
+                                                                            ]
+                                                                          : [
+                                                                              ...products!
+                                                                                  .where((element) => element.collection == e.value.id)
+                                                                                  .map(
+                                                                                    (e) => Row(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        const Padding(
+                                                                                          padding: EdgeInsets.only(right: 8),
+                                                                                          child: UpIcon(
+                                                                                            icon: Icons.circle,
+                                                                                          ),
+                                                                                        ),
+                                                                                        Expanded(
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              UpText(
+                                                                                                e.name,
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[600],
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                height: 5,
+                                                                                              ),
+                                                                                              UpText(
+                                                                                                e.description ?? "",
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[200],
+                                                                                                ),
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                height: 10,
+                                                                                              ),
+                                                                                              e.price! > 0
+                                                                                                  ? UpText(
+                                                                                                      "£${e.price}",
+                                                                                                      style: UpStyle(
+                                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  : const Text(""),
+                                                                                              const SizedBox(
+                                                                                                height: 10,
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        GestureDetector(
+                                                                                          onTap: () {
+                                                                                            _showDialog(product: e);
+                                                                                          },
+                                                                                          child: const Icon(Icons.add),
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                    UpText(
-                                                                                      e.description ?? "",
-                                                                                      style: UpStyle(
-                                                                                        textColor: UpConfig.of(context).theme.primaryColor[200],
-                                                                                      ),
-                                                                                    ),
-                                                                                    const SizedBox(
-                                                                                      height: 20,
-                                                                                    ),
-                                                                                    e.price! > 0
-                                                                                        ? UpText(
-                                                                                            "£${e.price}",
-                                                                                            style: UpStyle(
-                                                                                              textColor: UpConfig.of(context).theme.primaryColor[900],
-                                                                                            ),
-                                                                                          )
-                                                                                        : const Text("")
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              const SizedBox(
-                                                                                width: 20,
-                                                                              ),
-                                                                              GestureDetector(
-                                                                                onTap: () {
-                                                                                  _showDialog(e);
-                                                                                },
-                                                                                child: const Icon(Icons.add),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        )
-                                                                        .toList()
-                                                                  ]),
-                                                            ),
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          8.0,
-                                                                      horizontal:
-                                                                          0),
-                                                              child: Divider(
-                                                                thickness: 2,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                                                  )
+                                                                                  .toList()
+                                                                            ]),
                                                         ),
-                                                      ))
-                                                  .toList(),
-                                            ],
-                                          ),
-                                        ),
-                                        const Expanded(
-                                          flex: 6,
-                                          child: CartWidget(),
-                                        )
-                                      ],
+                                                        const Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 8.0,
+                                                                  horizontal:
+                                                                      0),
+                                                          child: Divider(
+                                                            thickness: 2,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        ],
+                                      ),
                                     ),
-                                    SizedBox(
-                                      child: Column(children: const []),
-                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        child: CartWidget(),
+                                      ),
+                                    )
                                   ],
                                 ),
 

@@ -23,7 +23,6 @@ import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter_up/models/up_route.dart';
 import 'package:flutter_up/models/up_router_state.dart';
 import 'package:shop/pages/authentication/loginsignup.dart';
-import 'package:shop/pages/cart/cart.dart';
 import 'package:shop/pages/home/home_page.dart';
 
 import 'package:shop/pages/products/products.dart';
@@ -101,14 +100,14 @@ class ShopApp extends StatelessWidget {
                 shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
                 redirectRoute: Routes.admin,
               ),
-              UpRoute(
-                name: Routes.cart,
-                path: Routes.cart,
-                pageBuilder: (BuildContext context, UpRouterState state) =>
-                    StoreDependantPage(
-                  page: CartPage(),
-                ),
-              ),
+              // UpRoute(
+              //   name: Routes.cart,
+              //   path: Routes.cart,
+              //   pageBuilder: (BuildContext context, UpRouterState state) =>
+              //       StoreDependantPage(
+              //     page: CartPage(),
+              //   ),
+              // ),
               UpRoute(
                 name: Routes.foodCartPage,
                 path: Routes.foodCartPage,

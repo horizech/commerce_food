@@ -8,18 +8,19 @@ class Combo {
   final String? description;
   final double price;
   final int? gallery;
+  final int? thumbnail;
 
-  const Combo({
-    this.id,
-    this.createdOn,
-    this.createdBy,
-    this.lastUpdatedOn,
-    this.lastUpdatedBy,
-    required this.name,
-    this.description,
-    required this.price,
-    this.gallery,
-  });
+  const Combo(
+      {this.id,
+      this.createdOn,
+      this.createdBy,
+      this.lastUpdatedOn,
+      this.lastUpdatedBy,
+      required this.name,
+      this.description,
+      required this.price,
+      this.gallery,
+      this.thumbnail});
 
   factory Combo.fromJson(Map<String, dynamic> json) {
     Combo combo = Combo(
@@ -40,6 +41,7 @@ class Combo {
       description: json['Description'] as String,
       price: json['Price'] as double,
       gallery: json['Gallery'] as int?,
+      thumbnail: json['Thumbnail'] as int?,
 
       // const []);
     );
@@ -60,6 +62,7 @@ class Combo {
         'Name': instance.name,
         'Description': instance.description,
         'Gallery': instance.gallery,
-        'Price': instance.price
+        'Price': instance.price,
+        'Thumbnail': instance.thumbnail
       };
 }
