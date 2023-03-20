@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class ProductOption extends Equatable {
+class Attribute extends Equatable {
   final int? id;
   final DateTime? createdOn;
   final int? createdBy;
@@ -9,7 +9,7 @@ class ProductOption extends Equatable {
   final int? lastUpdatedBy;
   final String name;
 
-  const ProductOption({
+  const Attribute({
     this.id,
     this.createdOn,
     this.createdBy,
@@ -18,9 +18,9 @@ class ProductOption extends Equatable {
     required this.name,
   });
 
-  factory ProductOption.fromJson(Map<String, dynamic> json) {
+  factory Attribute.fromJson(Map<String, dynamic> json) {
     try {
-      ProductOption size = ProductOption(
+      Attribute attribute = Attribute(
         id: json['Id'] as int,
         createdOn: json['CreatedOn'] != null
             ? DateTime.parse(json['CreatedOn'] as String)
@@ -32,14 +32,14 @@ class ProductOption extends Equatable {
         lastUpdatedBy: json['LastUpdatedBy'] as int?,
         name: json['Name'] as String,
       );
-      return size;
+      return attribute;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
   }
 
-  Map<String, dynamic> toJson(ProductOption instance) => <String, dynamic>{
+  Map<String, dynamic> toJson(Attribute instance) => <String, dynamic>{
         'Id': instance.id,
         'CreatedOn': instance.createdOn,
         'CreatedBy': instance.createdBy,

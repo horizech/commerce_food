@@ -1,30 +1,28 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class ProductOptionValue extends Equatable {
+class AttributeValue extends Equatable {
   final int? id;
   final DateTime? createdOn;
   final int? createdBy;
   final DateTime? lastUpdatedOn;
   final int? lastUpdatedBy;
   final String name;
-  final int productOption;
-  final int collection;
+  final int attribute;
 
-  const ProductOptionValue({
+  const AttributeValue({
     this.id,
     this.createdOn,
     this.createdBy,
     this.lastUpdatedOn,
     this.lastUpdatedBy,
     required this.name,
-    required this.productOption,
-    required this.collection,
+    required this.attribute,
   });
 
-  factory ProductOptionValue.fromJson(Map<String, dynamic> json) {
+  factory AttributeValue.fromJson(Map<String, dynamic> json) {
     try {
-      ProductOptionValue size = ProductOptionValue(
+      AttributeValue attributeValues = AttributeValue(
         id: json['Id'] as int,
         createdOn: json['CreatedOn'] != null
             ? DateTime.parse(json['CreatedOn'] as String)
@@ -35,25 +33,23 @@ class ProductOptionValue extends Equatable {
             : null,
         lastUpdatedBy: json['LastUpdatedBy'] as int?,
         name: json['Name'] as String,
-        productOption: json['ProductOption'] as int,
-        collection: json['Collection'] as int,
+        attribute: json['Attribute'] as int,
       );
-      return size;
+      return attributeValues;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
   }
 
-  Map<String, dynamic> toJson(ProductOptionValue instance) => <String, dynamic>{
+  Map<String, dynamic> toJson(AttributeValue instance) => <String, dynamic>{
         'Id': instance.id,
         'CreatedOn': instance.createdOn,
         'CreatedBy': instance.createdBy,
         'LastUpdatedOn': instance.lastUpdatedOn,
         'LastUpdatedBy': instance.lastUpdatedBy,
         'Name': instance.name,
-        'ProductOption': instance.productOption,
-        'Collection': instance.collection,
+        'Attribute': instance.attribute,
       };
 
   @override
@@ -64,7 +60,6 @@ class ProductOptionValue extends Equatable {
         lastUpdatedOn,
         lastUpdatedBy,
         name,
-        productOption,
-        collection,
+        attribute,
       ];
 }

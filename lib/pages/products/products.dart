@@ -435,7 +435,7 @@ class _AllProductsState extends State<Products> {
                                                                                               const SizedBox(
                                                                                                 height: 10,
                                                                                               ),
-                                                                                              e.price! > 0
+                                                                                              e.price != null && e.price! > 0
                                                                                                   ? UpText(
                                                                                                       "£${e.price}",
                                                                                                       style: UpStyle(

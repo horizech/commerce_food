@@ -11,7 +11,7 @@ import 'package:shop/pages/admin/admin.dart';
 import 'package:shop/pages/admin/admin_combos.dart';
 import 'package:shop/pages/admin/admin_gallery.dart';
 import 'package:shop/pages/admin/admin_keywords.dart';
-import 'package:shop/pages/admin/admin_product_options.dart';
+import 'package:shop/pages/admin/admin_attributes.dart';
 import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
@@ -152,8 +152,8 @@ class ShopApp extends StatelessWidget {
                 redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
-                path: Routes.adminProductOptions,
-                name: Routes.adminProductOptions,
+                path: Routes.adminAttributes,
+                name: Routes.adminAttributes,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const StoreDependantPage(
                   page: AdminProductOptions(),

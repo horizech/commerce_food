@@ -9,6 +9,7 @@ class Combo {
   final double price;
   final int? gallery;
   final int? thumbnail;
+  final Map<String, dynamic>? fixedVariations;
 
   const Combo(
       {this.id,
@@ -20,7 +21,8 @@ class Combo {
       this.description,
       required this.price,
       this.gallery,
-      this.thumbnail});
+      this.thumbnail,
+      this.fixedVariations});
 
   factory Combo.fromJson(Map<String, dynamic> json) {
     Combo combo = Combo(
@@ -42,6 +44,10 @@ class Combo {
       price: json['Price'] as double,
       gallery: json['Gallery'] as int?,
       thumbnail: json['Thumbnail'] as int?,
+      fixedVariations: json['FixedVariations'] != null &&
+              (json['FixedVariations'] as String).isNotEmpty
+          ? (json['FixedVariations'] as String) as Map<String, dynamic>
+          : null,
 
       // const []);
     );

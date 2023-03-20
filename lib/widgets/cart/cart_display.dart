@@ -110,13 +110,13 @@
 //   return BlocConsumer<StoreCubit, StoreState>(
 //       listener: (context, state) {},
 //       builder: (context, state) {
-//         // sizeVariation = state.productOptionValues!
+//         // sizeVariation = state.attributeValues!
 //         //     .map((e) => e)
 //         //     .where((element) =>
 //         //         element.id ==
 //         //         item.selectedVariationsValues[VariationTypes.size.index])
 //         //     .first;
-//         // colorVariation = state.productOptionValues!
+//         // colorVariation = state.attributeValues!
 //         //     .map((e) => e)
 //         //     .where((element) =>
 //         //         element.id ==

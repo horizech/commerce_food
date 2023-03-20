@@ -4,18 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
-import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
-import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
-import 'package:shop/models/collection.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -29,25 +26,20 @@ class AdminProductOptions extends StatefulWidget {
 }
 
 class _AdminProductOptionsState extends State<AdminProductOptions> {
-  String currentCollection = "", currentProductOption = "";
-  List<ProductOption> productOptions = [];
+  String currentAttribute = "";
+  List<Attribute> attributes = [];
   TextEditingController nameController = TextEditingController();
-  TextEditingController productOptionValueNameController =
-      TextEditingController();
-
-  List<ProductOptionValue> productOptionValues = [];
-  List<UpLabelValuePair> collectionDropdown = [];
-  List<UpLabelValuePair> productOptionDropdown = [];
+  TextEditingController attributeValueNameController = TextEditingController();
+  List<AttributeValue> attributeValues = [];
   User? user;
-  ProductOption selectedProductOption = const ProductOption(name: "", id: -1);
-  bool isProductOptinsLoading = false;
-  List<ProductOptionValue> filteredProductOptionValues = [];
+  Attribute selectedAttribute = const Attribute(name: "", id: -1);
+  List<AttributeValue> filteredAttributeValues = [];
   @override
   void initState() {
     super.initState();
     user ??= Apiraiser.authentication.getCurrentUser();
-
-    getProductOptions();
+    getAttributes();
+    getAttributeValues();
   }
 
   Widget leftSide() {
@@ -61,30 +53,30 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
           children: [
             GestureDetector(
                 onTap: (() {
-                  selectedProductOption = const ProductOption(name: "", id: -1);
-                  nameController.text = selectedProductOption.name;
+                  selectedAttribute = const Attribute(name: "", id: -1);
+                  nameController.text = selectedAttribute.name;
 
                   setState(() {});
                 }),
                 child: Container(
-                  color: selectedProductOption.id == -1
+                  color: selectedAttribute.id == -1
                       ? UpConfig.of(context).theme.primaryColor[100]
                       : Colors.transparent,
                   child: const ListTile(
-                    title: UpText("Create a new product option"),
+                    title: UpText("Create a new attribute"),
                   ),
                 )),
-            ...productOptions
+            ...attributes
                 .map(
                   (e) => GestureDetector(
                     onTap: (() {
-                      selectedProductOption = e;
-                      nameController.text = selectedProductOption.name;
-                      _setProductOptionValues();
+                      selectedAttribute = e;
+                      nameController.text = selectedAttribute.name;
+                      _setAttributeValues();
                       setState(() {});
                     }),
                     child: Container(
-                      color: selectedProductOption.id == e.id
+                      color: selectedAttribute.id == e.id
                           ? UpConfig.of(context).theme.primaryColor[100]
                           : Colors.transparent,
                       child: ListTile(
@@ -100,20 +92,19 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     );
   }
 
-  _updateProductOption(ProductOption? option) async {
-    ProductOption newProductOption = ProductOption(
+  _updateAttribute(Attribute? attribute) async {
+    Attribute newAttribute = Attribute(
       name: nameController.text,
     );
-    APIResult? result = await AddEditProductService.addEditProductOption(
-        data: newProductOption.toJson(newProductOption),
-        productOptionId: option?.id);
+    APIResult? result = await AddEditProductService.addEditAttribute(
+        data: newAttribute.toJson(newAttribute), attributeId: attribute?.id);
 
     if (result != null) {
       showUpToast(
         context: context,
         text: result.message ?? "",
       );
-      getProductOptions();
+      getAttributes();
     } else {
       showUpToast(
         context: context,
@@ -123,61 +114,29 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   }
 
   //by api
-  getProductOptions() async {
-    List<ProductOption>? newProductOptions =
-        await AddEditProductService.getProductOptions();
-    if (newProductOptions != null && newProductOptions.isNotEmpty) {
-      productOptions = newProductOptions;
-
-      productOptionDropdown.clear();
-
-      productOptionDropdown.add(
-        UpLabelValuePair(label: "Select", value: "-1"),
-      );
-      currentProductOption = productOptionDropdown.first.value;
-
-      if (productOptions.isNotEmpty) {
-        for (var p in productOptions) {
-          productOptionDropdown
-              .add(UpLabelValuePair(label: p.name, value: "${p.id}"));
-        }
-      }
+  getAttributes() async {
+    List<Attribute>? newAttributes =
+        await AddEditProductService.getAttributes();
+    if (newAttributes != null && newAttributes.isNotEmpty) {
+      attributes = newAttributes;
 
       setState(() {});
     }
   }
 
-  getCollection() async {
-    List<Collection>? collections =
-        await AddEditProductService.getCollections();
-
-    if (collections != null && collections.isNotEmpty) {
-      collectionDropdown.add(
-        UpLabelValuePair(label: "All", value: "-1"),
-      );
-      if (collections.isNotEmpty) {
-        for (var c in collections) {
-          collectionDropdown
-              .add(UpLabelValuePair(label: c.name, value: "${c.id}"));
-        }
-      }
-      setState(() {});
-    }
-  }
-
-  getProductOptionValues() async {
-    if (currentCollection.isNotEmpty && selectedProductOption.id != -1) {
-      List<ProductOptionValue>? newProductOptionValues =
-          await AddEditProductService.getProductOptionValues();
-      if (newProductOptionValues != null && newProductOptionValues.isNotEmpty) {
-        productOptionValues = newProductOptionValues;
-        _setProductOptionValues();
+  getAttributeValues() async {
+    if (selectedAttribute.id != -1) {
+      List<AttributeValue>? newAttributeValues =
+          await AddEditProductService.getAttributeValues();
+      if (newAttributeValues != null && newAttributeValues.isNotEmpty) {
+        attributeValues = newAttributeValues;
+        _setAttributeValues();
         setState(() {});
       }
     }
   }
 
-  _deleteProductOption(int productOptionId) async {
+  _deleteAttribute(int attributeId) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -187,12 +146,12 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     ).then((result) async {
       if (result == "success") {
         APIResult? result =
-            await AddEditProductService.deleteProductOption(productOptionId);
+            await AddEditProductService.deleteAttribute(attributeId);
         if (result != null && result.success) {
           showUpToast(context: context, text: result.message ?? "");
           nameController.text = "";
-          selectedProductOption = const ProductOption(name: "", id: -1);
-          getProductOptions();
+          selectedAttribute = const Attribute(name: "", id: -1);
+          getAttributes();
         } else {
           showUpToast(
             context: context,
@@ -203,7 +162,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     });
   }
 
-  _deleteProductOptionValue(int productOptionValueId) async {
+  _deleteAttributeValue(int attributeValueId) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -213,11 +172,10 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     ).then((result) async {
       if (result == "success") {
         APIResult? result =
-            await AddEditProductService.deleteProductOptionValue(
-                productOptionValueId);
+            await AddEditProductService.deleteAttributeValue(attributeValueId);
         if (result != null && result.success) {
           showUpToast(context: context, text: result.message ?? "");
-          getProductOptionValues();
+          getAttributeValues();
         } else {
           showUpToast(
             context: context,
@@ -228,26 +186,23 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     });
   }
 
-  _updateProductOptionValue() async {
-    if (currentCollection.isNotEmpty &&
-        productOptionValueNameController.text.isNotEmpty &&
-        selectedProductOption.id != -1) {
-      ProductOptionValue newProductOptionValue = ProductOptionValue(
-        name: productOptionValueNameController.text,
-        productOption: selectedProductOption.id!,
-        collection: int.parse(currentCollection),
+  _updateAttributeValue() async {
+    if (attributeValueNameController.text.isNotEmpty &&
+        selectedAttribute.id != -1) {
+      AttributeValue newAttributeValue = AttributeValue(
+        name: attributeValueNameController.text,
+        attribute: selectedAttribute.id!,
       );
-      APIResult? result =
-          await AddEditProductService.addEditProductOptionValues(
-        data: newProductOptionValue.toJson(newProductOptionValue),
+      APIResult? result = await AddEditProductService.addEditAttributeValues(
+        data: newAttributeValue.toJson(newAttributeValue),
       );
       if (result != null) {
         showUpToast(
           context: context,
           text: result.message ?? "",
         );
-        productOptionValueNameController.text = "";
-        getProductOptionValues();
+        attributeValueNameController.text = "";
+        getAttributeValues();
       } else {
         showUpToast(
           context: context,
@@ -262,24 +217,17 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     }
   }
 
-  _setProductOptionValues() {
-    filteredProductOptionValues = [];
-
-    if (currentCollection.isNotEmpty && selectedProductOption.id! > -1) {
-      for (var element in productOptionValues) {
-        if (element.collection == int.parse(currentCollection) &&
-            selectedProductOption.id == element.productOption) {
-          filteredProductOptionValues.add(element);
-        }
-      }
+  _setAttributeValues() {
+    filteredAttributeValues = [];
+    if (selectedAttribute.id != -1) {
+      filteredAttributeValues = attributeValues
+          .where((element) => element.attribute == selectedAttribute.id)
+          .toList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (collectionDropdown.isEmpty) {
-      getCollection();
-    }
     return Scaffold(
       appBar: const UpAppBar(),
       drawer: const NavDrawer(),
@@ -289,10 +237,10 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
           ? BlocConsumer<StoreCubit, StoreState>(
               listener: (context, state) {},
               builder: (context, state) {
-                if (productOptionValues.isEmpty) {
-                  if (state.productOptionValues != null &&
-                      state.productOptionValues!.isNotEmpty) {
-                    productOptionValues = state.productOptionValues!.toList();
+                if (attributeValues.isEmpty) {
+                  if (state.attributeValues != null &&
+                      state.attributeValues!.isNotEmpty) {
+                    attributeValues = state.attributeValues!.toList();
                   }
                 }
                 return SingleChildScrollView(
@@ -318,7 +266,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                 child: Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: UpText(
-                                    "Product Option",
+                                    "Attribute",
                                     type: UpTextType.heading5,
                                   ),
                                 ),
@@ -344,10 +292,9 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                               width: 70,
                                               child: UpButton(
                                                 onPressed: () {
-                                                  _updateProductOption(
-                                                    selectedProductOption.id !=
-                                                            -1
-                                                        ? selectedProductOption
+                                                  _updateAttribute(
+                                                    selectedAttribute.id != -1
+                                                        ? selectedAttribute
                                                         : null,
                                                   );
                                                 },
@@ -356,8 +303,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                             ),
                                           ),
                                           Visibility(
-                                            visible:
-                                                selectedProductOption.id != -1,
+                                            visible: selectedAttribute.id != -1,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
@@ -365,9 +311,8 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                 width: 70,
                                                 child: UpButton(
                                                   onPressed: () {
-                                                    _deleteProductOption(
-                                                        selectedProductOption
-                                                            .id!);
+                                                    _deleteAttribute(
+                                                        selectedAttribute.id!);
                                                   },
                                                   text: "Delete",
                                                 ),
@@ -382,7 +327,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                 height: 20,
                               ),
                               Visibility(
-                                visible: selectedProductOption.id != -1,
+                                visible: selectedAttribute.id != -1,
                                 child: Column(
                                   children: [
                                     const Padding(
@@ -390,45 +335,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                       child: Align(
                                         alignment: Alignment.topLeft,
                                         child: UpText(
-                                          "Product Option Values",
-                                          type: UpTextType.heading5,
-                                        ),
-                                      ),
-                                    ),
-                                    collectionDropdown.isNotEmpty
-                                        ? Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Visibility(
-                                                visible: currentProductOption
-                                                    .isNotEmpty,
-                                                child: SizedBox(
-                                                  width: 300,
-                                                  child: UpDropDown(
-                                                    label: "Collection",
-                                                    value: currentCollection,
-                                                    itemList:
-                                                        collectionDropdown,
-                                                    onChanged: (value) {
-                                                      currentCollection =
-                                                          value.toString();
-                                                      _setProductOptionValues();
-                                                      setState(() {});
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: UpText(
-                                          "Add new product option value",
+                                          "Add new attribute value",
                                           type: UpTextType.heading6,
                                         ),
                                       ),
@@ -441,8 +348,8 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                             width: 300,
                                             child: UpTextField(
                                               controller:
-                                                  productOptionValueNameController,
-                                              label: "Product Option Value",
+                                                  attributeValueNameController,
+                                              label: "Attribute Value",
                                             ),
                                           ),
                                           Padding(
@@ -451,7 +358,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                               width: 100,
                                               child: UpButton(
                                                 onPressed: () {
-                                                  _updateProductOptionValue();
+                                                  _updateAttributeValue();
                                                 },
                                                 text: "Add",
                                               ),
@@ -463,7 +370,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Visibility(
-                                          visible: filteredProductOptionValues
+                                          visible: filteredAttributeValues
                                               .isNotEmpty,
                                           child: SizedBox(
                                             child: Column(
@@ -472,7 +379,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  ...filteredProductOptionValues
+                                                  ...filteredAttributeValues
                                                       .map((e) => Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -506,7 +413,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                                 ),
                                                                 GestureDetector(
                                                                   onTap: () {
-                                                                    _deleteProductOptionValue(
+                                                                    _deleteAttributeValue(
                                                                         e.id!);
                                                                   },
                                                                   child: UpIcon(

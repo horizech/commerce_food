@@ -5,36 +5,38 @@ import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditProductOptionDialog extends StatelessWidget {
-  final List<ProductOption>? productOptions;
-  final int? currentCollection;
-  final ProductOption? productOption;
-  const AddEditProductOptionDialog({
+class AddEditAttributeDialog extends StatefulWidget {
+  final List<Attribute>? attributes;
+  final Attribute? attribute;
+  const AddEditAttributeDialog({
     Key? key,
-    required this.productOptions,
-    this.currentCollection,
-    this.productOption,
+    required this.attributes,
+    this.attribute,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController productOptioncontroller = TextEditingController();
-    TextEditingController productOptionValuecontroller =
-        TextEditingController();
+  State<AddEditAttributeDialog> createState() => _AddEditAttributeDialogState();
+}
 
-    if (productOption != null) {
-      productOptioncontroller.text = productOption!.name;
+class _AddEditAttributeDialogState extends State<AddEditAttributeDialog> {
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController attributeController = TextEditingController();
+    TextEditingController attributeValuecontroller = TextEditingController();
+
+    if (widget.attribute != null) {
+      attributeController.text = widget.attribute!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          productOption != null ? "Edit Product Option" : "Add Product Option",
+          widget.attribute != null ? "Edit Attribute" : "Add Attribute",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -51,20 +53,20 @@ class AddEditProductOptionDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: UpTextField(
-                  controller: productOptioncontroller,
-                  label: 'Product Option',
+                  controller: attributeController,
+                  label: 'Attribute',
                 ),
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: UpText(
-                    "Enter first product option value to create product option"),
+                    "Enter first attribute value to create new attribute"),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: UpTextField(
-                  controller: productOptionValuecontroller,
-                  label: 'Product Option Value',
+                  controller: attributeValuecontroller,
+                  label: 'Attributes Value',
                 ),
               ),
             ],
@@ -90,57 +92,59 @@ class AddEditProductOptionDialog extends StatelessWidget {
             width: 100,
             child: UpButton(
                 colorType: UpColorType.success,
-                text: productOption != null ? "Edit" : "Add",
+                text: widget.attribute != null ? "Edit" : "Add",
                 onPressed: () async {
-                  if (productOptioncontroller.text.isEmpty &&
-                      productOptionValuecontroller.text.isEmpty) {
-                    if (productOptions != null &&
-                        !productOptions!.any(
+                  if (attributeController.text.isNotEmpty &&
+                      attributeValuecontroller.text.isNotEmpty) {
+                    if (widget.attributes != null &&
+                        !widget.attributes!.any(
                           (element) =>
                               element.name.toLowerCase() ==
-                              productOptioncontroller.text.toLowerCase(),
+                              attributeController.text.toLowerCase(),
                         )) {
-                      ProductOption newProductOption = ProductOption(
-                        name: productOptioncontroller.text,
+                      Attribute newAttribute = Attribute(
+                        name: attributeController.text,
                       );
                       APIResult? result =
-                          await AddEditProductService.addEditProductOption(
-                        data: newProductOption.toJson(newProductOption),
-                        productOptionId:
-                            productOption != null ? productOption!.id! : null,
+                          await AddEditProductService.addEditAttribute(
+                        data: newAttribute.toJson(newAttribute),
+                        attributeId: widget.attribute != null
+                            ? widget.attribute!.id!
+                            : null,
                       );
                       if (result != null) {
-                        ProductOptionValue newProductOptionValue =
-                            ProductOptionValue(
-                          name: productOptionValuecontroller.text,
-                          productOption: result.data!,
-                          collection: currentCollection!,
+                        AttributeValue newAttributeValue = AttributeValue(
+                          name: attributeValuecontroller.text,
+                          attribute: result.data!,
                         );
-                        APIResult? result1 = await AddEditProductService
-                            .addEditProductOptionValues(
-                          data: newProductOptionValue
-                              .toJson(newProductOptionValue),
+                        APIResult? result1 =
+                            await AddEditProductService.addEditAttributeValues(
+                          data: newAttributeValue.toJson(newAttributeValue),
                         );
                         if (result1 != null) {
                           showUpToast(
                             context: context,
                             text: result1.message ?? "",
                           );
-                          Navigator.pop(context, "success");
+                          if (mounted) {
+                            Navigator.pop(context, "success");
+                          }
                         }
                       } else {
                         showUpToast(
                           context: context,
                           text: "An error occurred",
                         );
-                        Navigator.pop(
-                          context,
-                        );
+                        if (mounted) {
+                          Navigator.pop(
+                            context,
+                          );
+                        }
                       }
                     } else {
                       showUpToast(
                         context: context,
-                        text: "Product Option Already Exits",
+                        text: "Attribute already exits",
                       );
                       Navigator.pop(context);
                     }

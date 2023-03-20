@@ -11,7 +11,7 @@ import 'package:shop/models/add_on.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/pages/admin/add_addons.dart';
 import 'package:shop/pages/admin/add_edit_keyword_widget.dart';
-import 'package:shop/pages/admin/add_edit_product_options_widget.dart';
+import 'package:shop/pages/admin/add_edit_attribute_widget.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/add_media_widget.dart';
 import 'package:shop/widgets/gallery_dropdown.dart';
@@ -317,7 +317,7 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
                             isVariedProduct == false,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: AddEditProductOptionsWidget(
+                          child: AddEditAttributesWidget(
                             change: (newOptions) {
                               options = newOptions;
                             },

@@ -10,13 +10,14 @@ import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
+import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/dialogs/add_edit_product_dialog.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/pages/admin/admin_product.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/add_media_widget.dart';
@@ -41,6 +42,8 @@ class _AdminProductsState extends State<AdminProducts> {
   TextEditingController mediaController = TextEditingController();
   bool isAuthorized = false;
   Collection selectedCollection = const Collection(name: "", id: -1);
+  int view = 1;
+  Product? currentProduct;
   @override
   void initState() {
     super.initState();
@@ -87,24 +90,85 @@ class _AdminProductsState extends State<AdminProducts> {
                 )),
             ...collections
                 .map(
-                  (e) => GestureDetector(
-                    onTap: (() {
-                      selectedCollection = e;
-                      nameController.text = selectedCollection.name;
-                      mediaController.text =
-                          selectedCollection.media.toString();
-                      currentParent = selectedCollection.parent.toString();
-                      selectedMedia = selectedCollection.media;
-                      setState(() {});
-                    }),
-                    child: Container(
-                      color: selectedCollection.id == e.id
-                          ? UpConfig.of(context).theme.primaryColor[100]
-                          : Colors.transparent,
-                      child: ListTile(
-                        title: UpText(e.name),
+                  (e) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Visibility(
+                        visible: selectedCollection.id != e.id,
+                        child: GestureDetector(
+                          onTap: (() {
+                            selectedCollection = e;
+                            nameController.text = selectedCollection.name;
+                            mediaController.text =
+                                selectedCollection.media.toString();
+                            currentParent =
+                                selectedCollection.parent.toString();
+                            selectedMedia = selectedCollection.media;
+                            view = 1;
+                            setState(() {});
+                          }),
+                          child: Container(
+                            color: selectedCollection.id == e.id
+                                ? UpConfig.of(context).theme.primaryColor[100]
+                                : Colors.transparent,
+                            child: ListTile(
+                              title: UpText(e.name),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Visibility(
+                          visible: selectedCollection.id == e.id &&
+                              selectedCollection.id != -1,
+                          child: UpExpansionTile(
+                            onExpansionChanged: (p0) {
+                              if (p0) {
+                                view = 1;
+                                setState(() {});
+                              }
+                            },
+                            title: e.name,
+                            expandedCrossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            expandedAlignment: Alignment.topLeft,
+                            childrenPadding: const EdgeInsets.all(8),
+                            initiallyExpanded: true,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  view = 2;
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  color: view == 2
+                                      ? UpConfig.of(context)
+                                          .theme
+                                          .primaryColor[100]
+                                      : Colors.transparent,
+                                  child: const ListTile(
+                                    title: UpText("Create new product"),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: (() {
+                                  view = 3;
+                                  setState(() {});
+                                }),
+                                child: Container(
+                                  color: view == 3 || view == 4
+                                      ? UpConfig.of(context)
+                                          .theme
+                                          .primaryColor[100]
+                                      : Colors.transparent,
+                                  child: const ListTile(
+                                    title: UpText("All Products"),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
+                    ],
                   ),
                 )
                 .toList()
@@ -112,6 +176,230 @@ class _AdminProductsState extends State<AdminProducts> {
         ),
       ),
     );
+  }
+
+  Widget rightView() {
+    if (view == 2) {
+      return AdminProduct(
+        collection: selectedCollection,
+      );
+    } else if (view == 3) {
+      return allProductsView();
+    } else if (view == 4) {
+      return AdminProduct(
+        collection: selectedCollection,
+        currentProduct: currentProduct,
+      );
+    } else {
+      return editCollectionView();
+    }
+  }
+
+  Widget allProductsView() {
+    return SizedBox(
+      width: 500,
+      child: Visibility(
+        visible: selectedCollection.id != -1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: UpText(
+                      "Products",
+                      type: UpTextType.heading5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            FutureBuilder<List<Product>>(
+              future: ProductService.getProducts(
+                  [selectedCollection.id!], {}, null, "", {}),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Product>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return snapshot.hasData &&
+                          snapshot.data != null &&
+                          snapshot.data!.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ...snapshot.data!.map((e) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8.0,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 400,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    UpText(
+                                                      e.name,
+                                                      style: UpStyle(
+                                                        textSize: 16,
+                                                        textWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    UpText(
+                                                      e.description ?? "",
+                                                      style:
+                                                          UpStyle(textSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                view = 4;
+                                                currentProduct = e;
+                                                setState(() {});
+                                              },
+                                              child: UpIcon(
+                                                icon: Icons.edit,
+                                                style: UpStyle(iconSize: 20),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                _deleteProduct(e.id!);
+                                              },
+                                              child: UpIcon(
+                                                icon: Icons.delete,
+                                                style: UpStyle(iconSize: 20),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ))
+                                ]),
+                          ),
+                        )
+                      : const Center(
+                          child: SizedBox(),
+                        );
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: UpCircularProgress(
+                      width: 20,
+                      height: 20,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget editCollectionView() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Align(
+        alignment: Alignment.topLeft,
+        child: UpText(
+          "Collection",
+          type: UpTextType.heading6,
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: 300,
+          child: UpTextField(
+            controller: nameController,
+            label: 'Name',
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: 300,
+          child: AddMediaWidget(
+            selectedMedia: selectedMedia,
+            onChnage: (media) {
+              selectedMedia = media;
+              setState(() {});
+            },
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+            width: 300,
+            child: UpDropDown(
+              label: "Parent",
+              value: currentParent,
+              itemList: collectionDropdown,
+              onChanged: (value) {
+                currentParent = value.toString();
+
+                setState(() {});
+              },
+            )),
+      ),
+      SizedBox(
+        width: 300,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 70,
+                child: UpButton(
+                  onPressed: () {
+                    _updateCollection(selectedCollection.id != -1
+                        ? selectedCollection
+                        : null);
+                  },
+                  text: "Save",
+                ),
+              ),
+            ),
+            Visibility(
+              visible: selectedCollection.id != -1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 70,
+                  child: UpButton(
+                    onPressed: () {
+                      _deleteCollection(selectedCollection.id!);
+                    },
+                    text: "Delete",
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
   }
 
   _updateCollection(Collection? c) async {
@@ -167,25 +455,6 @@ class _AdminProductsState extends State<AdminProducts> {
         context: context,
         text: "An Error Occurred",
       );
-    }
-  }
-
-  _addEditProductsDialog(Product? product) {
-    if (selectedCollection.id != null && selectedCollection.id! > -1) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AddEditProductDialog(
-            currentCollection: selectedCollection.id!,
-            currentProduct: product,
-          );
-        },
-      ).then((result) async {
-        if (result == "success") {
-          setState(() {});
-        }
-      });
     }
   }
 
@@ -245,243 +514,7 @@ class _AdminProductsState extends State<AdminProducts> {
                           top: 10,
                         ),
                         child: SizedBox(
-                          width: 500,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: UpText(
-                                    "Collection",
-                                    type: UpTextType.heading5,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 300,
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          width: 300,
-                                          child: UpTextField(
-                                            controller: nameController,
-                                            label: 'Name',
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: AddMediaWidget(
-                                          selectedMedia: selectedMedia,
-                                          onChnage: (media) {
-                                            selectedMedia = media;
-                                            setState(() {});
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                            width: 300,
-                                            child: UpDropDown(
-                                              label: "Parent",
-                                              value: currentParent,
-                                              itemList: collectionDropdown,
-                                              onChanged: (value) {
-                                                currentParent =
-                                                    value.toString();
-
-                                                setState(() {});
-                                              },
-                                            )),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
-                                              width: 70,
-                                              child: UpButton(
-                                                onPressed: () {
-                                                  _updateCollection(
-                                                      selectedCollection.id !=
-                                                              -1
-                                                          ? selectedCollection
-                                                          : null);
-                                                },
-                                                text: "Save",
-                                              ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible:
-                                                selectedCollection.id != -1,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: 70,
-                                                child: UpButton(
-                                                  onPressed: () {
-                                                    _deleteCollection(
-                                                        selectedCollection.id!);
-                                                  },
-                                                  text: "Delete",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ]),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Visibility(
-                                visible: selectedCollection.id != -1,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: UpText(
-                                              "Products",
-                                              type: UpTextType.heading5,
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _addEditProductsDialog(null);
-                                          },
-                                          child: UpIcon(
-                                            icon: Icons.add,
-                                            style: UpStyle(iconSize: 20),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FutureBuilder<List<Product>>(
-                                      future: ProductService.getProducts(
-                                          [selectedCollection.id!],
-                                          {},
-                                          null,
-                                          "",
-                                          {}),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<List<Product>>
-                                              snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          return snapshot.hasData &&
-                                                  snapshot.data != null &&
-                                                  snapshot.data!.isNotEmpty
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ...snapshot.data!
-                                                              .map(
-                                                                  (e) =>
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(
-                                                                          bottom:
-                                                                              8.0,
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.start,
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.center,
-                                                                          children: [
-                                                                            Flexible(
-                                                                              child: SizedBox(
-                                                                                width: 400,
-                                                                                child: Column(
-                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    UpText(
-                                                                                      e.name,
-                                                                                      style: UpStyle(
-                                                                                        textSize: 16,
-                                                                                        textWeight: FontWeight.bold,
-                                                                                      ),
-                                                                                    ),
-                                                                                    UpText(
-                                                                                      e.description ?? "",
-                                                                                      style: UpStyle(textSize: 12),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                _addEditProductsDialog(e);
-                                                                              },
-                                                                              child: UpIcon(
-                                                                                icon: Icons.edit,
-                                                                                style: UpStyle(iconSize: 20),
-                                                                              ),
-                                                                            ),
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                _deleteProduct(e.id!);
-                                                                              },
-                                                                              child: UpIcon(
-                                                                                icon: Icons.delete,
-                                                                                style: UpStyle(iconSize: 20),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ))
-                                                        ]),
-                                                  ),
-                                                )
-                                              : const Center(
-                                                  child: SizedBox(),
-                                                );
-                                        } else {
-                                          return const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: UpCircularProgress(
-                                              width: 20,
-                                              height: 20,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: Center(child: rightView()),
                         ),
                       ),
                     ],

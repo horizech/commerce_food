@@ -7,87 +7,80 @@ import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_text.dart';
-import 'package:shop/dialogs/add_edit_product_option_dialog.dart';
-import 'package:shop/dialogs/add_edit_product_option_value_dialog.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/dialogs/add_edit_attribute_dialog.dart';
+import 'package:shop/dialogs/add_edit_attribute_value_dialog.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class AddEditProductOptionsWidget extends StatefulWidget {
+class AddEditAttributesWidget extends StatefulWidget {
   final int currentCollection;
   final Function? change;
   final Map<String, int>? options;
-  const AddEditProductOptionsWidget(
+  const AddEditAttributesWidget(
       {Key? key, required this.currentCollection, this.change, this.options})
       : super(key: key);
 
   @override
-  State<AddEditProductOptionsWidget> createState() =>
-      _AddEditProductOptionsWidgetState();
+  State<AddEditAttributesWidget> createState() =>
+      _AddEditAttributesWidgetState();
 }
 
-class _AddEditProductOptionsWidgetState
-    extends State<AddEditProductOptionsWidget> {
-  List<ProductOption> productOptions = [];
-  List<ProductOptionValue> productOptionValues = [];
+class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
+  List<Attribute> attributes = [];
+  List<AttributeValue> attributeValues = [];
   Map<String, int> newOptions = {};
   int previousCollection = 0;
 
   //  product option value add dialog
-  _productOptionValueAddDialog(ProductOption productOption) {
+  _attributeValueAddDialog(Attribute productOption) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AddEditProductOptionValueDialog(
-          productOption: productOption,
-          currentCollection: widget.currentCollection,
+        return AddEditAttributeValueDialog(
+          attribute: productOption,
         );
       },
     ).then((result) {
       if (result == "success") {
-        getProductOptionValues();
+        getAttributeValues();
       }
     });
   }
 
   //  product option add dialog
-  _productOptionAddDialog() {
+  _attributeAddDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AddEditProductOptionDialog(
-          productOptions: productOptions,
-          currentCollection: widget.currentCollection,
+        return AddEditAttributeDialog(
+          attributes: attributes,
         );
       },
     ).then((result) {
       if (result == "success") {
-        getProductOptions();
+        getAttributes();
       }
     });
   }
 
 //by api
-  getProductOptions() async {
-    List<ProductOption>? newProductOptions =
-        await AddEditProductService.getProductOptions();
+  getAttributes() async {
+    List<Attribute>? newProductOptions =
+        await AddEditProductService.getAttributes();
 
     if (newProductOptions != null && newProductOptions.isNotEmpty) {
-      productOptions = newProductOptions;
-      getProductOptionValues();
+      attributes = newProductOptions;
+      getAttributeValues();
     } else {}
   }
 
-  getProductOptionValues() async {
-    productOptionValues = [];
-    List<ProductOptionValue>? newProductOptionsValues =
-        await AddEditProductService.getProductOptionValuesByConditions(
-            widget.currentCollection, null);
-    if (newProductOptionsValues != null && newProductOptionsValues.isNotEmpty) {
-      productOptionValues = newProductOptionsValues;
+  getAttributeValues() async {
+    attributeValues = await AddEditProductService.getAttributeValues() ?? [];
+    if (attributeValues.isNotEmpty) {
       setState(() {});
     }
   }
@@ -107,26 +100,19 @@ class _AddEditProductOptionsWidgetState
     return BlocConsumer<StoreCubit, StoreState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (productOptions.isEmpty) {
-          if (state.productOptions != null &&
-              state.productOptions!.isNotEmpty) {
-            productOptions = state.productOptions!.toList();
+        if (attributes.isEmpty) {
+          if (state.attributes != null && state.attributes!.isNotEmpty) {
+            attributes = state.attributes!.toList();
           }
         }
-        if (productOptionValues.isEmpty) {
-          if (state.productOptionValues != null &&
-              state.productOptionValues!.isNotEmpty) {
-            if (state.productOptionValues!.any(
-                (element) => element.collection == widget.currentCollection)) {
-              productOptionValues = state.productOptionValues!
-                  .where((element) =>
-                      element.collection == widget.currentCollection)
-                  .toList();
-            }
+        if (attributeValues.isEmpty) {
+          if (state.attributeValues != null &&
+              state.attributeValues!.isNotEmpty) {
+            attributeValues = state.attributeValues!.toList();
           }
         }
 
-        return productOptions.isNotEmpty
+        return attributes.isNotEmpty
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -139,7 +125,7 @@ class _AddEditProductOptionsWidgetState
                       const Padding(
                         padding: EdgeInsets.only(top: 5.0),
                         child: UpText(
-                          "Product Options",
+                          "Attribute",
                           type: UpTextType.heading6,
                         ),
                       ),
@@ -149,7 +135,7 @@ class _AddEditProductOptionsWidgetState
                         child: UpButton(
                           colorType: UpColorType.tertiary,
                           onPressed: () {
-                            _productOptionAddDialog();
+                            _attributeAddDialog();
                           },
                           text: "Create",
                           icon: Icons.add,
@@ -157,20 +143,20 @@ class _AddEditProductOptionsWidgetState
                       ),
                     ],
                   ),
-                  // product option values
-                  productOptions.isNotEmpty && productOptionValues.isNotEmpty
+                  // attribute values
+                  attributes.isNotEmpty && attributeValues.isNotEmpty
                       ? Wrap(
-                          children: productOptions.map(
+                          children: attributes.map(
                             (element) {
-                              if (productOptionValues
-                                  .any((v) => v.productOption == element.id)) {
+                              if (attributeValues
+                                  .any((v) => v.attribute == element.id)) {
                                 return Wrap(
                                   alignment: WrapAlignment.center,
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    ProductOptionDropdownWidget(
+                                    AttributeDropdownWidget(
                                       productOption: element,
-                                      productOptionValues: productOptionValues,
+                                      attributeValues: attributeValues,
                                       change: (value) {
                                         newOptions[element.name] =
                                             int.parse(value);
@@ -187,7 +173,7 @@ class _AddEditProductOptionsWidgetState
                                     ),
                                     UpButton(
                                       onPressed: () {
-                                        _productOptionValueAddDialog(element);
+                                        _attributeValueAddDialog(element);
                                       },
                                       type: UpButtonType.icon,
                                       child: const Icon(Icons.add),
@@ -212,29 +198,28 @@ class _AddEditProductOptionsWidgetState
   }
 }
 
-class ProductOptionDropdownWidget extends StatefulWidget {
-  final List<ProductOptionValue>? productOptionValues;
-  final ProductOption productOption;
+class AttributeDropdownWidget extends StatefulWidget {
+  final List<AttributeValue>? attributeValues;
+  final Attribute productOption;
   final Function? change;
   final String? initialValue;
 
-  const ProductOptionDropdownWidget({
+  const AttributeDropdownWidget({
     Key? key,
-    this.productOptionValues,
+    this.attributeValues,
     required this.productOption,
     this.initialValue,
     this.change,
   }) : super(key: key);
 
   @override
-  State<ProductOptionDropdownWidget> createState() =>
-      _ProductOptionDropdownWidgetState();
+  State<AttributeDropdownWidget> createState() =>
+      _AttributeDropdownWidgetState();
 }
 
-class _ProductOptionDropdownWidgetState
-    extends State<ProductOptionDropdownWidget> {
+class _AttributeDropdownWidgetState extends State<AttributeDropdownWidget> {
   String currentOption = "";
-  List<ProductOptionValue>? oldProductOptionValues = [];
+  List<AttributeValue>? oldProductOptionValues = [];
   List<UpLabelValuePair> productOptionDropdown = [];
 
   @override
@@ -244,13 +229,13 @@ class _ProductOptionDropdownWidgetState
   }
 
   initialize() {
-    widget.productOptionValues!
-        .where((e) => e.productOption == widget.productOption.id)
+    widget.attributeValues!
+        .where((e) => e.attribute == widget.productOption.id)
         .forEach((element) {
       productOptionDropdown
           .add(UpLabelValuePair(label: element.name, value: "${element.id}"));
     });
-    oldProductOptionValues = widget.productOptionValues;
+    oldProductOptionValues = widget.attributeValues;
 
     // in case of edit options not null
     if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
@@ -260,7 +245,7 @@ class _ProductOptionDropdownWidgetState
 
   @override
   Widget build(BuildContext context) {
-    if (widget.productOptionValues != oldProductOptionValues) {
+    if (widget.attributeValues != oldProductOptionValues) {
       productOptionDropdown.clear();
       initialize();
     }

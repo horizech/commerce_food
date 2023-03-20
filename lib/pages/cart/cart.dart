@@ -111,20 +111,20 @@
 //   return BlocConsumer<StoreCubit, StoreState>(
 //     listener: (context, state) {},
 //     builder: (context, state) {
-//       // if (state.productOptionValues!.any((element) =>
+//       // if (state.attributeValues!.any((element) =>
 //       //     element.id ==
 //       //     item.selectedVariationsValues[VariationTypes.size.index])) {
-//       //   sizeVariation = state.productOptionValues!
+//       //   sizeVariation = state.attributeValues!
 //       //       .map((e) => e)
 //       //       .where((element) =>
 //       //           element.id ==
 //       //           item.selectedVariationsValues[VariationTypes.size.index])
 //       //       .first;
 //       // }
-//       // if (state.productOptionValues!.any((element) =>
+//       // if (state.attributeValues!.any((element) =>
 //       //   element.id ==
 //       //   item.selectedVariationsValues[VariationTypes.color.index])) {
-//       // colorVariation = state.productOptionValues!
+//       // colorVariation = state.attributeValues!
 //       //     .map((e) => e)
 //       //     .where((element) =>
 //       //         element.id ==
@@ -238,20 +238,20 @@
 //   return BlocConsumer<StoreCubit, StoreState>(
 //       listener: (context, state) {},
 //       builder: (context, state) {
-//         // if (state.productOptionValues!.any((element) =>
+//         // if (state.attributeValues!.any((element) =>
 //         //     element.id ==
 //         //     item.selectedVariationsValues[VariationTypes.size.index])) {
-//         //   sizeVariation = state.productOptionValues!
+//         //   sizeVariation = state.attributeValues!
 //         //       .map((e) => e)
 //         //       .where((element) =>
 //         //           element.id ==
 //         //           item.selectedVariationsValues[VariationTypes.size.index])
 //         //       .first;
 //         // }
-//         // if (state.productOptionValues!.any((element) =>
+//         // if (state.attributeValues!.any((element) =>
 //         //     element.id ==
 //         //     item.selectedVariationsValues[VariationTypes.color.index])) {
-//         //   colorVariation = state.productOptionValues!
+//         //   colorVariation = state.attributeValues!
 //         //       .map((e) => e)
 //         //       .where((element) =>
 //         //           element.id ==

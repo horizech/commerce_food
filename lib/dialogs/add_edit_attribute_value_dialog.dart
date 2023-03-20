@@ -6,37 +6,34 @@ import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditProductOptionValueDialog extends StatelessWidget {
-  final ProductOption productOption;
-  final int currentCollection;
-  final ProductOptionValue? productOptionValue;
-  const AddEditProductOptionValueDialog({
+class AddEditAttributeValueDialog extends StatelessWidget {
+  final Attribute attribute;
+  final AttributeValue? attributeValue;
+  const AddEditAttributeValueDialog({
     Key? key,
-    required this.productOption,
-    required this.currentCollection,
-    this.productOptionValue,
+    required this.attribute,
+    this.attributeValue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController productOptionValuecontroller =
-        TextEditingController();
+    TextEditingController attributeValuecontroller = TextEditingController();
 
-    if (productOptionValue != null) {
-      productOptionValuecontroller.text = productOptionValue!.name;
+    if (attributeValue != null) {
+      attributeValuecontroller.text = attributeValue!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          productOptionValue != null
-              ? "Edit Product Option Value"
-              : "Add Product Option Value",
+          attributeValue != null
+              ? "Edit Attribute Value"
+              : "Add Attribute Value",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -53,15 +50,15 @@ class AddEditProductOptionValueDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: UpText(
-                  productOption.name,
+                  attribute.name,
                   type: UpTextType.heading4,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: UpTextField(
-                  controller: productOptionValuecontroller,
-                  label: 'Product Option Value',
+                  controller: attributeValuecontroller,
+                  label: 'Attribute Value',
                 ),
               ),
             ],
@@ -87,20 +84,17 @@ class AddEditProductOptionValueDialog extends StatelessWidget {
             width: 100,
             child: UpButton(
               colorType: UpColorType.success,
-              text: productOptionValue != null ? "Edit" : "Add",
+              text: attributeValue != null ? "Edit" : "Add",
               onPressed: () async {
-                ProductOptionValue newProductOptionValue = ProductOptionValue(
-                  name: productOptionValuecontroller.text,
-                  productOption: productOption.id!,
-                  collection: currentCollection,
+                AttributeValue newAttributeValue = AttributeValue(
+                  name: attributeValuecontroller.text,
+                  attribute: attribute.id!,
                 );
                 APIResult? result =
-                    await AddEditProductService.addEditProductOptionValues(
-                        data:
-                            newProductOptionValue.toJson(newProductOptionValue),
-                        productOptionValueId: productOptionValue != null
-                            ? productOptionValue!.id
-                            : null);
+                    await AddEditProductService.addEditAttributeValues(
+                        data: newAttributeValue.toJson(newAttributeValue),
+                        attributeValueId:
+                            attributeValue != null ? attributeValue!.id : null);
                 if (result != null) {
                   if (result.success) {
                     showUpToast(

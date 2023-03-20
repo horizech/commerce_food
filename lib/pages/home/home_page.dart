@@ -5,8 +5,8 @@ import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/models/product.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:shop/models/restaurant.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Restaurant> restaurants = [];
   List<Restaurant> filteredRestaurant = [];
-  List<ProductOptionValue> productOptionValues = [];
-  List<ProductOption> productOptions = [];
+  List<AttributeValue> attributeValues = [];
+  List<Attribute> attributes = [];
 
   List<UpLabelValuePair> filtersDropdown = [];
   Map<String, List<int>> variations = {};
@@ -48,13 +48,12 @@ class _HomePageState extends State<HomePage> {
             if (state.restaurants != null && state.restaurants!.isNotEmpty) {
               restaurants = state.restaurants!.toList();
             }
-            if (state.productOptionValues != null &&
-                state.productOptionValues!.isNotEmpty) {
-              productOptionValues = state.productOptionValues!.toList();
+            if (state.attributeValues != null &&
+                state.attributeValues!.isNotEmpty) {
+              attributeValues = state.attributeValues!.toList();
             }
-            if (state.productOptions != null &&
-                state.productOptions!.isNotEmpty) {
-              productOptions = state.productOptions!.toList();
+            if (state.attributes != null && state.attributes!.isNotEmpty) {
+              attributes = state.attributes!.toList();
             }
 
             return SingleChildScrollView(
@@ -63,12 +62,12 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     // Visibility(
-                    //   visible: productOptionValues.isNotEmpty,
+                    //   visible: attributeValues.isNotEmpty,
                     //   child: SizedBox(
                     //     height: 200,
                     //     child: ListView.builder(
                     //         scrollDirection: Axis.horizontal,
-                    //         itemCount: productOptionValues.length,
+                    //         itemCount: attributeValues.length,
                     //         shrinkWrap: true,
                     //         itemBuilder: (BuildContext context, int index) {
                     //           return Padding(
@@ -77,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                     //               onChange:
                     //                   (ProductOptionValue productOptionValue) {
                     //                 variations.addAll({
-                    //                   (productOptions
+                    //                   (attributes
                     //                       .where((element) =>
                     //                           element.id ==
                     //                           productOptionValue.productOption)
@@ -87,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                     //                 setState(() {});
                     //               },
                     //               productOptionValue:
-                    //                   productOptionValues[index],
+                    //                   attributeValues[index],
                     //             ),
                     //           );
                     //         }),
@@ -150,7 +149,7 @@ class _HomePageState extends State<HomePage> {
 
 class FilterBox extends StatelessWidget {
   final Function onChange;
-  final ProductOptionValue productOptionValue;
+  final AttributeValue productOptionValue;
   const FilterBox({
     Key? key,
     required this.onChange,

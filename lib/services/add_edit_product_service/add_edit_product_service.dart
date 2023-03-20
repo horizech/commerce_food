@@ -7,23 +7,23 @@ import 'package:shop/models/keyword.dart';
 import 'package:shop/models/media.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_combo.dart';
-import 'package:shop/models/product_option_value.dart';
-import 'package:shop/models/product_options.dart';
+import 'package:shop/models/attribute_value.dart';
+import 'package:shop/models/attribute.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shop/models/product_variation.dart';
 
 class AddEditProductService {
-  static Future<APIResult?> addEditProductOptionValues({
-    int? productOptionValueId,
+  static Future<APIResult?> addEditAttributeValues({
+    int? attributeValueId,
     required Map<String, dynamic> data,
   }) async {
     APIResult? result;
-    if (productOptionValueId != null) {
+    if (attributeValueId != null) {
       result = await Apiraiser.data
-          .update("ProductOptionValues", productOptionValueId, data);
+          .update("AttributeValues", attributeValueId, data);
     } else {
-      result = await Apiraiser.data.insert("ProductOptionValues", data);
+      result = await Apiraiser.data.insert("AttributeValues", data);
     }
 
     if (result.success) {
@@ -33,21 +33,19 @@ class AddEditProductService {
     }
   }
 
-  static Future<APIResult?> deleteProductOption(int productOptionId) async {
+  static Future<APIResult?> deleteAttribute(int attributeId) async {
+    APIResult result = await Apiraiser.data.delete("Attributes", attributeId);
+
+    if (result.success) {
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<APIResult?> deleteAttributeValue(int attributeValueId) async {
     APIResult result =
-        await Apiraiser.data.delete("ProductOptions", productOptionId);
-
-    if (result.success) {
-      return result;
-    } else {
-      return null;
-    }
-  }
-
-  static Future<APIResult?> deleteProductOptionValue(
-      int productOptionValueId) async {
-    APIResult result = await Apiraiser.data
-        .delete("ProductOptionValues", productOptionValueId);
+        await Apiraiser.data.delete("AttributeValues", attributeValueId);
 
     if (result.success) {
       return result;
@@ -104,14 +102,13 @@ class AddEditProductService {
     }
   }
 
-  static Future<APIResult?> addEditProductOption(
-      {required Map<String, dynamic> data, int? productOptionId}) async {
+  static Future<APIResult?> addEditAttribute(
+      {required Map<String, dynamic> data, int? attributeId}) async {
     APIResult? result;
-    if (productOptionId != null) {
-      result =
-          await Apiraiser.data.update("ProductOptions", productOptionId, data);
+    if (attributeId != null) {
+      result = await Apiraiser.data.update("Attributes", attributeId, data);
     } else {
-      result = await Apiraiser.data.insert("ProductOptions", data);
+      result = await Apiraiser.data.insert("Attributes", data);
     }
 
     if (result.success) {
@@ -121,7 +118,7 @@ class AddEditProductService {
     }
   }
 
-  static Future<ProductOption?> getProductOptionByName(String name) async {
+  static Future<Attribute?> getProductOptionByName(String name) async {
     List<QuerySearchItem> conditions = [
       QuerySearchItem(
           name: "Name", condition: ColumnCondition.equal, value: name)
@@ -130,8 +127,8 @@ class AddEditProductService {
         await Apiraiser.data.getByConditions("ProductOptions", conditions);
 
     if (result.success) {
-      ProductOption productOption = (result.data as List<dynamic>)
-          .map((p) => ProductOption.fromJson(p as Map<String, dynamic>))
+      Attribute productOption = (result.data as List<dynamic>)
+          .map((p) => Attribute.fromJson(p as Map<String, dynamic>))
           .first;
       return productOption;
     } else {
@@ -237,15 +234,14 @@ class AddEditProductService {
     }
   }
 
-  static Future<List<ProductOptionValue>?> getProductOptionValues() async {
-    APIResult result = await Apiraiser.data.get("ProductOptionValues", -1);
+  static Future<List<AttributeValue>?> getAttributeValues() async {
+    APIResult result = await Apiraiser.data.get("AttributeValues", -1);
 
     if (result.success) {
-      List<ProductOptionValue> productOptionValues = (result.data
-              as List<dynamic>)
-          .map((p) => ProductOptionValue.fromJson(p as Map<String, dynamic>))
+      List<AttributeValue> attributeValues = (result.data as List<dynamic>)
+          .map((p) => AttributeValue.fromJson(p as Map<String, dynamic>))
           .toList();
-      return productOptionValues;
+      return attributeValues;
     } else {
       return null;
     }
@@ -303,14 +299,14 @@ class AddEditProductService {
     }
   }
 
-  static Future<List<ProductOption>?> getProductOptions() async {
-    APIResult result = await Apiraiser.data.get("ProductOptions", -1);
+  static Future<List<Attribute>?> getAttributes() async {
+    APIResult result = await Apiraiser.data.get("Attributes", -1);
 
     if (result.success) {
-      List<ProductOption> productOptions = (result.data as List<dynamic>)
-          .map((p) => ProductOption.fromJson(p as Map<String, dynamic>))
+      List<Attribute> attributes = (result.data as List<dynamic>)
+          .map((p) => Attribute.fromJson(p as Map<String, dynamic>))
           .toList();
-      return productOptions;
+      return attributes;
     } else {
       return null;
     }
@@ -512,7 +508,7 @@ class AddEditProductService {
     return result;
   }
 
-  static Future<List<ProductOptionValue>?> getProductOptionValuesByConditions(
+  static Future<List<AttributeValue>?> getProductOptionValuesByConditions(
       int? currentCollection, int? currentProductOption) async {
     List<QuerySearchItem> conditions = [];
     if (currentProductOption != null) {
@@ -539,11 +535,10 @@ class AddEditProductService {
         await Apiraiser.data.getByConditions("ProductOptionValues", conditions);
 
     if (result.success) {
-      List<ProductOptionValue> productOptionValues = (result.data
-              as List<dynamic>)
-          .map((p) => ProductOptionValue.fromJson(p as Map<String, dynamic>))
+      List<AttributeValue> attributeValues = (result.data as List<dynamic>)
+          .map((p) => AttributeValue.fromJson(p as Map<String, dynamic>))
           .toList();
-      return productOptionValues;
+      return attributeValues;
     } else {
       return null;
     }

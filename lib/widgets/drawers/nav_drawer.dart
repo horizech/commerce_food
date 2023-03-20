@@ -22,9 +22,9 @@ class NavDrawer extends StatelessWidget {
           .navigateToNamed(Routes.adminProductVariations);
     }
 
-    void productOption(context) {
+    void attributes(context) {
       ServiceManager<UpNavigationService>()
-          .navigateToNamed(Routes.adminProductOptions);
+          .navigateToNamed(Routes.adminAttributes);
     }
 
     void combos(context) {
@@ -59,9 +59,9 @@ class NavDrawer extends StatelessWidget {
         onTap: combos,
       ),
       UpDrawerItem(
-        title: Constant.productOptions,
+        title: Constant.attributes,
         icon: Icons.merge_rounded,
-        onTap: productOption,
+        onTap: attributes,
       ),
       UpDrawerItem(
         title: Constant.gallery,
