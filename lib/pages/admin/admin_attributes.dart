@@ -244,160 +244,165 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                   }
                 }
                 return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      leftSide(),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 50.0,
-                          right: 20,
-                          top: 10,
-                        ),
-                        child: SizedBox(
-                          width: 500,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: UpText(
-                                    "Attribute",
-                                    type: UpTextType.heading5,
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        leftSide(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20,
+                            top: 10,
+                          ),
+                          child: SizedBox(
+                            width: 400,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: UpText(
+                                      "Attribute",
+                                      type: UpTextType.heading5,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                  width: 300,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: UpTextField(
-                                          controller: nameController,
-                                          label: 'Name',
+                                SizedBox(
+                                    width: 300,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: UpTextField(
+                                            controller: nameController,
+                                            label: 'Name',
+                                          ),
                                         ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
-                                              width: 70,
-                                              child: UpButton(
-                                                onPressed: () {
-                                                  _updateAttribute(
-                                                    selectedAttribute.id != -1
-                                                        ? selectedAttribute
-                                                        : null,
-                                                  );
-                                                },
-                                                text: "Save",
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Visibility(
+                                              visible:
+                                                  selectedAttribute.id != -1,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: SizedBox(
+                                                  width: 70,
+                                                  height: 30,
+                                                  child: UpButton(
+                                                    onPressed: () {
+                                                      _deleteAttribute(
+                                                          selectedAttribute
+                                                              .id!);
+                                                    },
+                                                    text: "Delete",
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Visibility(
-                                            visible: selectedAttribute.id != -1,
-                                            child: Padding(
+                                            Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: SizedBox(
                                                 width: 70,
+                                                height: 30,
                                                 child: UpButton(
                                                   onPressed: () {
-                                                    _deleteAttribute(
-                                                        selectedAttribute.id!);
+                                                    _updateAttribute(
+                                                      selectedAttribute.id != -1
+                                                          ? selectedAttribute
+                                                          : null,
+                                                    );
                                                   },
-                                                  text: "Delete",
+                                                  text: "Save",
                                                 ),
                                               ),
                                             ),
+                                          ],
+                                        ),
+                                      ],
+                                    )),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Visibility(
+                                  visible: selectedAttribute.id != -1,
+                                  child: Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: UpText(
+                                            "Add new attribute value",
+                                            type: UpTextType.heading6,
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Visibility(
-                                visible: selectedAttribute.id != -1,
-                                child: Column(
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: UpText(
-                                          "Add new attribute value",
-                                          type: UpTextType.heading6,
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: UpTextField(
-                                              controller:
-                                                  attributeValueNameController,
-                                              label: "Attribute Value",
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
-                                              width: 100,
-                                              child: UpButton(
-                                                onPressed: () {
-                                                  _updateAttributeValue();
-                                                },
-                                                text: "Add",
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 250,
+                                              child: UpTextField(
+                                                controller:
+                                                    attributeValueNameController,
+                                                label: "Attribute Value",
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                width: 100,
+                                                child: UpButton(
+                                                  onPressed: () {
+                                                    _updateAttributeValue();
+                                                  },
+                                                  text: "Add",
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Visibility(
-                                          visible: filteredAttributeValues
-                                              .isNotEmpty,
-                                          child: SizedBox(
-                                            child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  ...filteredAttributeValues
-                                                      .map((e) => Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                              bottom: 8.0,
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Flexible(
-                                                                  child:
-                                                                      SizedBox(
-                                                                    width: 400,
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Visibility(
+                                            visible: filteredAttributeValues
+                                                .isNotEmpty,
+                                            child: SizedBox(
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    ...filteredAttributeValues
+                                                        .map((e) => Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                bottom: 8.0,
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Flexible(
                                                                     child:
                                                                         UpText(
                                                                       e.name,
@@ -410,34 +415,35 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    _deleteAttributeValue(
-                                                                        e.id!);
-                                                                  },
-                                                                  child: UpIcon(
-                                                                    icon: Icons
-                                                                        .delete,
-                                                                    style: UpStyle(
-                                                                        iconSize:
-                                                                            20),
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      _deleteAttributeValue(
+                                                                          e.id!);
+                                                                    },
+                                                                    child:
+                                                                        UpIcon(
+                                                                      icon: Icons
+                                                                          .delete,
+                                                                      style: UpStyle(
+                                                                          iconSize:
+                                                                              20),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ))
-                                                ]),
-                                          )),
-                                    ),
-                                  ],
+                                                                ],
+                                                              ),
+                                                            ))
+                                                  ]),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

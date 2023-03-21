@@ -365,12 +365,29 @@ class _AdminProductsState extends State<AdminProducts> {
       SizedBox(
         width: 300,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Visibility(
+              visible: selectedCollection.id != -1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 70,
+                  height: 30,
+                  child: UpButton(
+                    onPressed: () {
+                      _deleteCollection(selectedCollection.id!);
+                    },
+                    text: "Delete",
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
                 width: 70,
+                height: 30,
                 child: UpButton(
                   onPressed: () {
                     _updateCollection(selectedCollection.id != -1
@@ -378,21 +395,6 @@ class _AdminProductsState extends State<AdminProducts> {
                         : null);
                   },
                   text: "Save",
-                ),
-              ),
-            ),
-            Visibility(
-              visible: selectedCollection.id != -1,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 70,
-                  child: UpButton(
-                    onPressed: () {
-                      _deleteCollection(selectedCollection.id!);
-                    },
-                    text: "Delete",
-                  ),
                 ),
               ),
             ),
@@ -502,22 +504,25 @@ class _AdminProductsState extends State<AdminProducts> {
                 }
 
                 return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      leftSide(),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 50.0,
-                          right: 20,
-                          top: 10,
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        leftSide(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 50.0,
+                            right: 20,
+                            top: 10,
+                          ),
+                          child: SizedBox(
+                            child: Center(child: rightView()),
+                          ),
                         ),
-                        child: SizedBox(
-                          child: Center(child: rightView()),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               })
