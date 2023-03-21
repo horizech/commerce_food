@@ -10,7 +10,10 @@ import 'package:shop/date_time_picker.dart';
 import 'package:shop/models/add_on.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/pages/admin/add_edit_addons.dart';
 import 'package:shop/pages/admin/add_edit_keyword_widget.dart';
+import 'package:shop/pages/admin/add_edit_product_attributes.dart';
+import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/add_media_widget.dart';
 import 'package:shop/widgets/gallery_dropdown.dart';
@@ -78,6 +81,24 @@ class _AdminProductState extends State<AdminProduct> {
     setState(() {});
   }
 
+  clearFields() {
+    _nameController.text = "";
+    _descriptionController.text = "";
+    isVariedProduct = false;
+    _priceController.text = "";
+    _skuController.text = "";
+
+    _discountPriceController.text = "";
+    _discountStartController.text = "";
+    _discountEndController.text = "";
+    gallery = null;
+    thumbnail = null;
+    keywords = [];
+    options = {};
+    meta = {};
+    selectedMedia = null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,6 +108,7 @@ class _AdminProductState extends State<AdminProduct> {
       isProductDetailEnabled = true;
       _initializeFields();
     } else {
+      view = 1;
       isProductDetailEnabled = false;
     }
   }
@@ -140,29 +162,23 @@ class _AdminProductState extends State<AdminProduct> {
         currentProduct != null ? currentProduct!.id! : null);
 
     if (result != null) {
-      // if (currentProduct == null) {
-      //   List<AddOn> newAddons = [];
-      //   for (var element in addons) {
-      //     newAddons.add(
-      //       AddOn(
-      //           addOn: element.addOn,
-      //           price: element.price,
-      //           product: result.data),
-      //     );
-      //   }
-      //   addons = newAddons;
-
-      //   for (var element in addons) {
-      //     await AddEditProductService.addProductAddon(AddOn.toJson(element));
-      //   }
-      // }
-      // if (mounted) {}
-      // Navigator.pop(context, "success");
-
-      showUpToast(
-        context: context,
-        text: result.message ?? "",
-      );
+      if (result.success) {
+        currentProduct =
+            await AddEditProductService.getProductById(result.data);
+        if (currentProduct != null && currentProduct!.id != null) {
+          isProductDetailEnabled = true;
+          showUpToast(
+            context: context,
+            text: result.message ?? "",
+          );
+          setState(() {});
+        }
+      } else {
+        showUpToast(
+          context: context,
+          text: result.message ?? "",
+        );
+      }
     } else {
       showUpToast(
         context: context,
@@ -198,8 +214,10 @@ class _AdminProductState extends State<AdminProduct> {
             ),
             GestureDetector(
                 onTap: (() {
-                  view = 2;
-                  setState(() {});
+                  if (isProductDetailEnabled) {
+                    view = 2;
+                    setState(() {});
+                  }
                 }),
                 child: Container(
                     color: view == 2
@@ -210,18 +228,42 @@ class _AdminProductState extends State<AdminProduct> {
                         "Product Attributes",
                       ),
                     ))),
-            Container(
+            GestureDetector(
+              onTap: (() {
+                if (isProductDetailEnabled) {
+                  view = 3;
+                  setState(() {});
+                }
+              }),
+              child: Container(
+                color: view == 3
+                    ? UpConfig.of(context).theme.primaryColor[100]
+                    : Colors.transparent,
                 child: const ListTile(
-              title: UpText(
-                "Product Variations",
+                  title: UpText(
+                    "Product Variations",
+                  ),
+                ),
               ),
-            )),
-            Container(
+            ),
+            GestureDetector(
+              onTap: (() {
+                if (isProductDetailEnabled) {
+                  view = 4;
+                  setState(() {});
+                }
+              }),
+              child: Container(
+                color: view == 4
+                    ? UpConfig.of(context).theme.primaryColor[100]
+                    : Colors.transparent,
                 child: const ListTile(
-              title: UpText(
-                "Product Addons",
+                  title: UpText(
+                    "Product Addons",
+                  ),
+                ),
               ),
-            ))
+            ),
           ],
         ),
       ),
@@ -231,187 +273,229 @@ class _AdminProductState extends State<AdminProduct> {
   Widget rightSide() {
     if (view == 2) {
       return _productAttributeView();
+    } else if (view == 3) {
+      return _productVariationView();
+    } else if (view == 4) {
+      return _productAddonView();
     } else {
       return _productInfoView();
     }
   }
 
+  Widget _productVariationView() {
+    return AdminProductVariations(
+      currentProduct: currentProduct!,
+    );
+  }
+
+  Widget _productAddonView() {
+    return AddEditAddonWidget(
+      currentProduct: currentProduct!,
+    );
+  }
+
   Widget _productAttributeView() {
-    return const AddEditProductAttributes();
+    return AddEditProductAttributes(
+      currentProduct: currentProduct!,
+    );
   }
 
   Widget _productInfoView() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-      child: SizedBox(
-          width: 500,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
           child: SizedBox(
-            width: 300,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // name
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                    controller: _nameController,
-                    label: "Name",
-                  ),
-                ),
-                // description
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                    controller: _descriptionController,
-                    label: "Description",
-                    maxLines: 4,
-                  ),
-                ),
-                // price
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                    keyboardType: TextInputType.number,
-                    controller: _priceController,
-                    label: "Price",
-                  ),
-                ),
-                // sku
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                    controller: _skuController,
-                    label: "Sku",
-                  ),
-                ),
-                // discount price
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                    controller: _discountPriceController,
-                    label: "Discound Price",
-                  ),
-                ),
-                // discount start date
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                      controller: _discountStartController,
-                      prefixIcon: const Icon(Icons.calendar_today),
-                      label: "Discound Start Date",
-                      onTap: () {
-                        _discountStartDate();
-                      }),
-                ),
-                // discount end date
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: UpTextField(
-                      controller: _discountEndController,
-                      prefixIcon: const Icon(Icons.calendar_today),
-                      label: "Discound End Date",
-                      onTap: () {
-                        _discountEndDate();
-                      }),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AddEditKeywordWidget(
-                    keywordList: keywords,
-                    change: (value) {
-                      if (value != null) {
-                        keywords.clear();
+              width: 500,
+              child: SizedBox(
+                width: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // name
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                        controller: _nameController,
+                        label: "Name",
+                      ),
+                    ),
+                    // description
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                        controller: _descriptionController,
+                        label: "Description",
+                        maxLines: 4,
+                      ),
+                    ),
+                    // price
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                        keyboardType: TextInputType.number,
+                        controller: _priceController,
+                        label: "Price",
+                      ),
+                    ),
+                    // sku
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                        controller: _skuController,
+                        label: "Sku",
+                      ),
+                    ),
+                    // discount price
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                        controller: _discountPriceController,
+                        label: "Discound Price",
+                      ),
+                    ),
+                    // discount start date
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                          controller: _discountStartController,
+                          prefixIcon: const Icon(Icons.calendar_today),
+                          label: "Discound Start Date",
+                          onTap: () {
+                            _discountStartDate();
+                          }),
+                    ),
+                    // discount end date
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: UpTextField(
+                          controller: _discountEndController,
+                          prefixIcon: const Icon(Icons.calendar_today),
+                          label: "Discound End Date",
+                          onTap: () {
+                            _discountEndDate();
+                          }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AddEditKeywordWidget(
+                        keywordList: keywords,
+                        change: (value) {
+                          if (value != null) {
+                            keywords.clear();
 
-                        for (var element in (value as List<String>)) {
-                          keywords.add(int.parse(element));
-                        }
-                      }
-                    },
-                  ),
-                ),
+                            for (var element in (value as List<String>)) {
+                              keywords.add(int.parse(element));
+                            }
+                          }
+                        },
+                      ),
+                    ),
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GalleryDropdown(
-                    gallery: gallery,
-                    onChange: (value) {
-                      gallery = int.parse(value);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AddMediaWidget(
-                    selectedMedia: selectedMedia,
-                    onChnage: (media) {
-                      selectedMedia = media;
-                      setState(() {});
-                    },
-                  ),
-                ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GalleryDropdown(
+                        gallery: gallery,
+                        onChange: (value) {
+                          gallery = int.parse(value);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AddMediaWidget(
+                        selectedMedia: selectedMedia,
+                        onChnage: (media) {
+                          selectedMedia = media;
+                          setState(() {});
+                        },
+                      ),
+                    ),
 
-                // is varried checkbox
-                UpCheckbox(
-                  initialValue: isVariedProduct,
-                  label: "Is Varied",
-                  onChange: (newCheck) => {
-                    isVariedProduct = newCheck,
-                    setState(() {}),
-                  },
+                    // is varried checkbox
+                    UpCheckbox(
+                      initialValue: isVariedProduct,
+                      label: "Is Varied",
+                      onChange: (newCheck) => {
+                        isVariedProduct = newCheck,
+                        setState(() {}),
+                      },
+                    ),
+                    // options value
+                    // widget.collection.id! > 0 && isVariedProduct == false
+                    //     ? Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: AddEditAttributesWidget(
+                    //           change: (newOptions) {
+                    //             options = newOptions;
+                    //           },
+                    //           options: options,
+                    //           currentCollection: widget.collection.id!,
+                    //         ),
+                    //       )
+                    //     : const SizedBox(),
+
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: AddonsWidget(
+                    //     productId: currentProduct?.id,
+                    //     onChange: (value) {
+                    //       if (value != null) {
+                    //         addons = value;
+                    //       }
+                    //     },
+                    //   ),
+                    // )
+
+                    // currentProduct != null
+                    //     ? Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: AddEditProductMetaWidget(
+                    //           meta: meta,
+                    //           onChange: (value) {
+                    //             meta = value;
+                    //           },
+                    //         ),
+                    //       )
+                    //     : Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: AddEditProductMetaWidget(
+                    //           meta: meta,
+                    //           onChange: (value) {
+                    //             meta = value;
+                    //           },
+                    //         ),
+                    //       ),
+                  ],
                 ),
-                // options value
-                // widget.collection.id! > 0 && isVariedProduct == false
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: AddEditAttributesWidget(
-                //           change: (newOptions) {
-                //             options = newOptions;
-                //           },
-                //           options: options,
-                //           currentCollection: widget.collection.id!,
-                //         ),
-                //       )
-                //     : const SizedBox(),
-
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: AddonsWidget(
-                //     productId: currentProduct?.id,
-                //     onChange: (value) {
-                //       if (value != null) {
-                //         addons = value;
-                //       }
-                //     },
-                //   ),
-                // )
-
-                // currentProduct != null
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: AddEditProductMetaWidget(
-                //           meta: meta,
-                //           onChange: (value) {
-                //             meta = value;
-                //           },
-                //         ),
-                //       )
-                //     : Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: AddEditProductMetaWidget(
-                //           meta: meta,
-                //           onChange: (value) {
-                //             meta = value;
-                //           },
-                //         ),
-                //       ),
-              ],
+              )),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: SizedBox(
+            width: 100,
+            child: UpButton(
+              onPressed: () {
+                addEditProduct();
+              },
+              text: "Save",
             ),
-          )),
+          ),
+        )
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.currentProduct == null) {
+      view = 1;
+      clearFields();
+    }
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: SizedBox(
@@ -420,38 +504,9 @@ class _AdminProductState extends State<AdminProduct> {
           children: [
             leftSide(),
             rightSide(),
-            const SizedBox(
-              width: 20,
-            ),
-            Align(
-                alignment: Alignment.topRight,
-                child: SizedBox(
-                  width: 100,
-                  child: UpButton(
-                    onPressed: () {
-                      addEditProduct();
-                    },
-                    text: "Save",
-                  ),
-                ))
           ],
         ),
       ),
     );
-  }
-}
-
-class AddEditProductAttributes extends StatefulWidget {
-  const AddEditProductAttributes({Key? key}) : super(key: key);
-
-  @override
-  State<AddEditProductAttributes> createState() =>
-      _AddEditProductAttributesState();
-}
-
-class _AddEditProductAttributesState extends State<AddEditProductAttributes> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

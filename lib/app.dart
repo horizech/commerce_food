@@ -12,7 +12,6 @@ import 'package:shop/pages/admin/admin_combos.dart';
 import 'package:shop/pages/admin/admin_gallery.dart';
 import 'package:shop/pages/admin/admin_keywords.dart';
 import 'package:shop/pages/admin/admin_attributes.dart';
-import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
@@ -161,16 +160,7 @@ class ShopApp extends StatelessWidget {
                 shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
                 redirectRoute: Routes.loginSignup,
               ),
-              UpRoute(
-                path: Routes.adminProductVariations,
-                name: Routes.adminProductVariations,
-                pageBuilder: (BuildContext context, UpRouterState state) =>
-                    const StoreDependantPage(
-                  page: AdminProductVariations(),
-                ),
-                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
-                redirectRoute: Routes.loginSignup,
-              ),
+
               UpRoute(
                 path: Routes.adminGallery,
                 name: Routes.adminGallery,

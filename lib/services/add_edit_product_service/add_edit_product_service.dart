@@ -6,6 +6,7 @@ import 'package:shop/models/gallery.dart';
 import 'package:shop/models/keyword.dart';
 import 'package:shop/models/media.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/models/product_attribute.dart';
 import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/attribute.dart';
@@ -116,6 +117,19 @@ class AddEditProductService {
     } else {
       return null;
     }
+  }
+
+  static Future<APIResult?> addEditProductAttribute(
+      {required Map<String, dynamic> data, int? proAttributeId}) async {
+    APIResult? result;
+    if (proAttributeId != null) {
+      result = await Apiraiser.data
+          .update("ProductAttributes", proAttributeId, data);
+    } else {
+      result = await Apiraiser.data.insert("ProductAttributes", data);
+    }
+
+    return result;
   }
 
   static Future<Attribute?> getProductOptionByName(String name) async {
@@ -242,6 +256,19 @@ class AddEditProductService {
           .map((p) => AttributeValue.fromJson(p as Map<String, dynamic>))
           .toList();
       return attributeValues;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List<ProductAttribute>?> getProductAttributes() async {
+    APIResult result = await Apiraiser.data.get("ProductAttributes", -1);
+
+    if (result.success) {
+      List<ProductAttribute> productAttributes = (result.data as List<dynamic>)
+          .map((p) => ProductAttribute.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return productAttributes;
     } else {
       return null;
     }
