@@ -15,12 +15,13 @@ import 'package:shop/services/add_edit_product_service/add_edit_product_service.
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class AddEditAttributesWidget extends StatefulWidget {
-  final int currentCollection;
-  final Function? change;
-  final Map<String, int>? options;
-  const AddEditAttributesWidget(
-      {Key? key, required this.currentCollection, this.change, this.options})
-      : super(key: key);
+  Map<String, dynamic>? options;
+  final Function onChange;
+  AddEditAttributesWidget({
+    Key? key,
+    this.options,
+    required this.onChange,
+  }) : super(key: key);
 
   @override
   State<AddEditAttributesWidget> createState() =>
@@ -31,26 +32,23 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
   List<Attribute> attributes = [];
   List<AttributeValue> attributeValues = [];
   Map<String, int> newOptions = {};
-  int previousCollection = 0;
 
-  //  product option value add dialog
-  _attributeValueAddDialog(Attribute productOption) {
+  _attributeValueAddDialog(Attribute attribute) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AddEditAttributeValueDialog(
-          attribute: productOption,
+          attribute: attribute,
         );
       },
     ).then((result) {
       if (result == "success") {
-        getAttributeValues();
+        _getAttributeValues();
       }
     });
   }
 
-  //  product option add dialog
   _attributeAddDialog() {
     showDialog(
       context: context,
@@ -62,23 +60,23 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
       },
     ).then((result) {
       if (result == "success") {
-        getAttributes();
+        _getAttributes();
       }
     });
   }
 
-//by api
-  getAttributes() async {
+  // by api
+  _getAttributes() async {
     List<Attribute>? newProductOptions =
         await AddEditProductService.getAttributes();
 
     if (newProductOptions != null && newProductOptions.isNotEmpty) {
       attributes = newProductOptions;
-      getAttributeValues();
+      _getAttributeValues();
     } else {}
   }
 
-  getAttributeValues() async {
+  _getAttributeValues() async {
     attributeValues = await AddEditProductService.getAttributeValues() ?? [];
     if (attributeValues.isNotEmpty) {
       setState(() {});
@@ -93,6 +91,10 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
         newOptions[key] = value;
       });
     }
+  }
+
+  _addOptionsForProduct() async {
+    widget.onChange(newOptions);
   }
 
   @override
@@ -113,84 +115,99 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
         }
 
         return attributes.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //product option
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5.0),
-                        child: UpText(
-                          "Attribute",
-                          type: UpTextType.heading6,
+            ? SizedBox(
+                width: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5.0),
+                          child: UpText(
+                            "Attribute",
+                            type: UpTextType.heading6,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 100,
-                        height: 40,
-                        child: UpButton(
-                          colorType: UpColorType.tertiary,
-                          onPressed: () {
-                            _attributeAddDialog();
-                          },
-                          text: "Create",
-                          icon: Icons.add,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // attribute values
-                  attributes.isNotEmpty && attributeValues.isNotEmpty
-                      ? Wrap(
-                          children: attributes.map(
-                            (element) {
-                              if (attributeValues
-                                  .any((v) => v.attribute == element.id)) {
-                                return Wrap(
-                                  alignment: WrapAlignment.center,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    AttributeDropdownWidget(
-                                      productOption: element,
-                                      attributeValues: attributeValues,
-                                      change: (value) {
-                                        newOptions[element.name] =
-                                            int.parse(value);
-                                        if (widget.change != null) {
-                                          widget.change!(newOptions);
-                                        }
-                                      },
-                                      initialValue: widget.options != null &&
-                                              widget.options![element.name] !=
-                                                  null
-                                          ? widget.options![element.name]
-                                              .toString()
-                                          : null,
-                                    ),
-                                    UpButton(
-                                      onPressed: () {
-                                        _attributeValueAddDialog(element);
-                                      },
-                                      type: UpButtonType.icon,
-                                      child: const Icon(Icons.add),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return Container();
-                              }
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: UpButton(
+                            colorType: UpColorType.tertiary,
+                            onPressed: () {
+                              _attributeAddDialog();
                             },
-                          ).toList(),
-                        )
-                      : const SizedBox(),
-                ],
+                            text: "Create",
+                            icon: Icons.add,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // attribute values
+                    attributes.isNotEmpty && attributeValues.isNotEmpty
+                        ? Column(
+                            children: attributes.map(
+                              (element) {
+                                if (attributeValues
+                                    .any((v) => v.attribute == element.id)) {
+                                  return Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      AttributeDropdownWidget(
+                                        productOption: element,
+                                        attributeValues: attributeValues,
+                                        change: (value) {
+                                          newOptions[element.name] =
+                                              int.parse(value);
+
+                                          newOptions;
+                                        },
+                                        initialValue: widget.options != null &&
+                                                widget.options!.isNotEmpty &&
+                                                widget.options![element.name] !=
+                                                    null
+                                            ? widget.options![element.name]
+                                                .toString()
+                                            : null,
+                                      ),
+                                      UpButton(
+                                        onPressed: () {
+                                          _attributeValueAddDialog(element);
+                                        },
+                                        type: UpButtonType.icon,
+                                        child: const Icon(Icons.add),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            ).toList(),
+                          )
+                        : const SizedBox(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 100,
+                        child: UpButton(
+                          onPressed: () {
+                            _addOptionsForProduct();
+                          },
+                          text: "Save",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               )
             : const SizedBox();
       },
@@ -219,9 +236,9 @@ class AttributeDropdownWidget extends StatefulWidget {
 
 class _AttributeDropdownWidgetState extends State<AttributeDropdownWidget> {
   String currentOption = "";
-  List<AttributeValue>? oldProductOptionValues = [];
-  List<UpLabelValuePair> productOptionDropdown = [];
-
+  List<AttributeValue>? oldAttributeValues = [];
+  List<UpLabelValuePair> attributeDropdown = [];
+  String oldValue = "";
   @override
   void initState() {
     super.initState();
@@ -232,37 +249,42 @@ class _AttributeDropdownWidgetState extends State<AttributeDropdownWidget> {
     widget.attributeValues!
         .where((e) => e.attribute == widget.productOption.id)
         .forEach((element) {
-      productOptionDropdown
+      attributeDropdown
           .add(UpLabelValuePair(label: element.name, value: "${element.id}"));
     });
-    oldProductOptionValues = widget.attributeValues;
+    oldAttributeValues = widget.attributeValues;
 
     // in case of edit options not null
     if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-      currentOption = widget.initialValue ?? productOptionDropdown.first.value;
+      oldValue = widget.initialValue ?? "";
+      currentOption = widget.initialValue ?? attributeDropdown.first.value;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.attributeValues != oldProductOptionValues) {
-      productOptionDropdown.clear();
+    if (widget.attributeValues != oldAttributeValues) {
+      attributeDropdown.clear();
       initialize();
+    }
+    if (widget.initialValue != oldValue) {
+      currentOption = widget.initialValue ?? "";
+      oldValue = widget.initialValue ?? "";
     }
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
       child: Visibility(
-        visible: productOptionDropdown.isNotEmpty,
+        visible: attributeDropdown.isNotEmpty,
         child: SizedBox(
           width: 200,
           child: UpDropDown(
+            key: GlobalKey(),
             onChanged: ((value) => {
                   widget.change!(value),
-                  // setState(() {}),
                 }),
             value: currentOption,
             label: widget.productOption.name,
-            itemList: productOptionDropdown,
+            itemList: attributeDropdown,
           ),
         ),
       ),

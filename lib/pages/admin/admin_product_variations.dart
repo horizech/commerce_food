@@ -318,7 +318,10 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
           ? double.parse(_discountPriceController.text)
           : null,
     );
-    _clearFields();
+    if (widget.currentProductVariation == null &&
+        widget.currentProductVariation!.id == null) {
+      _clearFields();
+    }
     widget.onChange(productVariation);
   }
 

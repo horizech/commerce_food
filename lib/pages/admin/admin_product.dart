@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:apiraiser/apiraiser.dart';
+import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -11,6 +12,7 @@ import 'package:shop/models/add_on.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/pages/admin/add_edit_addons.dart';
+import 'package:shop/pages/admin/add_edit_attribute_widget.dart';
 import 'package:shop/pages/admin/add_edit_keyword_widget.dart';
 import 'package:shop/pages/admin/add_edit_product_attributes.dart';
 import 'package:shop/pages/admin/admin_product_variations.dart';
@@ -163,8 +165,10 @@ class _AdminProductState extends State<AdminProduct> {
 
     if (result != null) {
       if (result.success) {
-        currentProduct =
-            await AddEditProductService.getProductById(result.data);
+        currentProduct = await AddEditProductService.getProductById(
+            currentProduct != null && currentProduct!.id != null
+                ? currentProduct!.id
+                : result.data);
         if (currentProduct != null && currentProduct!.id != null) {
           isProductDetailEnabled = true;
           showUpToast(
@@ -223,25 +227,65 @@ class _AdminProductState extends State<AdminProduct> {
                     color: view == 2
                         ? UpConfig.of(context).theme.primaryColor[100]
                         : Colors.transparent,
-                    child: const ListTile(
+                    child: ListTile(
                       title: UpText(
+                        style: UpStyle(
+                            textColor: isProductDetailEnabled
+                                ? UpConfig.of(context).theme.primaryColor[700]
+                                : Colors.grey[700]),
                         "Product Attributes",
                       ),
                     ))),
-            GestureDetector(
-              onTap: (() {
-                if (isProductDetailEnabled) {
-                  view = 3;
-                  setState(() {});
-                }
-              }),
-              child: Container(
-                color: view == 3
-                    ? UpConfig.of(context).theme.primaryColor[100]
-                    : Colors.transparent,
-                child: const ListTile(
-                  title: UpText(
-                    "Product Variations",
+            Visibility(
+              visible: currentProduct != null &&
+                  currentProduct!.isVariedProduct &&
+                  currentProduct!.id != null,
+              child: GestureDetector(
+                onTap: (() {
+                  if (isProductDetailEnabled) {
+                    view = 3;
+                    setState(() {});
+                  }
+                }),
+                child: Container(
+                  color: view == 3
+                      ? UpConfig.of(context).theme.primaryColor[100]
+                      : Colors.transparent,
+                  child: ListTile(
+                    title: UpText(
+                      style: UpStyle(
+                          textColor: isProductDetailEnabled
+                              ? UpConfig.of(context).theme.primaryColor[700]
+                              : Colors.grey[700]),
+                      "Product Variations",
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: currentProduct != null &&
+                  currentProduct!.isVariedProduct == false &&
+                  currentProduct!.id != null,
+              child: GestureDetector(
+                onTap: (() {
+                  if (isProductDetailEnabled) {
+                    view = 5;
+                    setState(() {});
+                  }
+                }),
+                child: Container(
+                  color: view == 5
+                      ? UpConfig.of(context).theme.primaryColor[100]
+                      : Colors.transparent,
+                  child: ListTile(
+                    title: UpText(
+                      style: UpStyle(
+                          textColor: isProductDetailEnabled
+                              ? UpConfig.of(context).theme.primaryColor[700]
+                              : Colors.grey[700]),
+                      "Product Filters",
+                    ),
                   ),
                 ),
               ),
@@ -257,9 +301,13 @@ class _AdminProductState extends State<AdminProduct> {
                 color: view == 4
                     ? UpConfig.of(context).theme.primaryColor[100]
                     : Colors.transparent,
-                child: const ListTile(
+                child: ListTile(
                   title: UpText(
                     "Product Addons",
+                    style: UpStyle(
+                        textColor: isProductDetailEnabled
+                            ? UpConfig.of(context).theme.primaryColor[700]
+                            : Colors.grey[700]),
                   ),
                 ),
               ),
@@ -277,6 +325,8 @@ class _AdminProductState extends State<AdminProduct> {
       return _productVariationView();
     } else if (view == 4) {
       return _productAddonView();
+    } else if (view == 5) {
+      return _productFiltersView();
     } else {
       return _productInfoView();
     }
@@ -285,6 +335,19 @@ class _AdminProductState extends State<AdminProduct> {
   Widget _productVariationView() {
     return AdminProductVariations(
       currentProduct: currentProduct!,
+    );
+  }
+
+  Widget _productFiltersView() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AddEditAttributesWidget(
+        onChange: (newOptions) {
+          options = newOptions;
+          addEditProduct();
+        },
+        options: currentProduct!.options,
+      ),
     );
   }
 
@@ -422,31 +485,6 @@ class _AdminProductState extends State<AdminProduct> {
                         setState(() {}),
                       },
                     ),
-                    // options value
-                    // widget.collection.id! > 0 && isVariedProduct == false
-                    //     ? Padding(
-                    //         padding: const EdgeInsets.all(8.0),
-                    //         child: AddEditAttributesWidget(
-                    //           change: (newOptions) {
-                    //             options = newOptions;
-                    //           },
-                    //           options: options,
-                    //           currentCollection: widget.collection.id!,
-                    //         ),
-                    //       )
-                    //     : const SizedBox(),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: AddonsWidget(
-                    //     productId: currentProduct?.id,
-                    //     onChange: (value) {
-                    //       if (value != null) {
-                    //         addons = value;
-                    //       }
-                    //     },
-                    //   ),
-                    // )
 
                     // currentProduct != null
                     //     ? Padding(
@@ -496,16 +534,13 @@ class _AdminProductState extends State<AdminProduct> {
       view = 1;
       clearFields();
     }
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: SizedBox(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            leftSide(),
-            rightSide(),
-          ],
-        ),
+    return SizedBox(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          leftSide(),
+          rightSide(),
+        ],
       ),
     );
   }

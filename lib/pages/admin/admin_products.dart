@@ -44,6 +44,7 @@ class _AdminProductsState extends State<AdminProducts> {
   Collection selectedCollection = const Collection(name: "", id: -1);
   int view = 1;
   Product? currentProduct;
+  bool isExpanded = false;
   @override
   void initState() {
     super.initState();
@@ -105,6 +106,7 @@ class _AdminProductsState extends State<AdminProducts> {
                                 selectedCollection.parent.toString();
                             selectedMedia = selectedCollection.media;
                             view = 1;
+                            isExpanded = true;
                             setState(() {});
                           }),
                           child: Container(
@@ -120,53 +122,67 @@ class _AdminProductsState extends State<AdminProducts> {
                       Visibility(
                           visible: selectedCollection.id == e.id &&
                               selectedCollection.id != -1,
-                          child: UpExpansionTile(
-                            onExpansionChanged: (p0) {
-                              if (p0) {
-                                view = 1;
+                          child: Container(
+                            color: isExpanded
+                                ? UpConfig.of(context).theme.primaryColor[100]
+                                : Colors.grey[200],
+                            child: UpExpansionTile(
+                              onExpansionChanged: (p0) {
+                                isExpanded = p0;
+                                if (p0) {
+                                  view = 1;
+                                } else {}
                                 setState(() {});
-                              }
-                            },
-                            title: e.name,
-                            expandedCrossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            expandedAlignment: Alignment.topLeft,
-                            childrenPadding: const EdgeInsets.all(8),
-                            initiallyExpanded: true,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  view = 2;
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  color: view == 2
-                                      ? UpConfig.of(context)
-                                          .theme
-                                          .primaryColor[100]
-                                      : Colors.transparent,
-                                  child: const ListTile(
-                                    title: UpText("Create new product"),
-                                  ),
+                              },
+                              title: e.name,
+                              expandedCrossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              expandedAlignment: Alignment.topLeft,
+                              childrenPadding: const EdgeInsets.all(0),
+                              initiallyExpanded: true,
+                              children: <Widget>[
+                                Container(
+                                  color: Colors.grey[200],
+                                  child: Column(children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        view = 2;
+                                        isExpanded = false;
+                                        setState(() {});
+                                      },
+                                      child: Container(
+                                        color: view == 2
+                                            ? UpConfig.of(context)
+                                                .theme
+                                                .primaryColor[100]
+                                            : Colors.transparent,
+                                        child: const ListTile(
+                                          title: UpText("Create new product"),
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: (() {
+                                        isExpanded = false;
+
+                                        view = 3;
+                                        setState(() {});
+                                      }),
+                                      child: Container(
+                                        color: view == 3 || view == 4
+                                            ? UpConfig.of(context)
+                                                .theme
+                                                .primaryColor[100]
+                                            : Colors.transparent,
+                                        child: const ListTile(
+                                          title: UpText("All Products"),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: (() {
-                                  view = 3;
-                                  setState(() {});
-                                }),
-                                child: Container(
-                                  color: view == 3 || view == 4
-                                      ? UpConfig.of(context)
-                                          .theme
-                                          .primaryColor[100]
-                                      : Colors.transparent,
-                                  child: const ListTile(
-                                    title: UpText("All Products"),
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           )),
                     ],
                   ),
@@ -507,21 +523,24 @@ class _AdminProductsState extends State<AdminProducts> {
                   scrollDirection: Axis.horizontal,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        leftSide(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 50.0,
-                            right: 20,
-                            top: 10,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          leftSide(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 50.0,
+                              right: 20,
+                              top: 10,
+                            ),
+                            child: SizedBox(
+                              child: Center(child: rightView()),
+                            ),
                           ),
-                          child: SizedBox(
-                            child: Center(child: rightView()),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
