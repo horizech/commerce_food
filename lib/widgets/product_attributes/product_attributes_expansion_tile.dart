@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
+import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/models/attribute.dart';
 import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/product_attribute.dart';
@@ -37,6 +39,8 @@ class _ProductAttributeExpansionTileState
   List<Attribute> attributes = [];
   List<AttributeValue> attributeBasedValues = [];
   bool isLoading = false;
+  ProductAttribute? oldProductAttribute;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +60,12 @@ class _ProductAttributeExpansionTileState
           }
         }
       }
+    }
+
+    if (widget.productAttribute != null &&
+        widget.productAttribute!.id != null) {
+      useForVariation = widget.productAttribute!.useForVariation;
+      mandatory = widget.productAttribute!.mandatory;
     }
   }
 
@@ -107,6 +117,13 @@ class _ProductAttributeExpansionTileState
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const UpText(
+                    "Values",
+                    type: UpTextType.heading6,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   UpCheckbox(
                     initialValue: isAll,
                     label: "All",
@@ -147,26 +164,35 @@ class _ProductAttributeExpansionTileState
                           ],
                         )
                       : const SizedBox(),
-                  Row(
-                    children: [
-                      UpCheckbox(
-                          initialValue: useForVariation,
-                          label: "Use for variation",
-                          onChange: (value) {
-                            useForVariation = value;
-                            setState(() {});
-                          }),
-                      UpCheckbox(
-                          initialValue: mandatory,
-                          label: "Mandatory",
-                          onChange: (value) {
-                            mandatory = value;
-                            setState(() {});
-                          }),
-                    ],
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const UpText(
+                    "Configuration",
+                    type: UpTextType.heading6,
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
+                  ),
+                  UpCheckbox(
+                      initialValue: useForVariation,
+                      label: "Use for variation",
+                      onChange: (value) {
+                        useForVariation = value;
+                        setState(() {});
+                      }),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  UpCheckbox(
+                      initialValue: mandatory,
+                      label: "Mandatory",
+                      onChange: (value) {
+                        mandatory = value;
+                        setState(() {});
+                      }),
+                  const SizedBox(
+                    height: 5,
                   ),
                   Align(
                     alignment: Alignment.center,

@@ -47,7 +47,9 @@ class _AddEditProductAttributesState extends State<AddEditProductAttributes> {
           .where((element) => element.product == widget.currentProduct.id)
           .toList();
 
-      getSelectedAttributes();
+      if (selectedAttributes.isEmpty) {
+        getSelectedAttributes();
+      }
       setState(() {});
     }
   }
@@ -72,6 +74,7 @@ class _AddEditProductAttributesState extends State<AddEditProductAttributes> {
         selectedAttributes.add(element.attribute);
       }
     }
+    // setState(() {});
   }
 
   @override
