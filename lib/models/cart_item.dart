@@ -7,18 +7,21 @@ import 'package:shop/models/product_variation.dart';
 class CartItem extends Equatable {
   Product? product;
   ProductVariation? selectedVariation;
+  Map<String, int>? selectedProductAttributes;
   Combo? combo;
   String type;
   int quantity;
   String? instructions;
 
-  CartItem(
-      {this.product,
-      this.selectedVariation,
-      this.combo,
-      required this.quantity,
-      this.instructions,
-      this.type = "product"});
+  CartItem({
+    this.product,
+    this.selectedVariation,
+    this.combo,
+    required this.quantity,
+    this.instructions,
+    this.type = "product",
+    this.selectedProductAttributes,
+  });
 
   Map<String, dynamic> toJson() {
     try {
@@ -30,7 +33,8 @@ class CartItem extends Equatable {
         'Combo': combo != null ? Combo.toJson(combo!) : null,
         'Quantity': '$quantity',
         'Instructions': '$instructions',
-        'Type': type
+        'Type': type,
+        "SelectedProductAttributes": selectedProductAttributes
       };
       return item;
     } catch (e) {
@@ -54,7 +58,9 @@ class CartItem extends Equatable {
               : null,
           type: instance['Type'] as String,
           quantity: int.parse(instance['Quantity'] as String),
-          instructions: instance['Instructions'] as String?);
+          instructions: instance['Instructions'] as String?,
+          selectedProductAttributes:
+              instance["SelectedProductAttributes"] as Map<String, int>?);
       return item;
     } catch (e) {
       debugPrint(e.toString());

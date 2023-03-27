@@ -21,7 +21,7 @@ import 'package:shop/models/product_variation.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/services/product_detail_service.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
-import 'package:shop/widgets/cart/cart_requried_variations_widget.dart';
+import 'package:shop/widgets/cart/cart_requried_product_attributes_widget.dart';
 import 'package:shop/widgets/cart/cart_varied_variations_widget.dart';
 import 'package:shop/widgets/counter.dart';
 import 'package:shop/widgets/media/media_widget.dart';
@@ -64,7 +64,11 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   List<ProductAttribute> requriedProductAttributes = [];
   List<Attribute> attributes = [];
   Map<String, int> selectedVarriedVariations = {};
-  Map<String, int> selectedNotVarriedVariations = {};
+  Map<String, int> selectedProductAttributes = {};
+  int? selectedProductVariationId;
+  List<String> keys = [];
+  List<CartItem> combosProducts = [];
+
   @override
   void initState() {
     super.initState();
@@ -84,8 +88,9 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
 
   String getAddonPrice(Product product) {
     String price = "";
-    if (addons.where((element) => element.addOn == product.id!).first.price !=
-        null) {
+    if (addons.any((element) => element.addOn == product.id) &&
+        addons.where((element) => element.addOn == product.id!).first.price !=
+            null) {
       price =
           "£${addons.where((element) => element.addOn == product.id!).first.price}";
     } else {
@@ -94,8 +99,23 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     return price;
   }
 
+  String getProductPrice() {
+    String price = "";
+    if (widget.combo != null) {
+      price = "£${widget.combo!.price}";
+    } else if (widget.product != null && widget.product!.price != null) {
+      price = "£${widget.product!.price}";
+    } else if (productVariations.isNotEmpty) {
+      productVariations.sort(
+        (a, b) => (a.price ?? 0).compareTo(b.price ?? 0),
+      );
+      price =
+          "£${productVariations.first.price} - £${productVariations.last.price}";
+    }
+    return price;
+  }
+
   Widget getProductVariationsView() {
-    List<String> keys = [];
     if (productVariations.isNotEmpty) {
       for (var variation in productVariations) {
         if (variation.options.isNotEmpty) {
@@ -115,12 +135,9 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                           keys: keys,
                           selectedvariation: selectedVarriedVariations,
                           attributeValues: attributeValues,
-                          onChange: (map) {
-                            if ((map as Map<String, int>).isNotEmpty) {
-                              (map).forEach((key, value) {
-                                selectedVarriedVariations[key] = value;
-                              });
-                            }
+                          onChange: (map, key) {
+                            selectedVarriedVariations[key] = map[key];
+
                             setState(() {});
                           },
                           attributes: attributes,
@@ -133,12 +150,12 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
         requriedProductAttributes.isNotEmpty
             ? Column(
                 children: requriedProductAttributes
-                    .map((e) => RequriedVariationsWidget(
+                    .map((e) => ProductAttributesWidget(
                         currentProductAttribute: e,
                         onChange: (map) {
                           if ((map as Map<String, int>).isNotEmpty) {
                             (map).forEach((key, value) {
-                              selectedNotVarriedVariations[key] = value;
+                              selectedProductAttributes[key] = value;
                             });
                           }
                         }))
@@ -149,137 +166,27 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     );
   }
 
-  // Widget productRadioButton(String key, Map<String, List> keyValues) {
-  //   List<UpRadioButtonItem> radioButtonValues = [];
-
-  //   for (var keyV in keyValues[key]!) {
-  //     radioButtonValues.add(UpRadioButtonItem(
-  //       value: keyV,
-  //       isDisabled: selectedProductVariations[key] == 0 &&
-  //               selectedProductVariations.values.any((element) => element > 0)
-  //           ? true
-  //           : false,
-  //       widget: Padding(
-  //         padding: const EdgeInsets.only(
-  //           left: 8.0,
-  //           top: 12.0,
-  //           right: 8.0,
-  //           bottom: 12.0,
-  //         ),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           crossAxisAlignment: CrossAxisAlignment.center,
-  //           children: [
-  //             UpText(
-  //               attributeValues
-  //                   .where((element) => element.id == keyV)
-  //                   .first
-  //                   .name,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ));
-  //   }
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.all(8.0),
-  //         child: UpRadioButton(
-  //           initialValue: false,
-  //           items: radioButtonValues,
-  //           labelDirection: UpTextDirection.right,
-  //           direction: UpDirection.vertical,
-  //           onChange: (radiovalue) {
-  //             // selectedVariationId = radiovalue;
-  //             selectedProductVariations[key] = radiovalue;
-  //             setState(() {});
-  //           },
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget getComboVariationView() {
     return Column(
       children: [
         ...widget.products!
-            .map((e) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          UpText("Select ${e.name} variation",
-                              type: UpTextType.heading5),
-                          UpText(
-                            "1 Required",
-                            style: UpStyle(
-                              textColor:
-                                  UpConfig.of(context).theme.primaryColor[200],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // getVariationRadioButton(e.id!)
-                  ],
+            .map((e) => CombosVariationWidget(
+                  product: e,
+                  attributeValues: attributeValues,
+                  attributes: attributes,
+                  productAttributes: productAttributes,
+                  productVariations: productVariations,
+                  requiredProductAttributes: requriedProductAttributes,
+                  variedProductAttributes: variedProductAttributes,
+                  combo: widget.combo!,
+                  onChange: (item) {
+                    combosProducts.add(item);
+                  },
                 ))
             .toList(),
       ],
     );
   }
-
-  // Widget getVariationRadioButton(int product) {
-  //   List<ProductVariation> productBasedVariations = productVariations
-  //       .where((element) => element.product == product)
-  //       .toList();
-  //   if (widget.combo != null &&
-  //       widget.combo!.fixedVariations != null &&
-  //       widget.combo!.fixedVariations!.isNotEmpty &&
-  //       widget.combo!.fixedVariations!['$product'] != null &&
-  //       productBasedVariations.isNotEmpty &&
-  //       productBasedVariations.any((element) => false)) {
-  //     return const SizedBox();
-  //   } else {
-  //     return Padding(
-  //       padding: const EdgeInsets.all(8.0),
-  //       child: productVariations.any((element) => element.product == product)
-  //           ? UpRadioButton(
-  //               items: productVariations
-  //                   .where((variation) => variation.product == product)
-  //                   .map((e) => UpRadioButtonItem(
-  //                         value: e.id,
-  //                         widget: Padding(
-  //                           padding: const EdgeInsets.only(
-  //                               left: 8.0, top: 12.0, right: 8.0, bottom: 12.0),
-  //                           child: Row(
-  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                             crossAxisAlignment: CrossAxisAlignment.center,
-  //                             children: [
-  //                               UpText(e.name ?? ''),
-  //                               UpText("£${e.price}"),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ))
-  //                   .toList(),
-  //               labelDirection: UpTextDirection.right,
-  //               direction: UpDirection.vertical,
-  //               onChange: (radiovalue) {
-  //                 selectedVariationId = radiovalue;
-
-  //                 setState(() {});
-  //               },
-  //             )
-  //           : const SizedBox(),
-  //     );
-  //   }
-  // }
 
   Widget _getDialogView() {
     return Column(
@@ -290,9 +197,11 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
           width: 600,
           height: 350,
           child: MediaWidget(
-            mediaId: widget.combo != null
+            mediaId: widget.combo != null && widget.combo!.thumbnail != null
                 ? widget.combo!.thumbnail
-                : widget.product!.thumbnail,
+                : widget.product != null
+                    ? widget.product!.thumbnail
+                    : 1,
             height: 350,
           ),
         ),
@@ -304,18 +213,15 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
               Text(
                 widget.combo != null
                     ? widget.combo!.name
-                    : widget.product!.name,
+                    : (widget.product != null ? widget.product!.name : ""),
               ),
-              Text(
-                  "£${widget.combo != null ? widget.combo!.price : widget.product!.price}")
+              Text(getProductPrice())
             ],
           ),
         ),
-
         const Divider(),
-
         // in case of single product
-        productVariations.isNotEmpty && widget.product != null
+        productAttributes.isNotEmpty && widget.product != null
             ? getProductVariationsView()
             : const SizedBox(),
 
@@ -327,7 +233,9 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
             ? getComboVariationView()
             : const SizedBox(),
         // addon
-        addonsProducts != null && addonsProducts!.isNotEmpty
+        addonsProducts != null &&
+                addonsProducts!.isNotEmpty &&
+                addonCheckboxes.isNotEmpty
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -376,7 +284,6 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                 ],
               )
             : const SizedBox(),
-
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -400,6 +307,22 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Visibility(
+              visible: productAttributes.isNotEmpty &&
+                  productAttributes.any((element) => element.useForVariation) &&
+                  selectedVarriedVariations.isNotEmpty &&
+                  keys.isNotEmpty &&
+                  productVariations.isNotEmpty &&
+                  selectedVarriedVariations.keys.length == keys.length &&
+                  (!productVariations.any(
+                    (element) =>
+                        mapEquals(element.options, selectedVarriedVariations),
+                  )),
+              child: const UpText("*Invalid Variation Selected")),
+        ),
+
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -462,8 +385,11 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
 
                             //product add to cart
                             if (selectedVarriedVariations.isNotEmpty &&
-                                widget.product != null) {
-                              int? selectedProductVariationId;
+                                widget.product != null &&
+                                selectedVarriedVariations.length ==
+                                    keys.length &&
+                                productAttributes.any(
+                                    (element) => element.useForVariation)) {
                               if (productVariations.any(
                                 (element) => mapEquals(
                                     element.options, selectedVarriedVariations),
@@ -488,24 +414,42 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                                   product: widget.product!,
                                   selectedVariation: selectedVariation,
                                   quantity: quantity,
+                                  selectedProductAttributes:
+                                      selectedProductAttributes,
                                   instructions: _instructionsController.text,
                                 );
                                 cubit.addToCart(item);
                                 Navigator.pop(context, "Success");
                               }
                             } else if (widget.product != null &&
-                                productVariations.isEmpty) {
+                                productAttributes.every((element) =>
+                                    element.useForVariation == false)) {
                               CartItem item = CartItem(
                                 product: widget.product!,
                                 selectedVariation: null,
                                 quantity: quantity,
+                                selectedProductAttributes:
+                                    selectedProductAttributes,
                                 instructions: _instructionsController.text,
                               );
                               cubit.addToCart(item);
                               Navigator.pop(context, "Success");
+                            } else if (widget.combo != null &&
+                                combosProducts.isNotEmpty) {
+                              for (var element in combosProducts) {
+                                cubit.addToCart(element);
+                              }
+                              CartItem comboItem = CartItem(
+                                quantity: quantity,
+                                combo: widget.combo,
+                              );
+                              cubit.addToCart(comboItem);
+
+                              Navigator.pop(context, "Success");
                             } else {
                               showUpToast(
-                                  context: context, text: "Select Variations");
+                                  context: context,
+                                  text: "Select All Variations");
                             }
 
                             // //combo add to cart
@@ -569,26 +513,33 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
               productAttributes = state.productAttributes!
                   .where((element) => element.product == widget.product!.id)
                   .toList();
+            } else if (widget.products != null && widget.products!.isNotEmpty) {
+              for (var p in widget.products!) {
+                if (state.productAttributes!
+                    .any((element) => element.product == p.id)) {
+                  productAttributes.add(state.productAttributes!
+                      .where((element) => element.product == p.id)
+                      .first);
+                }
+              }
             }
           }
         }
         if (variedProductAttributes.isEmpty) {
           if (productAttributes.isNotEmpty) {
             variedProductAttributes = productAttributes
-                .where((element) =>
-                    element.useForVariation == true &&
-                    element.mandatory == true)
+                .where((element) => element.useForVariation == true)
                 .toList();
           }
+          variedProductAttributes;
         }
         if (requriedProductAttributes.isEmpty) {
           if (productAttributes.isNotEmpty) {
             requriedProductAttributes = productAttributes
-                .where((element) =>
-                    element.useForVariation == false &&
-                    element.mandatory == true)
+                .where((element) => element.useForVariation == false)
                 .toList();
           }
+          requriedProductAttributes;
         }
         if (attributes.isEmpty) {
           if (state.attributes != null && state.attributes!.isNotEmpty) {
@@ -621,9 +572,9 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
               }
             }
           }
-
           getAddOnProductsApiCall(addonProductIds);
         }
+
         return (widget.product != null && widget.product!.isVariedProduct) ||
                 (widget.products != null &&
                         widget.products!
@@ -646,6 +597,127 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                     child: UpCircularProgress(),
                   );
       },
+    );
+  }
+}
+
+class CombosVariationWidget extends StatefulWidget {
+  final Product product;
+  final Function onChange;
+  final List<ProductVariation> productVariations;
+  final List<ProductAttribute> productAttributes;
+  final List<ProductAttribute> variedProductAttributes;
+  final List<ProductAttribute> requiredProductAttributes;
+  final List<Attribute> attributes;
+  final List<AttributeValue> attributeValues;
+  final Combo combo;
+
+  const CombosVariationWidget({
+    Key? key,
+    required this.combo,
+    required this.product,
+    required this.attributeValues,
+    required this.attributes,
+    required this.onChange,
+    required this.productAttributes,
+    required this.productVariations,
+    required this.requiredProductAttributes,
+    required this.variedProductAttributes,
+  }) : super(key: key);
+
+  @override
+  State<CombosVariationWidget> createState() => _CombosVariationWidgetState();
+}
+
+class _CombosVariationWidgetState extends State<CombosVariationWidget> {
+  Map<String, int> selectedVarriedVariations = {};
+  Map<String, int> selectedProductAttributes = {};
+  List<String> keys = [];
+  CartItem? cartItem;
+  createItem() {
+    int len = widget.requiredProductAttributes
+        .where((element) => element.product == widget.product.id)
+        .length;
+    if (len == selectedProductAttributes.length) {
+      ProductVariation? selectedProductVariation;
+      // if (widget.productAttributes.any((element) => element.useForVariation)) {
+      //   if (widget.productVariations.any(
+      //     (element) => mapEquals(element.options, selectedVarriedVariations),
+      //   )) {
+      //     selectedProductVariation = widget.productVariations
+      //         .where(
+      //           (element) =>
+      //               mapEquals(element.options, selectedVarriedVariations),
+      //         )
+      //         .first;
+      //   }
+      // }
+      CartItem cartItem = CartItem(
+        quantity: 1,
+        product: widget.product,
+        selectedProductAttributes: selectedProductAttributes,
+        selectedVariation: selectedProductVariation,
+        type: "Combo",
+        combo: widget.combo,
+      );
+      widget.onChange(cartItem);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.productVariations.isNotEmpty) {
+      for (var variation in widget.productVariations
+          .where((element) => element.id == widget.product.id)) {
+        if (variation.options.isNotEmpty) {
+          variation.options.forEach((key, value) {
+            keys.add(key);
+          });
+        }
+      }
+      keys = keys.toSet().toList();
+    }
+    return Column(
+      children: [
+        widget.variedProductAttributes.isNotEmpty &&
+                widget.productVariations.isNotEmpty
+            ? Column(
+                children: widget.variedProductAttributes
+                    .where((element) => element.product == widget.product.id)
+                    .map((e) => VariedVariationsWidget(
+                          keys: keys,
+                          selectedvariation: selectedVarriedVariations,
+                          attributeValues: widget.attributeValues,
+                          onChange: (map, key) {
+                            selectedVarriedVariations[key] = map[key];
+                            createItem();
+                          },
+                          attributes: widget.attributes,
+                          currentProductAttribute: e,
+                          productVariations: widget.productVariations,
+                        ))
+                    .toList(),
+              )
+            : const SizedBox(),
+        widget.requiredProductAttributes.isNotEmpty
+            ? Column(
+                children: widget.requiredProductAttributes
+                    .where((element) => element.product == widget.product.id)
+                    .map((e) => ProductAttributesWidget(
+                        currentProductAttribute: e,
+                        onChange: (map) {
+                          if ((map as Map<String, int>).isNotEmpty) {
+                            (map).forEach((key, value) {
+                              selectedProductAttributes[key] = value;
+                            });
+                          }
+                          selectedProductAttributes;
+                          createItem();
+                        }))
+                    .toList(),
+              )
+            : const SizedBox(),
+      ],
     );
   }
 }

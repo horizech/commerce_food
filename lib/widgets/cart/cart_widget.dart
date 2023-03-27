@@ -7,10 +7,12 @@ import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/cart_item.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/cart/empty_cart.dart';
 import 'package:shop/widgets/counter.dart';
+import 'package:shop/widgets/store/store_cubit.dart';
 
 class CartWidget extends StatefulWidget {
   const CartWidget({super.key});
@@ -20,6 +22,7 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
+  List<AttributeValue> attributeValues = [];
   double subtotal = 0;
   double serviceCharges = 0.5;
   calculatesubtotal(List<CartItem> cartItems) {
@@ -32,218 +35,303 @@ class _CartWidgetState extends State<CartWidget> {
     return item.selectedVariation != null &&
             item.selectedVariation!.price != null
         ? (item.selectedVariation!.price! * item.quantity)
-        : (item.product!.price! * item.quantity);
+        : ((item.product!.price != null ? item.product!.price! : 0.0) *
+            item.quantity);
+  }
+
+  String getAttributeName(MapEntry<String, int> entry) {
+    String name = "";
+    name = attributeValues
+        .where((element) => element.id == entry.value)
+        .first
+        .name;
+    return name;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CartCubit, CartState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        if (state.cart.items.isNotEmpty && subtotal == 0) {
-          calculatesubtotal(state.cart.items);
-        }
-        return (state.cart.items.isNotEmpty)
-            ? Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        width: 1,
-                        color:
-                            UpConfig.of(context).theme.primaryColor.shade100),
-                    borderRadius: BorderRadius.circular(4)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        "Cart",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 28),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ...state.cart.items
-                            .asMap()
-                            .entries
-                            .map((item) => Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DeleteCounter(
-                                      onChange: (quantity) {
-                                        if (quantity == -1) {
-                                          CartCubit cart =
-                                              context.read<CartCubit>();
-                                          cart.removeItem(
-                                            item.key,
-                                          );
-                                        } else {
-                                          try {
-                                            CartCubit cart =
-                                                context.read<CartCubit>();
-                                            cart.updateQuantity(
-                                                item.key, quantity);
-                                          } catch (e) {
-                                            debugPrint(e.toString());
-                                          }
-                                        }
-                                      },
-                                      defaultValue: item.value.quantity,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      flex: 6,
-                                      child: Column(
+    return BlocConsumer<StoreCubit, StoreState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (attributeValues.isEmpty) {
+            if (state.attributeValues != null &&
+                state.attributeValues!.isNotEmpty) {
+              attributeValues = state.attributeValues!.toList();
+            }
+          }
+          return BlocConsumer<CartCubit, CartState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (state.cart.items.isNotEmpty && subtotal == 0) {
+                // calculatesubtotal(state.cart.items);
+              }
+              return (state.cart.items.isNotEmpty)
+                  ? Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1,
+                              color: UpConfig.of(context)
+                                  .theme
+                                  .primaryColor
+                                  .shade100),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "Cart",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 28),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          // variation options
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ...state.cart.items
+                                  .asMap()
+                                  .entries
+                                  .map((item) => Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          UpText(
-                                            item.value.product!.name,
-                                            style: UpStyle(
-                                              textSize: 18,
-                                              textWeight: FontWeight.bold,
+                                          DeleteCounter(
+                                            onChange: (quantity) {
+                                              if (quantity == -1) {
+                                                CartCubit cart =
+                                                    context.read<CartCubit>();
+                                                cart.removeItem(
+                                                  item.key,
+                                                );
+                                              } else {
+                                                try {
+                                                  CartCubit cart =
+                                                      context.read<CartCubit>();
+                                                  cart.updateQuantity(
+                                                      item.key, quantity);
+                                                } catch (e) {
+                                                  debugPrint(e.toString());
+                                                }
+                                              }
+                                            },
+                                            defaultValue: item.value.quantity,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            flex: 6,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                UpText(
+                                                  item.value.product!.name,
+                                                  style: UpStyle(
+                                                    textSize: 18,
+                                                    textWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                // variation
+                                                item.value.selectedVariation !=
+                                                            null &&
+                                                        item
+                                                            .value
+                                                            .selectedVariation!
+                                                            .options
+                                                            .isNotEmpty
+                                                    ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          ...item
+                                                              .value
+                                                              .selectedVariation!
+                                                              .options
+                                                              .entries
+                                                              .map((entry) =>
+                                                                  UpText(
+                                                                      style:
+                                                                          UpStyle(
+                                                                        textColor: UpConfig.of(context)
+                                                                            .theme
+                                                                            .primaryColor[500],
+                                                                      ),
+                                                                      getAttributeName(
+                                                                          entry)))
+                                                        ],
+                                                      )
+                                                    : const SizedBox(),
+
+                                                // product attributes
+                                                item.value.selectedProductAttributes !=
+                                                            null &&
+                                                        item
+                                                            .value
+                                                            .selectedProductAttributes!
+                                                            .isNotEmpty
+                                                    ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          ...item
+                                                              .value
+                                                              .selectedProductAttributes!
+                                                              .entries
+                                                              .map(
+                                                            (entry) => UpText(
+                                                              style: UpStyle(
+                                                                textColor: UpConfig.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .primaryColor[500],
+                                                              ),
+                                                              getAttributeName(
+                                                                  entry),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      )
+                                                    : const SizedBox(),
+                                              ],
                                             ),
                                           ),
-                                          UpText(
-                                              style: UpStyle(
-                                                textColor: UpConfig.of(context)
-                                                    .theme
-                                                    .primaryColor[500],
-                                              ),
-                                              "${item.value.selectedVariation != null ? item.value.selectedVariation!.name : ''}")
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "£ ${getPrice(item.value)}",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
                                         ],
-                                      ),
+                                      ))
+                                  .toList(),
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+                          Divider(
+                            height: 2,
+                            color:
+                                UpConfig.of(context).theme.primaryColor.shade50,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text("Bill Details",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Expanded(
+                                    flex: 8,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 12.0),
+                                      child: Text("Sub subtotal"),
                                     ),
-                                    Expanded(
-                                      flex: 2,
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text("£ $subtotal"),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: [
+                                  const Expanded(
+                                    flex: 8,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 12.0),
+                                      child: Text("Service Charge"),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text("£ $serviceCharges"),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Divider(
+                                height: 2,
+                                color: UpConfig.of(context)
+                                    .theme
+                                    .primaryColor
+                                    .shade50,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  const Expanded(
+                                    flex: 8,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
                                       child: Text(
-                                        "£ ${getPrice(item.value)}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        "Total",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 28),
                                       ),
                                     ),
-                                  ],
-                                ))
-                            .toList(),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Divider(
-                      height: 2,
-                      color: UpConfig.of(context).theme.primaryColor.shade50,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text("Bill Details",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Expanded(
-                              flex: 8,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 12.0),
-                                child: Text("Sub subtotal"),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "${subtotal + serviceCharges}",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: UpButton(
+                              onPressed: () {
+                                ServiceManager<UpNavigationService>()
+                                    .navigateToNamed(Routes.foodCartPage);
+                              },
+                              text: "GO TO CHECKOUT",
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Text("£ $subtotal"),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(
-                              flex: 8,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 12.0),
-                                child: Text("Service Charge"),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text("£ $serviceCharges"),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Divider(
-                          height: 2,
-                          color:
-                              UpConfig.of(context).theme.primaryColor.shade50,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(
-                              flex: 8,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  "Total",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                "${subtotal + serviceCharges}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: UpButton(
-                        onPressed: () {
-                          ServiceManager<UpNavigationService>()
-                              .navigateToNamed(Routes.foodCartPage);
-                        },
-                        text: "GO TO CHECKOUT",
+                          )
+                        ],
                       ),
                     )
-                  ],
-                ),
-              )
-            : const EmptyCart();
-      },
-    );
+                  : const EmptyCart();
+            },
+          );
+        });
   }
 }

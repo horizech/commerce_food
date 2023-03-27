@@ -12,22 +12,22 @@ import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/product_attribute.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class RequriedVariationsWidget extends StatefulWidget {
+class ProductAttributesWidget extends StatefulWidget {
   final Function onChange;
   final ProductAttribute currentProductAttribute;
 
-  const RequriedVariationsWidget({
+  const ProductAttributesWidget({
     super.key,
     required this.onChange,
     required this.currentProductAttribute,
   });
 
   @override
-  State<RequriedVariationsWidget> createState() =>
-      _RequriedVariationsWidgetState();
+  State<ProductAttributesWidget> createState() =>
+      _ProductAttributesWidgetState();
 }
 
-class _RequriedVariationsWidgetState extends State<RequriedVariationsWidget> {
+class _ProductAttributesWidgetState extends State<ProductAttributesWidget> {
   List<AttributeValue> attributeValues = [];
   List<Attribute> attributes = [];
   List<UpRadioButtonItem> radioValues = [];
@@ -60,28 +60,51 @@ class _RequriedVariationsWidgetState extends State<RequriedVariationsWidget> {
                         .first
                         .name));
               }
+
+              if (radioValues.isNotEmpty && radioValues.length == 1) {
+                Map<String, int> map = {
+                  attributes
+                      .where((element) =>
+                          element.id ==
+                          widget.currentProductAttribute.attribute)
+                      .first
+                      .name: radioValues.first.value
+                };
+                widget.onChange(map);
+              }
             }
           }
-          return radioValues.isNotEmpty && radioValues.length > 1
+          return radioValues.isNotEmpty
               ? SizedBox(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Column(
                       children: [
-                        Expanded(
-                          child: UpText(
-                            "Select ${attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.name}",
-                            type: UpTextType.heading5,
-                          ),
-                        ),
-                        UpText(
-                          "1 Required",
-                          style: UpStyle(
-                            textColor:
-                                UpConfig.of(context).theme.primaryColor[200],
-                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: UpText(
+                                "Select ${attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.name}",
+                                type: UpTextType.heading5,
+                              ),
+                            ),
+                            UpText(
+                              widget.currentProductAttribute.mandatory
+                                  ? "1 Required"
+                                  : "Optional",
+                              style: UpStyle(
+                                textColor: UpConfig.of(context)
+                                    .theme
+                                    .primaryColor[200],
+                              ),
+                            ),
+                          ],
                         ),
                         UpRadioButton(
+                          // initialValue: radioValues.length > 1
+                          //     ? false
+                          //     : radioValues.first.value,
                           onChange: (radioValue) {
                             Map<String, int> map = {
                               attributes

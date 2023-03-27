@@ -40,6 +40,10 @@ class VariedVariationsWidget extends StatefulWidget {
 class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
   List<UpRadioButtonItem> radioValues = [];
   List<int> keyValues = [];
+  Map<String, int> oldVariations = {};
+  dynamic currentSelected = false;
+  bool isDisabled = false;
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +87,7 @@ class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
       if (widget.attributeValues.any((e) => e.id == element)) {
         radioValues.add(UpRadioButtonItem(
             value: element,
+            isDisabled: isDisabled,
             label: widget.attributeValues
                 .where((e) => e.id == element)
                 .first
@@ -91,44 +96,67 @@ class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
     }
   }
 
-  setAvailableVariations() {
-    List<ProductVariation> enabledVariation = [];
-    enabledVariation = widget.productVariations
-        .where((element) =>
-            element.options["Size"] == widget.selectedvariation["Size"])
-        .toList();
+  setAllowedVariations() {
+    List<ProductVariation> allowedVariation = [];
+    allowedVariation = widget.productVariations.where((element) {
+      bool matched = true;
+      for (var key in widget.selectedvariation.keys) {
+        if (element.options[key] != widget.selectedvariation[key]) {
+          matched = false;
+        }
+      }
+      return matched;
+    }).toList();
 
-    // disabledVariation = widget.productVariations.where((element) {
-    //   return mapCompare(
-    //     element.options,
-    //   );
-    // }).toList();
-    enabledVariation;
+    List<int> allowedKeyValues = [];
+    for (var variation in allowedVariation) {
+      if (variation.options.isNotEmpty) {
+        variation.options.forEach((key, value) {
+          if (variation.options[widget.attributes
+                  .where((element) =>
+                      element.id == widget.currentProductAttribute.attribute)
+                  .first
+                  .name] !=
+              null) {
+            if (widget.currentProductAttribute.attributeValues
+                .any((element) => element == value)) {
+              allowedKeyValues.add(value);
+            }
+          }
+        });
+      }
+    }
+    allowedKeyValues = allowedKeyValues.toSet().toList();
+
+    initializeDisbaledRadioButton(allowedKeyValues);
   }
 
-  bool mapCompare(Map<String, int> options) {
-    List<bool> allow = [];
-
-    widget.selectedvariation.forEach((key, value) {
-      if (options[key] == widget.selectedvariation[key]) {
-        allow.add(true);
+  initializeDisbaledRadioButton(List<int> allowedKeyValues) {
+    radioValues.clear();
+    for (var element in keyValues) {
+      if (widget.attributeValues.any((e) => e.id == element)) {
+        radioValues.add(UpRadioButtonItem(
+            value: element,
+            isDisabled: allowedKeyValues.contains(element) ? false : true,
+            label: widget.attributeValues
+                .where((e) => e.id == element)
+                .first
+                .name));
       }
-    });
-
-    return allow.every((element) => element == true) ? true : false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.selectedvariation.isNotEmpty &&
-        widget.selectedvariation[widget.attributes
-                .where((element) =>
-                    element.id == widget.currentProductAttribute.attribute)
-                .first
-                .name] ==
-            null) {
-      setAvailableVariations();
-    }
+    // if (widget.selectedvariation.isNotEmpty &&
+    //     widget.selectedvariation[widget.attributes
+    //             .where((element) =>
+    //                 element.id == widget.currentProductAttribute.attribute)
+    //             .first
+    //             .name] ==
+    //         null) {
+    //   setAllowedVariations();
+    // }
     return BlocConsumer<StoreCubit, StoreState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -171,9 +199,18 @@ class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
                                   .first
                                   .name: radioValue
                             };
-                            widget.onChange(map);
+
+                            widget.onChange(
+                              map,
+                              widget.attributes
+                                  .where((element) =>
+                                      element.id ==
+                                      widget.currentProductAttribute.attribute)
+                                  .first
+                                  .name,
+                            );
                           },
-                          initialValue: false,
+                          initialValue: currentSelected,
                           items: radioValues,
                           labelDirection: UpTextDirection.right,
                         )

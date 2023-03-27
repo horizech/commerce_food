@@ -299,188 +299,183 @@ class _AllProductsState extends State<Products> {
                                             curve: Curves.easeInOutCubic);
                                       },
                                     ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          ...collections
-                                              .asMap()
-                                              .entries
-                                              .map((e) => Container(
-                                                    key: collectionKeys[e.key],
-                                                    child: Column(
-                                                      children: [
-                                                        Theme(
-                                                          data: ThemeData().copyWith(
-                                                              dividerColor: Colors
-                                                                  .transparent),
-                                                          child:
-                                                              UpExpansionTile(
-                                                                  initiallyExpanded:
-                                                                      true,
-                                                                  title: e.value
-                                                                      .name,
-                                                                  textType:
-                                                                      UpTextType
-                                                                          .heading5,
-                                                                  expandedAlignment:
-                                                                      Alignment
-                                                                          .topLeft,
-                                                                  childrenPadding: const EdgeInsets.only(
-                                                                      left:
-                                                                          20.0,
-                                                                      top: 4.0,
-                                                                      bottom:
-                                                                          4.0,
-                                                                      right:
-                                                                          20.0),
-                                                                  children:
-                                                                      e.value.id ==
-                                                                              -1
-                                                                          ? [
-                                                                              ...combos
-                                                                                  .map(
-                                                                                    (combo) => Row(
+                                    Column(
+                                      children: [
+                                        ...collections
+                                            .asMap()
+                                            .entries
+                                            .map((e) => Container(
+                                                  key: collectionKeys[e.key],
+                                                  child: Column(
+                                                    children: [
+                                                      Theme(
+                                                        data: ThemeData().copyWith(
+                                                            dividerColor: Colors
+                                                                .transparent),
+                                                        child: UpExpansionTile(
+                                                            initiallyExpanded:
+                                                                true,
+                                                            title: e.value.name,
+                                                            textType: UpTextType
+                                                                .heading5,
+                                                            expandedAlignment:
+                                                                Alignment
+                                                                    .topLeft,
+                                                            childrenPadding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20.0,
+                                                                    top: 4.0,
+                                                                    bottom: 4.0,
+                                                                    right:
+                                                                        20.0),
+                                                            children:
+                                                                e.value.id == -1
+                                                                    ? [
+                                                                        ...combos
+                                                                            .map(
+                                                                              (combo) => Row(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  const Padding(
+                                                                                    padding: EdgeInsets.only(right: 8),
+                                                                                    child: UpIcon(
+                                                                                      icon: Icons.circle,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Expanded(
+                                                                                    child: Column(
                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                                       children: [
-                                                                                        const Padding(
-                                                                                          padding: EdgeInsets.only(right: 8),
-                                                                                          child: UpIcon(
-                                                                                            icon: Icons.circle,
-                                                                                          ),
-                                                                                        ),
-                                                                                        Expanded(
-                                                                                          child: Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              UpText(
-                                                                                                combo.name,
-                                                                                                style: UpStyle(
-                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[600],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const SizedBox(
-                                                                                                height: 5,
-                                                                                              ),
-                                                                                              UpText(
-                                                                                                combo.description ?? "",
-                                                                                                style: UpStyle(
-                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[200],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const SizedBox(
-                                                                                                height: 10,
-                                                                                              ),
-                                                                                              combo.price > 0
-                                                                                                  ? UpText(
-                                                                                                      "£${combo.price}",
-                                                                                                      style: UpStyle(
-                                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : const Text(""),
-                                                                                              const SizedBox(
-                                                                                                height: 20,
-                                                                                              ),
-                                                                                            ],
+                                                                                        UpText(
+                                                                                          combo.name,
+                                                                                          style: UpStyle(
+                                                                                            textColor: UpConfig.of(context).theme.primaryColor[600],
                                                                                           ),
                                                                                         ),
                                                                                         const SizedBox(
-                                                                                          width: 20,
+                                                                                          height: 5,
                                                                                         ),
-                                                                                        GestureDetector(
-                                                                                          onTap: () {
-                                                                                            _showDialog(
-                                                                                              combo: combo,
-                                                                                            );
-                                                                                          },
-                                                                                          child: const Icon(Icons.add),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  )
-                                                                                  .toList()
-                                                                            ]
-                                                                          : [
-                                                                              ...products!
-                                                                                  .where((element) => element.collection == e.value.id)
-                                                                                  .map(
-                                                                                    (e) => Row(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        const Padding(
-                                                                                          padding: EdgeInsets.only(right: 8),
-                                                                                          child: UpIcon(
-                                                                                            icon: Icons.circle,
-                                                                                          ),
-                                                                                        ),
-                                                                                        Expanded(
-                                                                                          child: Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              UpText(
-                                                                                                e.name,
-                                                                                                style: UpStyle(
-                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[600],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const SizedBox(
-                                                                                                height: 5,
-                                                                                              ),
-                                                                                              UpText(
-                                                                                                e.description ?? "",
-                                                                                                style: UpStyle(
-                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[200],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const SizedBox(
-                                                                                                height: 10,
-                                                                                              ),
-                                                                                              e.price != null && e.price! > 0
-                                                                                                  ? UpText(
-                                                                                                      "£${e.price}",
-                                                                                                      style: UpStyle(
-                                                                                                        textColor: UpConfig.of(context).theme.primaryColor[900],
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  : const Text(""),
-                                                                                              const SizedBox(
-                                                                                                height: 10,
-                                                                                              ),
-                                                                                            ],
+                                                                                        UpText(
+                                                                                          combo.description ?? "",
+                                                                                          style: UpStyle(
+                                                                                            textColor: UpConfig.of(context).theme.primaryColor[200],
                                                                                           ),
                                                                                         ),
                                                                                         const SizedBox(
-                                                                                          width: 20,
+                                                                                          height: 10,
                                                                                         ),
-                                                                                        GestureDetector(
-                                                                                          onTap: () {
-                                                                                            _showDialog(product: e);
-                                                                                          },
-                                                                                          child: const Icon(Icons.add),
+                                                                                        combo.price > 0
+                                                                                            ? UpText(
+                                                                                                "£${combo.price}",
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                                ),
+                                                                                              )
+                                                                                            : const Text(""),
+                                                                                        const SizedBox(
+                                                                                          height: 20,
                                                                                         ),
                                                                                       ],
                                                                                     ),
-                                                                                  )
-                                                                                  .toList()
-                                                                            ]),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 20,
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    onTap: () {
+                                                                                      _showDialog(
+                                                                                        combo: combo,
+                                                                                      );
+                                                                                    },
+                                                                                    child: const Icon(Icons.add),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                            .toList()
+                                                                      ]
+                                                                    : [
+                                                                        ...products!
+                                                                            .where((element) =>
+                                                                                element.collection ==
+                                                                                e.value.id)
+                                                                            .map(
+                                                                              (e) => Row(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  const Padding(
+                                                                                    padding: EdgeInsets.only(right: 8),
+                                                                                    child: UpIcon(
+                                                                                      icon: Icons.circle,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Expanded(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        UpText(
+                                                                                          e.name,
+                                                                                          style: UpStyle(
+                                                                                            textColor: UpConfig.of(context).theme.primaryColor[600],
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          height: 5,
+                                                                                        ),
+                                                                                        UpText(
+                                                                                          e.description ?? "",
+                                                                                          style: UpStyle(
+                                                                                            textColor: UpConfig.of(context).theme.primaryColor[200],
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          height: 10,
+                                                                                        ),
+                                                                                        e.price != null && e.price! > 0
+                                                                                            ? UpText(
+                                                                                                "£${e.price}",
+                                                                                                style: UpStyle(
+                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[900],
+                                                                                                ),
+                                                                                              )
+                                                                                            : const Text(""),
+                                                                                        const SizedBox(
+                                                                                          height: 10,
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 20,
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    onTap: () {
+                                                                                      _showDialog(product: e);
+                                                                                    },
+                                                                                    child: const Icon(Icons.add),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                            .toList()
+                                                                      ]),
+                                                      ),
+                                                      const Padding(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 8.0,
+                                                                horizontal: 0),
+                                                        child: Divider(
+                                                          thickness: 2,
+                                                          color: Colors.black,
                                                         ),
-                                                        const Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 8.0,
-                                                                  horizontal:
-                                                                      0),
-                                                          child: Divider(
-                                                            thickness: 2,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                        ],
-                                      ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ))
+                                            .toList(),
+                                      ],
                                     ),
                                     const Padding(
                                       padding: EdgeInsets.all(8.0),
