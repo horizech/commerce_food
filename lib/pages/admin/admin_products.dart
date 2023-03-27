@@ -102,8 +102,9 @@ class _AdminProductsState extends State<AdminProducts> {
                             nameController.text = selectedCollection.name;
                             mediaController.text =
                                 selectedCollection.media.toString();
-                            currentParent =
-                                selectedCollection.parent.toString();
+                            currentParent = selectedCollection.parent != null
+                                ? selectedCollection.parent.toString()
+                                : "";
                             selectedMedia = selectedCollection.media;
                             view = 1;
                             isExpanded = true;
@@ -157,7 +158,7 @@ class _AdminProductsState extends State<AdminProducts> {
                                                 .primaryColor[100]
                                             : Colors.transparent,
                                         child: const ListTile(
-                                          title: UpText("Create new product"),
+                                          title: UpText("Create a new product"),
                                         ),
                                       ),
                                     ),
@@ -332,92 +333,107 @@ class _AdminProductsState extends State<AdminProducts> {
   }
 
   Widget editCollectionView() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Align(
-        alignment: Alignment.topLeft,
-        child: UpText(
-          "Collection",
-          type: UpTextType.heading6,
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          width: 300,
-          child: UpTextField(
-            controller: nameController,
-            label: 'Name',
+    return SizedBox(
+      width: 400,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Align(
+          alignment: Alignment.topLeft,
+          child: UpText(
+            "Collection",
+            type: UpTextType.heading6,
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          width: 300,
-          child: AddMediaWidget(
-            selectedMedia: selectedMedia,
-            onChnage: (media) {
-              selectedMedia = media;
-              setState(() {});
-            },
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
             width: 300,
-            child: UpDropDown(
-              label: "Parent",
-              value: currentParent,
-              itemList: collectionDropdown,
-              onChanged: (value) {
-                currentParent = value.toString();
-
+            child: UpTextField(
+              controller: nameController,
+              label: 'Name',
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: 300,
+            child: AddMediaWidget(
+              selectedMedia: selectedMedia,
+              onChnage: (media) {
+                selectedMedia = media;
                 setState(() {});
               },
-            )),
-      ),
-      SizedBox(
-        width: 300,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Visibility(
-              visible: selectedCollection.id != -1,
-              child: Padding(
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+              width: 300,
+              child: UpDropDown(
+                label: "Parent",
+                value: currentParent,
+                itemList: collectionDropdown,
+                onChanged: (value) {
+                  currentParent = value.toString();
+
+                  setState(() {});
+                },
+              )),
+        ),
+        Visibility(
+          visible: selectedCollection.id != -1,
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 300,
+              child: UpText(
+                "*To delete a collection you must need to delete all its products",
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 300,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Visibility(
+                visible: selectedCollection.id != -1,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 70,
+                    height: 30,
+                    child: UpButton(
+                      onPressed: () {
+                        _deleteCollection(selectedCollection.id!);
+                      },
+                      text: "Delete",
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: 70,
                   height: 30,
                   child: UpButton(
                     onPressed: () {
-                      _deleteCollection(selectedCollection.id!);
+                      _updateCollection(selectedCollection.id != -1
+                          ? selectedCollection
+                          : null);
                     },
-                    text: "Delete",
+                    text: "Save",
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 70,
-                height: 30,
-                child: UpButton(
-                  onPressed: () {
-                    _updateCollection(selectedCollection.id != -1
-                        ? selectedCollection
-                        : null);
-                  },
-                  text: "Save",
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 
   _updateCollection(Collection? c) async {
@@ -529,14 +545,19 @@ class _AdminProductsState extends State<AdminProducts> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           leftSide(),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 50.0,
-                              right: 20,
-                              top: 10,
-                            ),
-                            child: SizedBox(
-                              child: Center(child: rightView()),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 50.0,
+                                right: 20,
+                                top: 10,
+                              ),
+                              child: SizedBox(
+                                child: Center(
+                                  child: rightView(),
+                                ),
+                              ),
                             ),
                           ),
                         ],

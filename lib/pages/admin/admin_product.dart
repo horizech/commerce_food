@@ -530,10 +530,10 @@ class _AdminProductState extends State<AdminProduct> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.currentProduct == null) {
-      view = 1;
-      clearFields();
-    }
+    // if (widget.currentProduct == null) {
+    //   view = 1;
+    //   clearFields();
+    // }
     return SizedBox(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,15 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
-import 'package:flutter_up/enums/direction.dart';
 import 'package:flutter_up/enums/text_style.dart';
-import 'package:flutter_up/enums/up_text_direction.dart';
-import 'package:flutter_up/models/up_radio_button_items.dart';
+import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
-import 'package:flutter_up/widgets/up_radio_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/models/add_on.dart';
@@ -58,8 +56,6 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   List<Product>? addonsProducts;
   List<ProductVariation> productVariations = [];
   List<AddOn> addons = [];
-  int? selectedVariationId;
-  ProductVariation? selectedVariation;
   int quantity = 1;
   List<bool> addonCheckboxes = [];
   List<AttributeValue> attributeValues = [];
@@ -67,8 +63,8 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   List<ProductAttribute> variedProductAttributes = [];
   List<ProductAttribute> requriedProductAttributes = [];
   List<Attribute> attributes = [];
-
-  Map<String, int> selectedProductVariations = {};
+  Map<String, int> selectedVarriedVariations = {};
+  Map<String, int> selectedNotVarriedVariations = {};
   @override
   void initState() {
     super.initState();
@@ -99,148 +95,111 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   }
 
   Widget getProductVariationsView() {
-    return Column(
-      children: [
-        Visibility(
-          visible: variedProductAttributes.isNotEmpty,
-          child: Column(
-            children: variedProductAttributes
-                .map((e) => VariedVariationsWidget(
-                      currentProductAttribute: e,
-                    ))
-                .toList(),
-          ),
-        ),
-        Visibility(
-          visible: requriedProductAttributes.isNotEmpty,
-          child: Column(
-            children: requriedProductAttributes
-                .map((e) => RequriedVariationsWidget(
-                      currentProductAttribute: e,
-                    ))
-                .toList(),
-          ),
-        ),
-      ],
-    );
-    // // keys
-    // List<String> keys = [];
-    // for (var variation in productVariations) {
-    //   if (variation.options.isNotEmpty) {
-    //     variation.options.forEach((key, value) {
-    //       keys.add(key);
-    //     });
-    //   }
-    // }
-    // keys = keys.toSet().toList();
-
-    // // Values
-    // Map<String, List<int>> keyValues = {};
-    // for (var key in keys) {
-    //   keyValues[key] = [];
-    // }
-    // for (var variation in productVariations) {
-    //   if (variation.options.isNotEmpty) {
-    //     variation.options.forEach((key, value) {
-    //       if (keyValues[key] != null) {
-    //         keyValues[key]!.add(value);
-    //       }
-    //     });
-    //   }
-    // }
-
-    // keyValues.forEach((key, value) {
-    //   keyValues[key] = value.toSet().toList();
-    // });
-
-    // for (var key in keys) {
-    //   selectedProductVariations['key'] = 0;
-    // }
-    // return Column(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-    //     ...keys
-    //         .map(
-    //           (key) => Column(
-    //             children: [
-    //               Padding(
-    //                 padding: const EdgeInsets.all(8.0),
-    //                 child: Row(
-    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                   crossAxisAlignment: CrossAxisAlignment.center,
-    //                   children: [
-    //                     UpText("Select $key", type: UpTextType.heading5),
-    //                     UpText(
-    //                       "1 Required",
-    //                       style: UpStyle(
-    //                           textColor:
-    //                               UpConfig.of(context).theme.primaryColor[200]),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               keyValues[key] != null && keyValues[key]!.length > 1
-    //                   ? productRadioButton(key, keyValues)
-    //                   : const SizedBox()
-    //             ],
-    //           ),
-    //         )
-    //         .toList()
-    //   ],
-    // );
-  }
-
-  Widget productRadioButton(String key, Map<String, List> keyValues) {
-    List<UpRadioButtonItem> radioButtonValues = [];
-
-    for (var keyV in keyValues[key]!) {
-      radioButtonValues.add(UpRadioButtonItem(
-        value: keyV,
-        isDisabled: selectedProductVariations[key] == 0 &&
-                selectedProductVariations.values.any((element) => element > 0)
-            ? true
-            : false,
-        widget: Padding(
-          padding: const EdgeInsets.only(
-            left: 8.0,
-            top: 12.0,
-            right: 8.0,
-            bottom: 12.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              UpText(
-                attributeValues
-                    .where((element) => element.id == keyV)
-                    .first
-                    .name,
-              ),
-            ],
-          ),
-        ),
-      ));
+    List<String> keys = [];
+    if (productVariations.isNotEmpty) {
+      for (var variation in productVariations) {
+        if (variation.options.isNotEmpty) {
+          variation.options.forEach((key, value) {
+            keys.add(key);
+          });
+        }
+      }
+      keys = keys.toSet().toList();
     }
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: UpRadioButton(
-            initialValue: false,
-            items: radioButtonValues,
-            labelDirection: UpTextDirection.right,
-            direction: UpDirection.vertical,
-            onChange: (radiovalue) {
-              // selectedVariationId = radiovalue;
-              selectedProductVariations[key] = radiovalue;
-              setState(() {});
-            },
-          ),
-        ),
+        variedProductAttributes.isNotEmpty && productVariations.isNotEmpty
+            ? Column(
+                children: variedProductAttributes
+                    .map((e) => VariedVariationsWidget(
+                          keys: keys,
+                          selectedvariation: selectedVarriedVariations,
+                          attributeValues: attributeValues,
+                          onChange: (map) {
+                            if ((map as Map<String, int>).isNotEmpty) {
+                              (map).forEach((key, value) {
+                                selectedVarriedVariations[key] = value;
+                              });
+                            }
+                            setState(() {});
+                          },
+                          attributes: attributes,
+                          currentProductAttribute: e,
+                          productVariations: productVariations,
+                        ))
+                    .toList(),
+              )
+            : const SizedBox(),
+        requriedProductAttributes.isNotEmpty
+            ? Column(
+                children: requriedProductAttributes
+                    .map((e) => RequriedVariationsWidget(
+                        currentProductAttribute: e,
+                        onChange: (map) {
+                          if ((map as Map<String, int>).isNotEmpty) {
+                            (map).forEach((key, value) {
+                              selectedNotVarriedVariations[key] = value;
+                            });
+                          }
+                        }))
+                    .toList(),
+              )
+            : const SizedBox(),
       ],
     );
   }
+
+  // Widget productRadioButton(String key, Map<String, List> keyValues) {
+  //   List<UpRadioButtonItem> radioButtonValues = [];
+
+  //   for (var keyV in keyValues[key]!) {
+  //     radioButtonValues.add(UpRadioButtonItem(
+  //       value: keyV,
+  //       isDisabled: selectedProductVariations[key] == 0 &&
+  //               selectedProductVariations.values.any((element) => element > 0)
+  //           ? true
+  //           : false,
+  //       widget: Padding(
+  //         padding: const EdgeInsets.only(
+  //           left: 8.0,
+  //           top: 12.0,
+  //           right: 8.0,
+  //           bottom: 12.0,
+  //         ),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             UpText(
+  //               attributeValues
+  //                   .where((element) => element.id == keyV)
+  //                   .first
+  //                   .name,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ));
+  //   }
+  //   return Column(
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.all(8.0),
+  //         child: UpRadioButton(
+  //           initialValue: false,
+  //           items: radioButtonValues,
+  //           labelDirection: UpTextDirection.right,
+  //           direction: UpDirection.vertical,
+  //           onChange: (radiovalue) {
+  //             // selectedVariationId = radiovalue;
+  //             selectedProductVariations[key] = radiovalue;
+  //             setState(() {});
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget getComboVariationView() {
     return Column(
@@ -267,7 +226,7 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                         ],
                       ),
                     ),
-                    getVariationRadioButton(e.id!)
+                    // getVariationRadioButton(e.id!)
                   ],
                 ))
             .toList(),
@@ -275,52 +234,52 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
     );
   }
 
-  Widget getVariationRadioButton(int product) {
-    List<ProductVariation> productBasedVariations = productVariations
-        .where((element) => element.product == product)
-        .toList();
-    if (widget.combo != null &&
-        widget.combo!.fixedVariations != null &&
-        widget.combo!.fixedVariations!.isNotEmpty &&
-        widget.combo!.fixedVariations!['$product'] != null &&
-        productBasedVariations.isNotEmpty &&
-        productBasedVariations.any((element) => false)) {
-      return const SizedBox();
-    } else {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: productVariations.any((element) => element.product == product)
-            ? UpRadioButton(
-                items: productVariations
-                    .where((variation) => variation.product == product)
-                    .map((e) => UpRadioButtonItem(
-                          value: e.id,
-                          widget: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, top: 12.0, right: 8.0, bottom: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                UpText(e.name ?? ''),
-                                UpText("£${e.price}"),
-                              ],
-                            ),
-                          ),
-                        ))
-                    .toList(),
-                labelDirection: UpTextDirection.right,
-                direction: UpDirection.vertical,
-                onChange: (radiovalue) {
-                  selectedVariationId = radiovalue;
+  // Widget getVariationRadioButton(int product) {
+  //   List<ProductVariation> productBasedVariations = productVariations
+  //       .where((element) => element.product == product)
+  //       .toList();
+  //   if (widget.combo != null &&
+  //       widget.combo!.fixedVariations != null &&
+  //       widget.combo!.fixedVariations!.isNotEmpty &&
+  //       widget.combo!.fixedVariations!['$product'] != null &&
+  //       productBasedVariations.isNotEmpty &&
+  //       productBasedVariations.any((element) => false)) {
+  //     return const SizedBox();
+  //   } else {
+  //     return Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: productVariations.any((element) => element.product == product)
+  //           ? UpRadioButton(
+  //               items: productVariations
+  //                   .where((variation) => variation.product == product)
+  //                   .map((e) => UpRadioButtonItem(
+  //                         value: e.id,
+  //                         widget: Padding(
+  //                           padding: const EdgeInsets.only(
+  //                               left: 8.0, top: 12.0, right: 8.0, bottom: 12.0),
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                             crossAxisAlignment: CrossAxisAlignment.center,
+  //                             children: [
+  //                               UpText(e.name ?? ''),
+  //                               UpText("£${e.price}"),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ))
+  //                   .toList(),
+  //               labelDirection: UpTextDirection.right,
+  //               direction: UpDirection.vertical,
+  //               onChange: (radiovalue) {
+  //                 selectedVariationId = radiovalue;
 
-                  setState(() {});
-                },
-              )
-            : const SizedBox(),
-      );
-    }
-  }
+  //                 setState(() {});
+  //               },
+  //             )
+  //           : const SizedBox(),
+  //     );
+  //   }
+  // }
 
   Widget _getDialogView() {
     return Column(
@@ -477,77 +436,96 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                     child: SizedBox(
                       width: 100,
                       child: UpButton(
-                        text: "Add to cart",
-                        onPressed: () {
-                          CartCubit cubit = context.read<CartCubit>();
+                          text: "Add to cart",
+                          onPressed: () {
+                            CartCubit cubit = context.read<CartCubit>();
 
-                          //add on products add to cart
-                          if (addonCheckboxes
-                              .any((element) => element == true)) {
-                            for (var c in addonCheckboxes.asMap().entries) {
-                              if (addonCheckboxes[c.key] == true) {
-                                CartItem item = CartItem(
-                                  product: addonsProducts!
-                                      .asMap()
-                                      .entries
-                                      .where((element) => element.key == c.key)
-                                      .first
-                                      .value,
-                                  quantity: 1,
-                                );
-                                cubit.addToCart(item);
+                            //add on products add to cart
+                            if (addonCheckboxes
+                                .any((element) => element == true)) {
+                              for (var c in addonCheckboxes.asMap().entries) {
+                                if (addonCheckboxes[c.key] == true) {
+                                  CartItem item = CartItem(
+                                    product: addonsProducts!
+                                        .asMap()
+                                        .entries
+                                        .where(
+                                            (element) => element.key == c.key)
+                                        .first
+                                        .value,
+                                    quantity: 1,
+                                  );
+                                  cubit.addToCart(item);
+                                }
                               }
                             }
-                          }
 
-                          //product add to cart
-                          if (productVariations.isNotEmpty &&
-                              widget.product != null) {
-                            if (selectedVariationId != null) {
-                              selectedVariation = productVariations
-                                  .where((element) =>
-                                      element.id == selectedVariationId!)
-                                  .first;
+                            //product add to cart
+                            if (selectedVarriedVariations.isNotEmpty &&
+                                widget.product != null) {
+                              int? selectedProductVariationId;
+                              if (productVariations.any(
+                                (element) => mapEquals(
+                                    element.options, selectedVarriedVariations),
+                              )) {
+                                selectedProductVariationId = productVariations
+                                    .where(
+                                      (element) => mapEquals(element.options,
+                                          selectedVarriedVariations),
+                                    )
+                                    .first
+                                    .id!;
+                              }
+
+                              if (selectedProductVariationId != null) {
+                                ProductVariation selectedVariation =
+                                    productVariations
+                                        .where((element) =>
+                                            element.id ==
+                                            selectedProductVariationId!)
+                                        .first;
+                                CartItem item = CartItem(
+                                  product: widget.product!,
+                                  selectedVariation: selectedVariation,
+                                  quantity: quantity,
+                                  instructions: _instructionsController.text,
+                                );
+                                cubit.addToCart(item);
+                                Navigator.pop(context, "Success");
+                              }
+                            } else if (widget.product != null &&
+                                productVariations.isEmpty) {
                               CartItem item = CartItem(
                                 product: widget.product!,
-                                selectedVariation: selectedVariation,
+                                selectedVariation: null,
                                 quantity: quantity,
                                 instructions: _instructionsController.text,
                               );
                               cubit.addToCart(item);
                               Navigator.pop(context, "Success");
+                            } else {
+                              showUpToast(
+                                  context: context, text: "Select Variations");
                             }
-                          } else if (widget.product != null) {
-                            CartItem item = CartItem(
-                              product: widget.product!,
-                              selectedVariation: selectedVariation,
-                              quantity: quantity,
-                              instructions: _instructionsController.text,
-                            );
-                            cubit.addToCart(item);
-                            Navigator.pop(context, "Success");
-                          }
 
-                          //combo add to cart
-                          if (productVariations.isNotEmpty &&
-                              widget.products != null) {
-                            if (selectedVariationId != null) {
-                              selectedVariation = productVariations
-                                  .where((element) =>
-                                      element.id == selectedVariationId!)
-                                  .first;
-                              CartItem item = CartItem(
-                                product: widget.product!,
-                                selectedVariation: selectedVariation,
-                                quantity: quantity,
-                                instructions: _instructionsController.text,
-                              );
-                              cubit.addToCart(item);
-                              Navigator.pop(context, "Success");
-                            }
-                          }
-                        },
-                      ),
+                            // //combo add to cart
+                            // if (productVariations.isNotEmpty &&
+                            //     widget.products != null) {
+                            //   if (selectedVariationId != null) {
+                            //     selectedVariation = productVariations
+                            //         .where((element) =>
+                            //             element.id == selectedVariationId!)
+                            //         .first;
+                            //     CartItem item = CartItem(
+                            //       product: widget.product!,
+                            //       selectedVariation: selectedVariation,
+                            //       quantity: quantity,
+                            //       instructions: _instructionsController.text,
+                            //     );
+                            //     cubit.addToCart(item);
+                            //     Navigator.pop(context, "Success");
+                            //   }
+                          }),
                     ),
                   ),
                 ],

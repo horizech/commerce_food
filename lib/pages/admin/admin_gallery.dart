@@ -57,25 +57,34 @@ class _AdminGalleryState extends State<AdminGallery> {
     });
   }
 
-  _updateGallery(Gallery? g) async {
-    Gallery gallery = Gallery(
-      name: nameController.text,
-      mediaList: selectedMediaList,
-    );
-    APIResult? result = await AddEditProductService.addEditGallery(
-        data: Gallery.toJson(gallery),
-        galleryId: selectedGallery.id != -1 ? selectedGallery.id! : null);
-    if (result != null) {
-      showUpToast(
-        context: context,
-        text: result.message ?? "",
+  _updateGallery() async {
+    if (nameController.text.isNotEmpty && selectedMediaList.isNotEmpty) {
+      Gallery gallery = Gallery(
+        name: nameController.text,
+        mediaList: selectedMediaList,
       );
-      getAllGallery();
+      APIResult? result = await AddEditProductService.addEditGallery(
+          data: Gallery.toJson(gallery),
+          galleryId: selectedGallery.id != -1 ? selectedGallery.id! : null);
+      if (result != null) {
+        showUpToast(
+          context: context,
+          text: result.message ?? "",
+        );
+        if (selectedGallery.id == -1) {
+          selectedMediaList.clear();
+          nameController.text = "";
+        }
+
+        getAllGallery();
+      } else {
+        showUpToast(
+          context: context,
+          text: "An Error Occurred",
+        );
+      }
     } else {
-      showUpToast(
-        context: context,
-        text: "An Error Occurred",
-      );
+      showUpToast(context: context, text: "Please enter all fields");
     }
   }
 
@@ -94,7 +103,7 @@ class _AdminGalleryState extends State<AdminGallery> {
           showUpToast(context: context, text: result.message ?? "");
           selectedGallery = const Gallery(name: "", mediaList: [], id: -1);
           nameController.text = "";
-
+          selectedMediaList.clear();
           getAllGallery();
         } else {
           showUpToast(
@@ -190,182 +199,188 @@ class _AdminGalleryState extends State<AdminGallery> {
           }
 
           return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    leftSide(),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20,
-                        top: 10,
-                      ),
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  leftSide(),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
                       child: SizedBox(
-                        width: 350,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: UpText(
-                                "Gallery",
-                                type: UpTextType.heading5,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                width: 300,
-                                child: UpTextField(
-                                  controller: nameController,
-                                  label: 'Name',
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Column(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20,
+                            top: 10,
+                          ),
+                          child: SizedBox(
+                            width: 350,
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Padding(
                                   padding: EdgeInsets.all(8.0),
+                                  child: UpText(
+                                    "Gallery",
+                                    type: UpTextType.heading5,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
-                                    child: UpText(
-                                      "Images",
-                                      type: UpTextType.heading6,
+                                    width: 300,
+                                    child: UpTextField(
+                                      controller: nameController,
+                                      label: 'Name',
                                     ),
                                   ),
                                 ),
-                                Wrap(
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    selectedMediaList.isNotEmpty
-                                        ? Wrap(
-                                            children: selectedMediaList
-                                                .map((e) => Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: SizedBox(
-                                                        width: 100,
-                                                        height: 100,
-                                                        child: Stack(
-                                                          children: [
-                                                            SizedBox(
-                                                                width: 100,
-                                                                height: 100,
-                                                                child:
-                                                                    MediaWidget(
-                                                                  mediaId: e,
-                                                                )),
-                                                            InkWell(
-                                                              onTap: (() {
-                                                                _deleteDialog(
-                                                                    e);
-                                                              }),
-                                                              child: Container(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .topRight,
-                                                                child:
-                                                                    const UpIcon(
-                                                                  icon: Icons
-                                                                      .cancel,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ))
-                                                .toList())
-                                        : const SizedBox(),
-                                    GestureDetector(
-                                      onTap: (() {
-                                        _openMediaDialog();
-                                      }),
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
                                       child: SizedBox(
-                                        width: 100,
-                                        height: 100,
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: 100,
-                                              height: 100,
-                                              child: Image.asset(
-                                                "ef3-placeholder-image.jpg",
-                                              ),
-                                              // color: Colors.grey,
-                                            ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              child: UpIcon(
-                                                icon: Icons.add_a_photo,
-                                                style: UpStyle(iconSize: 20),
-                                              ),
-                                            ),
-                                          ],
+                                        child: UpText(
+                                          "Images",
+                                          type: UpTextType.heading6,
                                         ),
                                       ),
+                                    ),
+                                    Wrap(
+                                      children: [
+                                        selectedMediaList.isNotEmpty
+                                            ? Wrap(
+                                                children: selectedMediaList
+                                                    .map((e) => Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: SizedBox(
+                                                            width: 100,
+                                                            height: 100,
+                                                            child: Stack(
+                                                              children: [
+                                                                SizedBox(
+                                                                    width: 100,
+                                                                    height: 100,
+                                                                    child:
+                                                                        MediaWidget(
+                                                                      mediaId:
+                                                                          e,
+                                                                    )),
+                                                                InkWell(
+                                                                  onTap: (() {
+                                                                    _deleteDialog(
+                                                                        e);
+                                                                  }),
+                                                                  child:
+                                                                      Container(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topRight,
+                                                                    child:
+                                                                        const UpIcon(
+                                                                      icon: Icons
+                                                                          .cancel,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ))
+                                                    .toList())
+                                            : const SizedBox(),
+                                        GestureDetector(
+                                          onTap: (() {
+                                            _openMediaDialog();
+                                          }),
+                                          child: SizedBox(
+                                            width: 100,
+                                            height: 100,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.center,
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: Image.asset(
+                                                    "ef3-placeholder-image.jpg",
+                                                  ),
+                                                  // color: Colors.grey,
+                                                ),
+                                                Container(
+                                                  alignment: Alignment.center,
+                                                  child: UpIcon(
+                                                    icon: Icons.add_a_photo,
+                                                    style:
+                                                        UpStyle(iconSize: 20),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                              width: 300,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Visibility(
-                                    visible: selectedGallery.id != -1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SizedBox(
-                                        width: 70,
-                                        height: 30,
-                                        child: UpButton(
-                                          onPressed: () {
-                                            _deleteGallery(selectedGallery.id!);
-                                          },
-                                          text: "Delete",
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                SizedBox(
+                                  width: 300,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Visibility(
+                                        visible: selectedGallery.id != -1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            width: 70,
+                                            height: 30,
+                                            child: UpButton(
+                                              onPressed: () {
+                                                _deleteGallery(
+                                                    selectedGallery.id!);
+                                              },
+                                              text: "Delete",
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 70,
-                                      height: 30,
-                                      child: UpButton(
-                                        onPressed: () {
-                                          _updateGallery(
-                                              selectedGallery.id != -1
-                                                  ? selectedGallery
-                                                  : null);
-                                        },
-                                        text: "Save",
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: 70,
+                                          height: 30,
+                                          child: UpButton(
+                                            onPressed: () {
+                                              _updateGallery();
+                                            },
+                                            text: "Save",
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

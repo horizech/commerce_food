@@ -148,99 +148,96 @@ class _AdminKeywordsState extends State<AdminKeywords> {
 
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SizedBox(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    leftSide(),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20,
-                        top: 10,
-                      ),
-                      child: SizedBox(
-                        width: 300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: UpText(
-                                  "Keyword",
-                                  type: UpTextType.heading5,
-                                ),
+            child: SizedBox(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  leftSide(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20.0,
+                      right: 20,
+                      top: 10,
+                    ),
+                    child: SizedBox(
+                      width: 300,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: UpText(
+                                "Keyword",
+                                type: UpTextType.heading5,
                               ),
                             ),
-                            SizedBox(
-                              width: 300,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 300,
-                                      child: UpTextField(
-                                        controller: nameController,
-                                        label: 'Name',
-                                      ),
+                          ),
+                          SizedBox(
+                            width: 300,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width: 300,
+                                    child: UpTextField(
+                                      controller: nameController,
+                                      label: 'Name',
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Visibility(
-                                        visible: selectedKeyword.id != -1,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SizedBox(
-                                            width: 70,
-                                            height: 30,
-                                            child: UpButton(
-                                              onPressed: () {
-                                                _deleteKeyword(
-                                                    selectedKeyword.id!);
-                                              },
-                                              text: "Delete",
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Visibility(
+                                      visible: selectedKeyword.id != -1,
+                                      child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: SizedBox(
                                           width: 70,
                                           height: 30,
                                           child: UpButton(
                                             onPressed: () {
-                                              _updateKeyword(
-                                                  selectedKeyword.id != -1
-                                                      ? selectedKeyword
-                                                      : null);
+                                              _deleteKeyword(
+                                                  selectedKeyword.id!);
                                             },
-                                            text: "Save",
+                                            text: "Delete",
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: 70,
+                                        height: 30,
+                                        child: UpButton(
+                                          onPressed: () {
+                                            _updateKeyword(
+                                                selectedKeyword.id != -1
+                                                    ? selectedKeyword
+                                                    : null);
+                                          },
+                                          text: "Save",
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

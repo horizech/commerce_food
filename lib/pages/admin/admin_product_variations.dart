@@ -51,7 +51,7 @@ class _AdminProductVariationsState extends State<AdminProductVariations> {
       productAttributes = productAttributes
           .where((element) => element.product == widget.currentProduct.id)
           .toList();
-      setState(() {});
+
       _getProductVariations();
     }
   }
@@ -63,6 +63,7 @@ class _AdminProductVariationsState extends State<AdminProductVariations> {
     if (productVariations.isNotEmpty) {
       setState(() {});
     }
+    setState(() {});
   }
 
   _deleteDialog(int productVariationId) {
@@ -318,8 +319,7 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
           ? double.parse(_discountPriceController.text)
           : null,
     );
-    if (widget.currentProductVariation == null &&
-        widget.currentProductVariation!.id == null) {
+    if (widget.currentProductVariation == null) {
       _clearFields();
     }
     widget.onChange(productVariation);
@@ -596,6 +596,12 @@ class _ProductVariationDropdownState extends State<ProductVariationDropdown> {
               .name])) {
         currentSelected =
             "${widget.attributeValues.where((element) => element.id == widget.options[widget.attributes.where((element) => element.id == widget.productAttribute.attribute).first.name]).first.id}";
+
+        if (!dropdown.any((element) => element.value == currentSelected)) {
+          currentSelected = "";
+        }
+      } else {
+        currentSelected = "";
       }
     }
   }
