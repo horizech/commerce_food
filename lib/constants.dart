@@ -30,8 +30,3 @@ class Constant {
   static const String gallery = "Gallery";
   static const String keywords = "Keywords";
 }
-
-Map<String, String> flavours = {
-  "Apple": "Apple",
-  "Banana": "Banana",
-};

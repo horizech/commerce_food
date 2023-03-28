@@ -8,7 +8,7 @@ import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/models/keyword.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditKeywordDialog extends StatelessWidget {
+class AddEditKeywordDialog extends StatefulWidget {
   final Keyword? currentKeyword;
   const AddEditKeywordDialog({
     Key? key,
@@ -16,18 +16,23 @@ class AddEditKeywordDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AddEditKeywordDialog> createState() => _AddEditKeywordDialogState();
+}
+
+class _AddEditKeywordDialogState extends State<AddEditKeywordDialog> {
+  @override
   Widget build(BuildContext context) {
     TextEditingController nameController = TextEditingController();
 
-    if (currentKeyword != null) {
-      nameController.text = currentKeyword!.name;
+    if (widget.currentKeyword != null) {
+      nameController.text = widget.currentKeyword!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          currentKeyword != null ? "Edit Keyword" : "Add Keyword",
+          widget.currentKeyword != null ? "Edit Keyword" : "Add Keyword",
         ),
       ),
       actionsPadding: const EdgeInsets.all(0),
@@ -71,26 +76,28 @@ class AddEditKeywordDialog extends StatelessWidget {
             width: 100,
             child: UpButton(
               colorType: UpColorType.success,
-              text: currentKeyword != null ? "Edit" : "Add",
+              text: widget.currentKeyword != null ? "Edit" : "Add",
               onPressed: () async {
                 Keyword newKeyword = Keyword(
                   name: nameController.text,
                 );
                 APIResult? result = await AddEditProductService.addEditkeyword(
                     data: Keyword.toJson(newKeyword),
-                    keywordId:
-                        currentKeyword != null && currentKeyword!.id != null
-                            ? currentKeyword!.id
-                            : null);
+                    keywordId: widget.currentKeyword != null &&
+                            widget.currentKeyword!.id != null
+                        ? widget.currentKeyword!.id
+                        : null);
                 if (result != null) {
                   showUpToast(
                     context: context,
                     text: result.message ?? "",
                   );
-                  Navigator.pop(
-                    context,
-                    "success",
-                  );
+                  if (mounted) {
+                    Navigator.pop(
+                      context,
+                      "success",
+                    );
+                  }
                 } else {
                   showUpToast(
                     context: context,

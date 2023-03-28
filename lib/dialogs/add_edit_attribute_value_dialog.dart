@@ -10,7 +10,7 @@ import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 
-class AddEditAttributeValueDialog extends StatelessWidget {
+class AddEditAttributeValueDialog extends StatefulWidget {
   final Attribute attribute;
   final AttributeValue? attributeValue;
   const AddEditAttributeValueDialog({
@@ -20,18 +20,25 @@ class AddEditAttributeValueDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AddEditAttributeValueDialog> createState() =>
+      _AddEditAttributeValueDialogState();
+}
+
+class _AddEditAttributeValueDialogState
+    extends State<AddEditAttributeValueDialog> {
+  @override
   Widget build(BuildContext context) {
     TextEditingController attributeValuecontroller = TextEditingController();
 
-    if (attributeValue != null) {
-      attributeValuecontroller.text = attributeValue!.name;
+    if (widget.attributeValue != null) {
+      attributeValuecontroller.text = widget.attributeValue!.name;
     }
 
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(
-          attributeValue != null
+          widget.attributeValue != null
               ? "Edit Attribute Value"
               : "Add Attribute Value",
         ),
@@ -50,7 +57,7 @@ class AddEditAttributeValueDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: UpText(
-                  attribute.name,
+                  widget.attribute.name,
                   type: UpTextType.heading4,
                 ),
               ),
@@ -84,35 +91,40 @@ class AddEditAttributeValueDialog extends StatelessWidget {
             width: 100,
             child: UpButton(
               colorType: UpColorType.success,
-              text: attributeValue != null ? "Edit" : "Add",
+              text: widget.attributeValue != null ? "Edit" : "Add",
               onPressed: () async {
                 AttributeValue newAttributeValue = AttributeValue(
                   name: attributeValuecontroller.text,
-                  attribute: attribute.id!,
+                  attribute: widget.attribute.id!,
                 );
                 APIResult? result =
                     await AddEditProductService.addEditAttributeValues(
                         data: newAttributeValue.toJson(newAttributeValue),
-                        attributeValueId:
-                            attributeValue != null ? attributeValue!.id : null);
+                        attributeValueId: widget.attributeValue != null
+                            ? widget.attributeValue!.id
+                            : null);
                 if (result != null) {
                   if (result.success) {
                     showUpToast(
                       context: context,
                       text: result.message ?? "",
                     );
-                    Navigator.pop(
-                      context,
-                      "success",
-                    );
+                    if (mounted) {
+                      Navigator.pop(
+                        context,
+                        "success",
+                      );
+                    }
                   } else {
                     showUpToast(
                       context: context,
                       text: result.message ?? "",
                     );
-                    Navigator.pop(
-                      context,
-                    );
+                    if (mounted) {
+                      Navigator.pop(
+                        context,
+                      );
+                    }
                   }
                 } else {
                   showUpToast(

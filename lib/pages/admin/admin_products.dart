@@ -79,6 +79,7 @@ class _AdminProductsState extends State<AdminProducts> {
                   nameController.text = selectedCollection.name;
                   // currentParent = "";
                   selectedMedia = null;
+                  view = 1;
                   setState(() {});
                 }),
                 child: Container(
@@ -147,7 +148,9 @@ class _AdminProductsState extends State<AdminProducts> {
                                   child: Column(children: [
                                     GestureDetector(
                                       onTap: () {
+                                        currentProduct = null;
                                         view = 2;
+
                                         isExpanded = false;
                                         setState(() {});
                                       },
