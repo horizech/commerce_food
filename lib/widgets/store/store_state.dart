@@ -25,15 +25,14 @@ class StoreState {
     this.collections,
     this.collectionTree,
     this.keywords,
-    // this.genders,
     this.attributes,
     this.attributeValues,
     this.gallery,
-    this.restaurants,
     this.combos,
     this.productCombos,
     this.addOns,
     this.productAttributes,
+    this.restaurants,
   );
 
   get productOptionsValuesMod => null;

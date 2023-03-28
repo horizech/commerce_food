@@ -12,6 +12,7 @@ class CartItem extends Equatable {
   String type;
   int quantity;
   String? instructions;
+  List<CartItem>? comboItems;
 
   CartItem({
     this.product,
@@ -21,6 +22,7 @@ class CartItem extends Equatable {
     this.instructions,
     this.type = "product",
     this.selectedProductAttributes,
+    this.comboItems,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,7 +36,8 @@ class CartItem extends Equatable {
         'Quantity': '$quantity',
         'Instructions': '$instructions',
         'Type': type,
-        "SelectedProductAttributes": selectedProductAttributes
+        "SelectedProductAttributes": selectedProductAttributes,
+        "ComboItems": comboItems,
       };
       return item;
     } catch (e) {
@@ -45,22 +48,27 @@ class CartItem extends Equatable {
 
   factory CartItem.fromJson(Map<String, dynamic> instance) {
     try {
+      instance['ComboItems'];
       CartItem item = CartItem(
-          product: instance['Product'] != null
-              ? Product.fromJson(instance['Product'] as Map<String, dynamic>)
-              : null,
-          selectedVariation: instance['Variations'] != null
-              ? ProductVariation.fromJson(
-                  instance['Variations'] as Map<String, dynamic>)
-              : null,
-          combo: instance['Combo'] != null
-              ? Combo.fromJson(instance['Combo'] as Map<String, dynamic>)
-              : null,
-          type: instance['Type'] as String,
-          quantity: int.parse(instance['Quantity'] as String),
-          instructions: instance['Instructions'] as String?,
-          selectedProductAttributes:
-              instance["SelectedProductAttributes"] as Map<String, int>?);
+        product: instance['Product'] != null
+            ? Product.fromJson(instance['Product'] as Map<String, dynamic>)
+            : null,
+        selectedVariation: instance['Variations'] != null
+            ? ProductVariation.fromJson(
+                instance['Variations'] as Map<String, dynamic>)
+            : null,
+        combo: instance['Combo'] != null
+            ? Combo.fromJson(instance['Combo'] as Map<String, dynamic>)
+            : null,
+        type: instance['Type'] as String,
+        quantity: int.parse(instance['Quantity'] as String),
+        instructions: instance['Instructions'] as String?,
+        comboItems: (instance['ComboItems'] != null
+            ? (instance['ComboItems'] as List<CartItem>?)
+            : null),
+        selectedProductAttributes:
+            instance["SelectedProductAttributes"] as Map<String, int>?,
+      );
       return item;
     } catch (e) {
       debugPrint(e.toString());

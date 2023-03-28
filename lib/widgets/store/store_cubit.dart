@@ -32,11 +32,11 @@ class StoreCubit extends Cubit<StoreState> {
         Apiraiser.data.get("Attributes", 0),
         Apiraiser.data.get("AttributeValues", 0),
         Apiraiser.data.get("Gallery", 0),
-        Apiraiser.data.get("Restaurants", 0),
         Apiraiser.data.get("ProductCombos", 0),
         Apiraiser.data.get("Combos", 0),
         Apiraiser.data.get("ProductAddons", 0),
         Apiraiser.data.get("ProductAttributes", 0),
+        Apiraiser.data.get("Restaurants", 0),
       ]);
 
       List<APIResult> result = futureResult as List<APIResult>;
@@ -60,38 +60,39 @@ class StoreCubit extends Cubit<StoreState> {
             .map((t) => Gallery.fromJson(t as Map<String, dynamic>))
             .toList();
 
-        List<Restaurant> restaurants = (result[5].data as List<dynamic>)
-            .map((t) => Restaurant.fromJson(t as Map<String, dynamic>))
-            .toList();
-        List<ProductCombo> productCombos = (result[6].data as List<dynamic>)
+        List<ProductCombo> productCombos = (result[5].data as List<dynamic>)
             .map((t) => ProductCombo.fromJson(t as Map<String, dynamic>))
             .toList();
-        List<Combo> combos = (result[7].data as List<dynamic>)
+        List<Combo> combos = (result[6].data as List<dynamic>)
             .map((t) => Combo.fromJson(t as Map<String, dynamic>))
             .toList();
-        List<AddOn> addons = (result[8].data as List<dynamic>)
+        List<AddOn> addons = (result[7].data as List<dynamic>)
             .map((t) => AddOn.fromJson(t as Map<String, dynamic>))
             .toList();
-        List<ProductAttribute> productAttributes = (result[9].data
+        List<ProductAttribute> productAttributes = (result[8].data
                 as List<dynamic>)
             .map((t) => ProductAttribute.fromJson(t as Map<String, dynamic>))
+            .toList();
+        List<Restaurant> restaurants = (result[9].data as List<dynamic>)
+            .map((t) => Restaurant.fromJson(t as Map<String, dynamic>))
             .toList();
 
         CollectionTree collectionTree =
             CollectionTree.fromCollectionList(collections);
 
         setStoreSuccess(
-            collections,
-            collectionTree,
-            keywords,
-            attributes,
-            attributeValues,
-            mediaGroups,
-            restaurants,
-            productCombos,
-            combos,
-            addons,
-            productAttributes);
+          collections,
+          collectionTree,
+          keywords,
+          attributes,
+          attributeValues,
+          mediaGroups,
+          productCombos,
+          combos,
+          addons,
+          productAttributes,
+          restaurants,
+        );
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -110,28 +111,29 @@ class StoreCubit extends Cubit<StoreState> {
     List<Attribute>? attributes,
     List<AttributeValue>? attributeValues,
     List<Gallery>? mediaGroups,
-    List<Restaurant>? restaurants,
     List<ProductCombo>? productCombos,
     List<Combo>? combos,
     List<AddOn>? addOns,
     List<ProductAttribute> productAttributes,
+    List<Restaurant>? restaurants,
   ) {
     emit(StoreState(
-        false,
-        true,
-        false,
-        null,
-        collections,
-        collectionTree,
-        keywords,
-        attributes,
-        attributeValues,
-        mediaGroups,
-        restaurants,
-        combos,
-        productCombos,
-        addOns,
-        productAttributes));
+      false,
+      true,
+      false,
+      null,
+      collections,
+      collectionTree,
+      keywords,
+      attributes,
+      attributeValues,
+      mediaGroups,
+      combos,
+      productCombos,
+      addOns,
+      productAttributes,
+      restaurants,
+    ));
   }
 
   void setStoreError(String? error) {

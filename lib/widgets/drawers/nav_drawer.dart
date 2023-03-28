@@ -17,11 +17,6 @@ class NavDrawer extends StatelessWidget {
           .navigateToNamed(Routes.adminProducts);
     }
 
-    // void productVariation(context) {
-    //   ServiceManager<UpNavigationService>()
-    //       .navigateToNamed(Routes.adminProductVariations);
-    // }
-
     void attributes(context) {
       ServiceManager<UpNavigationService>()
           .navigateToNamed(Routes.adminAttributes);
@@ -48,11 +43,6 @@ class NavDrawer extends StatelessWidget {
         icon: Icons.production_quantity_limits,
         onTap: product,
       ),
-      // UpDrawerItem(
-      //   title: Constant.productVariations,
-      //   icon: Icons.filter,
-      //   onTap: productVariation,
-      // ),
       UpDrawerItem(
         title: Constant.combos,
         icon: Icons.food_bank_sharp,

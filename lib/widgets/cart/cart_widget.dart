@@ -29,14 +29,17 @@ class _CartWidgetState extends State<CartWidget> {
     subtotal = cartItems
         .map((e) => (getPrice(e)))
         .reduce((value, subtotalPrice) => value + subtotalPrice);
+    subtotal;
   }
 
   double getPrice(CartItem item) {
-    return item.selectedVariation != null &&
-            item.selectedVariation!.price != null
-        ? (item.selectedVariation!.price! * item.quantity)
-        : ((item.product!.price != null ? item.product!.price! : 0.0) *
-            item.quantity);
+    return item.combo != null
+        ? (item.combo!.price * item.quantity)
+        : item.selectedVariation != null &&
+                item.selectedVariation!.price != null
+            ? (item.selectedVariation!.price! * item.quantity)
+            : ((item.product!.price != null ? item.product!.price! : 0.0) *
+                item.quantity);
   }
 
   String getAttributeName(MapEntry<String, int> entry) {
@@ -62,8 +65,8 @@ class _CartWidgetState extends State<CartWidget> {
           return BlocConsumer<CartCubit, CartState>(
             listener: (context, state) {},
             builder: (context, state) {
-              if (state.cart.items.isNotEmpty && subtotal == 0) {
-                // calculatesubtotal(state.cart.items);
+              if (state.cart.items.isNotEmpty) {
+                calculatesubtotal(state.cart.items);
               }
               return (state.cart.items.isNotEmpty)
                   ? Container(
@@ -92,7 +95,153 @@ class _CartWidgetState extends State<CartWidget> {
                             height: 10,
                           ),
 
-                          // variation options
+                          // products details
+                          SizedBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ...state.cart.items
+                                    .asMap()
+                                    .entries
+                                    .where((element) =>
+                                        element.value.type == "Product")
+                                    .map((item) => Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            DeleteCounter(
+                                              onChange: (quantity) {
+                                                if (quantity == -1) {
+                                                  CartCubit cart =
+                                                      context.read<CartCubit>();
+                                                  cart.removeItem(
+                                                    item.key,
+                                                  );
+                                                } else {
+                                                  try {
+                                                    CartCubit cart = context
+                                                        .read<CartCubit>();
+                                                    cart.updateQuantity(
+                                                        item.key, quantity);
+                                                  } catch (e) {
+                                                    debugPrint(e.toString());
+                                                  }
+                                                }
+                                              },
+                                              defaultValue: item.value.quantity,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              flex: 6,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  UpText(
+                                                    item.value.product!.name,
+                                                    style: UpStyle(
+                                                      textSize: 18,
+                                                      textWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  // variation
+                                                  item.value.selectedVariation !=
+                                                              null &&
+                                                          item
+                                                              .value
+                                                              .selectedVariation!
+                                                              .options
+                                                              .isNotEmpty
+                                                      ? Wrap(
+                                                          crossAxisAlignment:
+                                                              WrapCrossAlignment
+                                                                  .center,
+                                                          children: [
+                                                            ...item
+                                                                .value
+                                                                .selectedVariation!
+                                                                .options
+                                                                .entries
+                                                                .map((entry) =>
+                                                                    UpText(
+                                                                        style:
+                                                                            UpStyle(
+                                                                          textColor: UpConfig.of(context)
+                                                                              .theme
+                                                                              .primaryColor[500],
+                                                                        ),
+                                                                        item.value.selectedVariation!.options.values.last ==
+                                                                                entry.value
+                                                                            ? getAttributeName(entry)
+                                                                            : "${getAttributeName(entry)}, "))
+                                                          ],
+                                                        )
+                                                      : const SizedBox(),
+
+                                                  // product attributes
+                                                  item.value.selectedProductAttributes !=
+                                                              null &&
+                                                          item
+                                                              .value
+                                                              .selectedProductAttributes!
+                                                              .isNotEmpty
+                                                      ? Wrap(
+                                                          crossAxisAlignment:
+                                                              WrapCrossAlignment
+                                                                  .center,
+                                                          children: [
+                                                            ...item
+                                                                .value
+                                                                .selectedProductAttributes!
+                                                                .entries
+                                                                .map(
+                                                              (entry) => UpText(
+                                                                  style:
+                                                                      UpStyle(
+                                                                    textColor: UpConfig.of(
+                                                                            context)
+                                                                        .theme
+                                                                        .primaryColor[500],
+                                                                  ),
+                                                                  item.value.selectedProductAttributes!.values
+                                                                              .last ==
+                                                                          entry
+                                                                              .value
+                                                                      ? getAttributeName(
+                                                                          entry)
+                                                                      : "${getAttributeName(entry)}, "),
+                                                            )
+                                                          ],
+                                                        )
+                                                      : const SizedBox(),
+
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Text(
+                                                "£ ${getPrice(item.value)}",
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ))
+                                    .toList(),
+                              ],
+                            ),
+                          ),
+
+                          // combo details
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,7 +249,9 @@ class _CartWidgetState extends State<CartWidget> {
                               ...state.cart.items
                                   .asMap()
                                   .entries
-                                  .map((item) => Row(
+                                  .where(
+                                      (element) => element.value.combo != null)
+                                  .map((combo) => Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -110,20 +261,20 @@ class _CartWidgetState extends State<CartWidget> {
                                                 CartCubit cart =
                                                     context.read<CartCubit>();
                                                 cart.removeItem(
-                                                  item.key,
+                                                  combo.key,
                                                 );
                                               } else {
                                                 try {
                                                   CartCubit cart =
                                                       context.read<CartCubit>();
                                                   cart.updateQuantity(
-                                                      item.key, quantity);
+                                                      combo.key, quantity);
                                                 } catch (e) {
                                                   debugPrint(e.toString());
                                                 }
                                               }
                                             },
-                                            defaultValue: item.value.quantity,
+                                            defaultValue: combo.value.quantity,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -135,72 +286,81 @@ class _CartWidgetState extends State<CartWidget> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 UpText(
-                                                  item.value.product!.name,
+                                                  combo.value.combo!.name,
                                                   style: UpStyle(
                                                     textSize: 18,
                                                     textWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                                // variation
-                                                item.value.selectedVariation !=
+                                                combo.value.comboItems !=
                                                             null &&
-                                                        item
-                                                            .value
-                                                            .selectedVariation!
-                                                            .options
+                                                        combo.value.comboItems!
                                                             .isNotEmpty
                                                     ? Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          ...item
-                                                              .value
-                                                              .selectedVariation!
-                                                              .options
-                                                              .entries
-                                                              .map((entry) =>
-                                                                  UpText(
-                                                                      style:
-                                                                          UpStyle(
-                                                                        textColor: UpConfig.of(context)
-                                                                            .theme
-                                                                            .primaryColor[500],
-                                                                      ),
-                                                                      getAttributeName(
-                                                                          entry)))
-                                                        ],
-                                                      )
-                                                    : const SizedBox(),
-
-                                                // product attributes
-                                                item.value.selectedProductAttributes !=
-                                                            null &&
-                                                        item
-                                                            .value
-                                                            .selectedProductAttributes!
-                                                            .isNotEmpty
-                                                    ? Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ...item
-                                                              .value
-                                                              .selectedProductAttributes!
-                                                              .entries
+                                                          ...combo
+                                                              .value.comboItems!
                                                               .map(
-                                                            (entry) => UpText(
-                                                              style: UpStyle(
-                                                                textColor: UpConfig.of(
-                                                                        context)
-                                                                    .theme
-                                                                    .primaryColor[500],
-                                                              ),
-                                                              getAttributeName(
-                                                                  entry),
+                                                            (cItem) => Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                UpText(
+                                                                    "1 x ${cItem.product!.name}"),
+
+                                                                cItem.selectedVariation !=
+                                                                            null &&
+                                                                        cItem
+                                                                            .selectedVariation!
+                                                                            .options
+                                                                            .isNotEmpty
+                                                                    ? Wrap(
+                                                                        crossAxisAlignment:
+                                                                            WrapCrossAlignment.center,
+                                                                        children: [
+                                                                          ...cItem.selectedVariation!.options.entries.map((entry) => UpText(
+                                                                              style: UpStyle(
+                                                                                textColor: UpConfig.of(context).theme.primaryColor[500],
+                                                                              ),
+                                                                              cItem.selectedVariation!.options.values.last == entry.value ? getAttributeName(entry) : "${getAttributeName(entry)}, "))
+                                                                        ],
+                                                                      )
+                                                                    : const SizedBox(),
+
+                                                                // product attributes
+                                                                cItem.selectedProductAttributes !=
+                                                                            null &&
+                                                                        cItem
+                                                                            .selectedProductAttributes!
+                                                                            .isNotEmpty
+                                                                    ? Wrap(
+                                                                        crossAxisAlignment:
+                                                                            WrapCrossAlignment.center,
+                                                                        children: [
+                                                                          ...cItem
+                                                                              .selectedProductAttributes!
+                                                                              .entries
+                                                                              .map(
+                                                                            (entry) => UpText(
+                                                                                style: UpStyle(
+                                                                                  textColor: UpConfig.of(context).theme.primaryColor[500],
+                                                                                ),
+                                                                                cItem.selectedProductAttributes!.values.last == entry.value ? getAttributeName(entry) : "${getAttributeName(entry)}, "),
+                                                                          )
+                                                                        ],
+                                                                      )
+                                                                    : const SizedBox(),
+
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                              ],
                                                             ),
-                                                          )
+                                                          ),
                                                         ],
                                                       )
                                                     : const SizedBox(),
@@ -210,7 +370,7 @@ class _CartWidgetState extends State<CartWidget> {
                                           Expanded(
                                             flex: 2,
                                             child: Text(
-                                              "£ ${getPrice(item.value)}",
+                                              "£ ${getPrice(combo.value)}",
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -218,6 +378,9 @@ class _CartWidgetState extends State<CartWidget> {
                                         ],
                                       ))
                                   .toList(),
+                              const SizedBox(
+                                height: 10,
+                              )
                             ],
                           ),
 

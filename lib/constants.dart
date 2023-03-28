@@ -9,12 +9,10 @@ class Routes {
   static const String adminCombos = '/admin/combos';
   static const String admin = '/admin';
   static const String adminKeywords = '/admin/keywords';
-
   static const String adminAttributes = '/admin/attributes';
   static const String adminProductVariations = '/admin/product_variations';
   static const String addEditProduct = '/add_edit_product';
   static const String addEditProductVariaton = '/add_edit_product_variation';
-  static const String searchAutomobile = '/search';
   static const String foodCartPage = '/cart_food';
   static const String adminGallery = '/admin/gallery';
   static const String adminProduct = '/admin/product';

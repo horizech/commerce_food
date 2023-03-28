@@ -15,6 +15,7 @@ import 'package:shop/pages/admin/admin_attributes.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
+import 'package:shop/pages/home/home_page.dart';
 import 'package:shop/pages/products/products_mob.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
@@ -23,7 +24,6 @@ import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter_up/models/up_route.dart';
 import 'package:flutter_up/models/up_router_state.dart';
 import 'package:shop/pages/authentication/loginsignup.dart';
-import 'package:shop/pages/home/home_page.dart';
 
 import 'package:shop/pages/products/products.dart';
 import 'package:shop/pages/store_dependant_page.dart';
@@ -93,22 +93,6 @@ class ShopApp extends StatelessWidget {
                 ),
               ),
               UpRoute(
-                path: Routes.loginSignup,
-                pageBuilder: (BuildContext context, UpRouterState state) =>
-                    const LoginSignupPage(),
-                name: Routes.loginSignup,
-                shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
-                redirectRoute: Routes.admin,
-              ),
-              // UpRoute(
-              //   name: Routes.cart,
-              //   path: Routes.cart,
-              //   pageBuilder: (BuildContext context, UpRouterState state) =>
-              //       StoreDependantPage(
-              //     page: CartPage(),
-              //   ),
-              // ),
-              UpRoute(
                 name: Routes.foodCartPage,
                 path: Routes.foodCartPage,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
@@ -117,17 +101,14 @@ class ShopApp extends StatelessWidget {
                   mobilePage: FoodCartMobPage(),
                 ),
               ),
-
-              // UpRoute(
-              //   path: Routes.addEditProduct,
-              //   name: Routes.addEditProduct,
-              //   pageBuilder: (BuildContext context, UpRouterState state) =>
-              //       StoreDependantPage(
-              //     page: AddEditProduct(
-              //       queryParams: state.queryParams,
-              //     ),
-              //   ),
-              // ),
+              UpRoute(
+                path: Routes.loginSignup,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const LoginSignupPage(),
+                name: Routes.loginSignup,
+                shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.products,
+              ),
               UpRoute(
                 path: Routes.adminCombos,
                 name: Routes.adminCombos,
@@ -160,7 +141,6 @@ class ShopApp extends StatelessWidget {
                 shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
                 redirectRoute: Routes.loginSignup,
               ),
-
               UpRoute(
                 path: Routes.adminGallery,
                 name: Routes.adminGallery,
