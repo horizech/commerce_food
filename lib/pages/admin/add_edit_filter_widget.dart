@@ -14,24 +14,23 @@ import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class AddEditAttributesWidget extends StatefulWidget {
+class AddEditFiltersWidget extends StatefulWidget {
   Map<String, dynamic>? options;
   final Function onChange;
-  AddEditAttributesWidget({
+  AddEditFiltersWidget({
     Key? key,
     this.options,
     required this.onChange,
   }) : super(key: key);
 
   @override
-  State<AddEditAttributesWidget> createState() =>
-      _AddEditAttributesWidgetState();
+  State<AddEditFiltersWidget> createState() => _AddEditFiltersWidgetState();
 }
 
-class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
+class _AddEditFiltersWidgetState extends State<AddEditFiltersWidget> {
   List<Attribute> attributes = [];
   List<AttributeValue> attributeValues = [];
-  Map<String, int> newOptions = {};
+  Map<String, dynamic> newOptions = {};
 
   _attributeValueAddDialog(Attribute attribute) {
     showDialog(
@@ -159,19 +158,18 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
                                         WrapCrossAlignment.center,
                                     children: [
                                       AttributeDropdownWidget(
-                                        productOption: element,
+                                        attribute: element,
                                         attributeValues: attributeValues,
                                         change: (value) {
-                                          newOptions[element.name] =
+                                          newOptions["${element.id}"] =
                                               int.parse(value);
-
-                                          newOptions;
                                         },
                                         initialValue: widget.options != null &&
                                                 widget.options!.isNotEmpty &&
-                                                widget.options![element.name] !=
+                                                widget.options![
+                                                        "${element.id}"] !=
                                                     null
-                                            ? widget.options![element.name]
+                                            ? widget.options!["${element.id}"]
                                                 .toString()
                                             : null,
                                       ),
@@ -217,14 +215,14 @@ class _AddEditAttributesWidgetState extends State<AddEditAttributesWidget> {
 
 class AttributeDropdownWidget extends StatefulWidget {
   final List<AttributeValue>? attributeValues;
-  final Attribute productOption;
+  final Attribute attribute;
   final Function? change;
   final String? initialValue;
 
   const AttributeDropdownWidget({
     Key? key,
     this.attributeValues,
-    required this.productOption,
+    required this.attribute,
     this.initialValue,
     this.change,
   }) : super(key: key);
@@ -247,7 +245,7 @@ class _AttributeDropdownWidgetState extends State<AttributeDropdownWidget> {
 
   initialize() {
     widget.attributeValues!
-        .where((e) => e.attribute == widget.productOption.id)
+        .where((e) => e.attribute == widget.attribute.id)
         .forEach((element) {
       attributeDropdown
           .add(UpLabelValuePair(label: element.name, value: "${element.id}"));
@@ -283,7 +281,7 @@ class _AttributeDropdownWidgetState extends State<AttributeDropdownWidget> {
                   widget.change!(value),
                 }),
             value: currentOption,
-            label: widget.productOption.name,
+            label: widget.attribute.name,
             itemList: attributeDropdown,
           ),
         ),

@@ -277,7 +277,7 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
   final TextEditingController _discountEndController = TextEditingController();
   int? gallery;
   ProductVariation? oldProductVariation;
-  Map<String, int> options = {};
+  Map<String, dynamic> options = {};
 
   _discountStartDate() async {
     DateTime date = await getPicker(context);
@@ -348,6 +348,14 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
   }
 
   _initializeFields() {
+    Map<String, int> newOptions = {};
+    if (widget.currentProductVariation!.options.isNotEmpty) {
+      widget.currentProductVariation!.options.forEach((key, value) {
+        if (value != null && key.length == 1) {
+          newOptions[key] = value;
+        }
+      });
+    }
     _nameController.text = widget.currentProductVariation!.name ?? "";
     _descriptionController.text =
         widget.currentProductVariation!.description ?? "";
@@ -367,7 +375,7 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
             ? widget.currentProductVariation!.discountEndDate.toString()
             : "";
     gallery = widget.currentProductVariation!.gallery;
-    options = widget.currentProductVariation!.options;
+    options = newOptions;
     setState(() {});
   }
 
@@ -393,6 +401,7 @@ class _ProductVariationExpansionState extends State<ProductVariationExpansion> {
                             if ((map as Map<String, dynamic>).isNotEmpty) {
                               (map).forEach((key, value) {
                                 options[key] = value;
+                                options;
                               });
                             }
                           }),
@@ -589,13 +598,10 @@ class _ProductVariationDropdownState extends State<ProductVariationDropdown> {
     if (widget.options.isNotEmpty) {
       if (widget.attributeValues.any((element) =>
           element.id ==
-          widget.options[widget.attributes
-              .where(
-                  (element) => element.id == widget.productAttribute.attribute)
-              .first
-              .name])) {
+          widget.options[
+              "${widget.attributes.where((element) => element.id == widget.productAttribute.attribute).first.id}"])) {
         currentSelected =
-            "${widget.attributeValues.where((element) => element.id == widget.options[widget.attributes.where((element) => element.id == widget.productAttribute.attribute).first.name]).first.id}";
+            "${widget.attributeValues.where((element) => element.id == widget.options["${widget.attributes.where((element) => element.id == widget.productAttribute.attribute).first.id}"]).first.id}";
 
         if (!dropdown.any((element) => element.value == currentSelected)) {
           currentSelected = "";
@@ -627,11 +633,8 @@ class _ProductVariationDropdownState extends State<ProductVariationDropdown> {
                 onChanged: ((value) {
                   if (value != null && value.isNotEmpty) {
                     Map<String, dynamic> map = {};
-                    map[widget.attributes
-                        .where((element) =>
-                            element.id == widget.productAttribute.attribute)
-                        .first
-                        .name] = int.parse(value);
+                    map["${widget.attributes.where((element) => element.id == widget.productAttribute.attribute).first.id}"] =
+                        int.parse(value);
                     widget.onChange(map);
                   }
                 }),

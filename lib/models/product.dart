@@ -21,7 +21,7 @@ class Product extends Equatable {
   final DateTime? discountStartDate;
   final DateTime? discountEndDate;
   final String sku;
-  final Map<String, int>? options;
+  final Map<String, dynamic>? options;
   final Map<String, dynamic>? meta;
 
   // final int? media;
@@ -88,11 +88,10 @@ class Product extends Equatable {
                 : json['DiscountEndDate']
             : null,
         sku: json['SKU'] as String,
-        options: json['Options'] != null &&
-                (json['Options'] as String).isNotEmpty
-            ? (jsonDecode(json['Options'] as String) as Map<String, dynamic>)
-                .cast<String, int>()
-            : {},
+        options:
+            json['Options'] != null && (json['Options'] as String).isNotEmpty
+                ? jsonDecode(json['Options'] as String) as Map<String, dynamic>
+                : {},
         meta: json['Meta'] != null && (json['Meta'] as String).isNotEmpty
             ? (jsonDecode(json['Meta'] as String) as Map<String, dynamic>)
             : {},

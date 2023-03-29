@@ -42,7 +42,7 @@ class _CartWidgetState extends State<CartWidget> {
                 item.quantity);
   }
 
-  String getAttributeName(MapEntry<String, int> entry) {
+  String getAttributeName(MapEntry<String, dynamic> entry) {
     String name = "";
     name = attributeValues
         .where((element) => element.id == entry.value)

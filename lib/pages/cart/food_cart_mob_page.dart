@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
@@ -105,66 +104,63 @@ class _FoodCartMobPageState extends State<FoodCartMobPage> {
                   primary: Color.fromRGBO(200, 16, 46, 1.0),
                 ),
               ),
-              child: Container(
-                child: Stepper(
-                  type: StepperType.horizontal,
-                  currentStep: currentStep,
-                  steps: getSteps(),
-                  // onStepTapped: (step) => setState(() {
-                  //   currentStep = step;
-                  // }),
-                  onStepContinue: () {
-                    final isLastStep = currentStep == getSteps().length - 1;
-                    if (isLastStep) {
-                      setState(() {
-                        isComplete = true;
-                        print('Completed');
-                      });
-                    } else {
-                      setState(() => currentStep += 1);
-                    }
-                  },
-                  onStepCancel: () {
-                    if (currentStep == 0) {
-                      print('Goto Food List');
-                    } else {
-                      setState(() => currentStep -= 1);
-                    }
-                    // currentStep == 0 ? null : () => setState(() => currentStep -= 1);
-                  },
-                  controlsBuilder: (context, details) {
-                    final isLastStep = currentStep == getSteps().length - 1;
-                    return Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        children: [
+              child: Stepper(
+                type: StepperType.horizontal,
+                currentStep: currentStep,
+                steps: getSteps(),
+                // onStepTapped: (step) => setState(() {
+                //   currentStep = step;
+                // }),
+                onStepContinue: () {
+                  final isLastStep = currentStep == getSteps().length - 1;
+                  if (isLastStep) {
+                    setState(() {
+                      isComplete = true;
+                    });
+                  } else {
+                    setState(() => currentStep += 1);
+                  }
+                },
+                onStepCancel: () {
+                  if (currentStep == 0) {
+                    // print('Goto Food List');
+                  } else {
+                    setState(() => currentStep -= 1);
+                  }
+                  // currentStep == 0 ? null : () => setState(() => currentStep -= 1);
+                },
+                controlsBuilder: (context, details) {
+                  final isLastStep = currentStep == getSteps().length - 1;
+                  return Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: details.onStepContinue,
+                            child: Text(isLastStep ? "CONFIRM" : "NEXT"),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        if (currentStep != 0)
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: details.onStepContinue,
-                              child: Text(isLastStep ? "CONFIRM" : "NEXT"),
+                              onPressed: details.onStepCancel,
+                              child: const Text("BACK"),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          if (currentStep != 0)
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: details.onStepCancel,
-                                child: const Text("BACK"),
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                  // controlsBuilder: (context, {onStepContinue,onStepCancel}) {
-                  //   return Container(
-                  //     child: Row(children: [Expanded(child: ElevatedButton(child: Text("Next"),onPressed: onStepContinue,),
-                  //     ),
-                  //       Expanded(child: ElevatedButton(child: Text("BACK"),onPressed: onStepCancel,),
-                  //     ),],),
-                  //   )
-                  // }
-                ),
+                      ],
+                    ),
+                  );
+                },
+                // controlsBuilder: (context, {onStepContinue,onStepCancel}) {
+                //   return Container(
+                //     child: Row(children: [Expanded(child: ElevatedButton(child: Text("Next"),onPressed: onStepContinue,),
+                //     ),
+                //       Expanded(child: ElevatedButton(child: Text("BACK"),onPressed: onStepCancel,),
+                //     ),],),
+                //   )
+                // }
               ),
             ),
     );

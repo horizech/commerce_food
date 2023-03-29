@@ -11,7 +11,7 @@ class ProductVariation extends Equatable {
   final int? lastUpdatedBy;
   final String? description;
   final int product;
-  final Map<String, int> options;
+  final Map<String, dynamic> options;
   final String? sku;
   final double? price;
   final double? discounPrice;
@@ -59,8 +59,8 @@ class ProductVariation extends Equatable {
         name: json['Name'] as String?,
         description: json['Description'] as String?,
         product: json['Product'] as int,
-        options: (jsonDecode(json['Options'] as String) as Map<String, dynamic>)
-            .cast<String, int>(),
+        options:
+            (jsonDecode(json['Options'] as String) as Map<String, dynamic>),
         price: json['Price'] as double?,
         sku: json['SKU'] as String?,
         discounPrice: json['DiscountPrice'] as double?,
