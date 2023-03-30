@@ -13,16 +13,16 @@ import 'package:shop/models/product_attribute.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class VariedVariationsWidget extends StatefulWidget {
+class CartVariedVariationsWidget extends StatefulWidget {
   final List<ProductVariation> productVariations;
   final ProductAttribute currentProductAttribute;
   final List<Attribute> attributes;
   final List<AttributeValue> attributeValues;
   final List<String> keys;
   final Function onChange;
-  final Map<String, int> selectedvariation;
+  final Map<String, dynamic> selectedvariation;
 
-  const VariedVariationsWidget({
+  const CartVariedVariationsWidget({
     super.key,
     required this.attributes,
     required this.attributeValues,
@@ -34,10 +34,12 @@ class VariedVariationsWidget extends StatefulWidget {
   });
 
   @override
-  State<VariedVariationsWidget> createState() => _VariedVariationsWidgetState();
+  State<CartVariedVariationsWidget> createState() =>
+      _CartVariedVariationsWidgetState();
 }
 
-class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
+class _CartVariedVariationsWidgetState
+    extends State<CartVariedVariationsWidget> {
   List<UpRadioButtonItem> radioValues = [];
   List<int> keyValues = [];
   Map<String, int> oldVariations = {};
@@ -50,20 +52,12 @@ class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
     if (widget.keys.isNotEmpty) {
       if (widget.keys.any((element) =>
           element ==
-          widget.attributes
-              .where((element) =>
-                  element.id == widget.currentProductAttribute.attribute)
-              .first
-              .name)) {
+          "${widget.attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}")) {
         for (var variation in widget.productVariations) {
           if (variation.options.isNotEmpty) {
             variation.options.forEach((key, value) {
-              if (variation.options[widget.attributes
-                      .where((element) =>
-                          element.id ==
-                          widget.currentProductAttribute.attribute)
-                      .first
-                      .name] !=
+              if (variation.options[
+                      "${widget.attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}"] !=
                   null) {
                 if (widget.currentProductAttribute.attributeValues
                     .any((element) => element == value)) {
@@ -191,23 +185,14 @@ class _VariedVariationsWidgetState extends State<VariedVariationsWidget> {
                         ),
                         UpRadioButton(
                           onChange: (radioValue) {
-                            Map<String, int> map = {
-                              widget.attributes
-                                  .where((element) =>
-                                      element.id ==
-                                      widget.currentProductAttribute.attribute)
-                                  .first
-                                  .name: radioValue
+                            Map<String, dynamic> map = {
+                              "${widget.attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}":
+                                  radioValue
                             };
 
                             widget.onChange(
                               map,
-                              widget.attributes
-                                  .where((element) =>
-                                      element.id ==
-                                      widget.currentProductAttribute.attribute)
-                                  .first
-                                  .name,
+                              "${widget.attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}",
                             );
                           },
                           initialValue: currentSelected,

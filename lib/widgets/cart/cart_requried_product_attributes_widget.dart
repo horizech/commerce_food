@@ -12,22 +12,23 @@ import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/product_attribute.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class ProductAttributesWidget extends StatefulWidget {
+class CarProductAttributesWidget extends StatefulWidget {
   final Function onChange;
   final ProductAttribute currentProductAttribute;
 
-  const ProductAttributesWidget({
+  const CarProductAttributesWidget({
     super.key,
     required this.onChange,
     required this.currentProductAttribute,
   });
 
   @override
-  State<ProductAttributesWidget> createState() =>
-      _ProductAttributesWidgetState();
+  State<CarProductAttributesWidget> createState() =>
+      _CarProductAttributesWidgetState();
 }
 
-class _ProductAttributesWidgetState extends State<ProductAttributesWidget> {
+class _CarProductAttributesWidgetState
+    extends State<CarProductAttributesWidget> {
   List<AttributeValue> attributeValues = [];
   List<Attribute> attributes = [];
   List<UpRadioButtonItem> radioValues = [];
@@ -62,13 +63,9 @@ class _ProductAttributesWidgetState extends State<ProductAttributesWidget> {
               }
 
               if (radioValues.isNotEmpty && radioValues.length == 1) {
-                Map<String, int> map = {
-                  attributes
-                      .where((element) =>
-                          element.id ==
-                          widget.currentProductAttribute.attribute)
-                      .first
-                      .name: radioValues.first.value
+                Map<String, dynamic> map = {
+                  "${attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}":
+                      radioValues.first.value
                 };
                 widget.onChange(map);
               }
@@ -106,13 +103,9 @@ class _ProductAttributesWidgetState extends State<ProductAttributesWidget> {
                           //     ? false
                           //     : radioValues.first.value,
                           onChange: (radioValue) {
-                            Map<String, int> map = {
-                              attributes
-                                  .where((element) =>
-                                      element.id ==
-                                      widget.currentProductAttribute.attribute)
-                                  .first
-                                  .name: radioValue
+                            Map<String, dynamic> map = {
+                              "${attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}":
+                                  radioValue
                             };
                             widget.onChange(map);
                           },

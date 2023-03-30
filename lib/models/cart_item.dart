@@ -7,7 +7,7 @@ import 'package:shop/models/product_variation.dart';
 class CartItem extends Equatable {
   Product? product;
   ProductVariation? selectedVariation;
-  Map<String, int>? selectedProductAttributes;
+  Map<String, dynamic>? selectedProductAttributes;
   Combo? combo;
   String type;
   int quantity;
@@ -67,7 +67,7 @@ class CartItem extends Equatable {
             ? (instance['ComboItems'] as List<CartItem>?)
             : null),
         selectedProductAttributes:
-            instance["SelectedProductAttributes"] as Map<String, int>?,
+            instance["SelectedProductAttributes"] as Map<String, dynamic>?,
       );
       return item;
     } catch (e) {
