@@ -227,26 +227,31 @@ class _AdminProductState extends State<AdminProduct> {
                 ),
               ),
             ),
-            GestureDetector(
-                onTap: (() {
-                  if (isProductDetailEnabled) {
-                    view = 2;
-                    setState(() {});
-                  }
-                }),
-                child: Container(
-                    color: view == 2
-                        ? UpConfig.of(context).theme.primaryColor[100]
-                        : Colors.transparent,
-                    child: ListTile(
-                      title: UpText(
-                        style: UpStyle(
-                            textColor: isProductDetailEnabled
-                                ? UpConfig.of(context).theme.primaryColor[700]
-                                : Colors.grey[700]),
-                        "Product Attributes",
-                      ),
-                    ))),
+            Visibility(
+              visible: currentProduct != null &&
+                  currentProduct!.isVariedProduct &&
+                  currentProduct!.id != null,
+              child: GestureDetector(
+                  onTap: (() {
+                    if (isProductDetailEnabled) {
+                      view = 2;
+                      setState(() {});
+                    }
+                  }),
+                  child: Container(
+                      color: view == 2
+                          ? UpConfig.of(context).theme.primaryColor[100]
+                          : Colors.transparent,
+                      child: ListTile(
+                        title: UpText(
+                          style: UpStyle(
+                              textColor: isProductDetailEnabled
+                                  ? UpConfig.of(context).theme.primaryColor[700]
+                                  : Colors.grey[700]),
+                          "Product Attributes",
+                        ),
+                      ))),
+            ),
             Visibility(
               visible: currentProduct != null &&
                   currentProduct!.isVariedProduct &&
