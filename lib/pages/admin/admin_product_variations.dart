@@ -31,7 +31,6 @@ class AdminProductVariations extends StatefulWidget {
 }
 
 class _AdminProductVariationsState extends State<AdminProductVariations> {
-  User? user;
   List<Attribute> attributes = [];
   List<AttributeValue> attributeValues = [];
   List<ProductVariation> productVariations = [];

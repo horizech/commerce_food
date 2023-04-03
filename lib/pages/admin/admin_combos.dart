@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
+import 'package:shop/isUserAdmin.dart';
 import 'package:shop/widgets/add_media_widget.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
@@ -24,6 +25,7 @@ import 'package:shop/widgets/drawers/nav_drawer.dart';
 
 import 'package:shop/widgets/gallery_dropdown.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
+import 'package:shop/widgets/unauthorized_widget.dart';
 
 class AdminCombos extends StatefulWidget {
   final Map<String, String>? queryParams;
@@ -268,154 +270,82 @@ class _AdminCombosState extends State<AdminCombos> {
     return Scaffold(
       appBar: const UpAppBar(),
       drawer: const NavDrawer(),
-      body: products.isNotEmpty
-          ? BlocConsumer<StoreCubit, StoreState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (combos.isEmpty) {
-                  if (state.combos != null && state.combos!.isNotEmpty) {
-                    combos = state.combos!.toList();
-                  }
-                }
-                if (productCombos.isEmpty) {
-                  if (state.productCombos != null &&
-                      state.productCombos!.isNotEmpty) {
-                    productCombos = state.productCombos!.toList();
-                  }
-                }
-
-                if (productsDropdown.isEmpty) {
-                  if (products.isNotEmpty) {
-                    for (var product in products) {
-                      productsDropdown.add(
-                        UpLabelValuePair(
-                            label: product.name, value: "${product.id}"),
-                      );
+      body: isUserAdmin()
+          ? products.isNotEmpty
+              ? BlocConsumer<StoreCubit, StoreState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (combos.isEmpty) {
+                      if (state.combos != null && state.combos!.isNotEmpty) {
+                        combos = state.combos!.toList();
+                      }
                     }
-                  }
-                }
+                    if (productCombos.isEmpty) {
+                      if (state.productCombos != null &&
+                          state.productCombos!.isNotEmpty) {
+                        productCombos = state.productCombos!.toList();
+                      }
+                    }
 
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        leftSide(),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width - 300,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 20.0,
-                                right: 20,
-                                top: 10,
-                              ),
+                    if (productsDropdown.isEmpty) {
+                      if (products.isNotEmpty) {
+                        for (var product in products) {
+                          productsDropdown.add(
+                            UpLabelValuePair(
+                                label: product.name, value: "${product.id}"),
+                          );
+                        }
+                      }
+                    }
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            leftSide(),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
                               child: SizedBox(
-                                width: 400,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: UpText(
-                                          "Combo",
-                                          type: UpTextType.heading4,
+                                width: MediaQuery.of(context).size.width - 300,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 20.0,
+                                    right: 20,
+                                    top: 10,
+                                  ),
+                                  child: SizedBox(
+                                    width: 400,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: UpText(
+                                              "Combo",
+                                              type: UpTextType.heading4,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 300,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: 300,
-                                                child: UpTextField(
-                                                  controller: nameController,
-                                                  label: 'Name',
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: 300,
-                                                child: UpTextField(
-                                                  controller:
-                                                      descriptionController,
-                                                  label: 'Description',
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: 300,
-                                                child: UpTextField(
-                                                  controller: priceController,
-                                                  label: 'Price',
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: 300,
-                                                child: AddMediaWidget(
-                                                  selectedMedia: selectedMedia,
-                                                  onChnage: (media) {
-                                                    selectedMedia = media;
-                                                    setState(() {});
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 300,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: GalleryDropdown(
-                                                    gallery: gallery,
-                                                    onChange: (value) {
-                                                      gallery =
-                                                          int.parse(value);
-                                                    }),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                        SizedBox(
+                                          width: 300,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Visibility(
-                                                  visible:
-                                                      selectedCombo.id != -1,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: SizedBox(
-                                                      width: 70,
-                                                      height: 30,
-                                                      child: UpButton(
-                                                        onPressed: () {
-                                                          _deleteCombo(
-                                                              selectedCombo
-                                                                  .id!);
-                                                        },
-                                                        text: "Delete",
-                                                      ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: 300,
+                                                    child: UpTextField(
+                                                      controller:
+                                                          nameController,
+                                                      label: 'Name',
                                                     ),
                                                   ),
                                                 ),
@@ -423,198 +353,287 @@ class _AdminCombosState extends State<AdminCombos> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: SizedBox(
-                                                    width: 70,
-                                                    height: 30,
-                                                    child: UpButton(
-                                                      onPressed: () {
-                                                        _updateCombos(
-                                                            selectedCombo.id !=
-                                                                    -1
-                                                                ? selectedCombo
-                                                                : null);
-                                                      },
-                                                      text: "Save",
+                                                    width: 300,
+                                                    child: UpTextField(
+                                                      controller:
+                                                          descriptionController,
+                                                      label: 'Description',
                                                     ),
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ]),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Visibility(
-                                      visible: selectedCombo.id != -1,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: Divider(
-                                              color: UpConfig.of(context)
-                                                  .theme
-                                                  .primaryColor,
-                                              thickness: 1,
-                                            ),
-                                          ),
-                                          const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: UpText(
-                                                "Products",
-                                                type: UpTextType.heading4,
-                                              ),
-                                            ),
-                                          ),
-                                          const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: UpText(
-                                                "Add new product",
-                                                type: UpTextType.heading6,
-                                              ),
-                                            ),
-                                          ),
-                                          productsDropdown.isNotEmpty
-                                              ? Padding(
+                                                Padding(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 250,
-                                                        child: UpDropDown(
-                                                          value:
-                                                              currentSelectedProduct,
-                                                          label: "Product",
-                                                          itemList:
-                                                              productsDropdown,
-                                                          onChanged: ((value) {
-                                                            currentSelectedProduct =
-                                                                value ?? "";
-
-                                                            setState(() {});
-                                                          }),
-                                                        ),
-                                                      ),
-                                                      Padding(
+                                                  child: SizedBox(
+                                                    width: 300,
+                                                    child: UpTextField(
+                                                      controller:
+                                                          priceController,
+                                                      label: 'Price',
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: 300,
+                                                    child: AddMediaWidget(
+                                                      selectedMedia:
+                                                          selectedMedia,
+                                                      onChnage: (media) {
+                                                        selectedMedia = media;
+                                                        setState(() {});
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 300,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: GalleryDropdown(
+                                                        gallery: gallery,
+                                                        onChange: (value) {
+                                                          gallery =
+                                                              int.parse(value);
+                                                        }),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Visibility(
+                                                      visible:
+                                                          selectedCombo.id !=
+                                                              -1,
+                                                      child: Padding(
                                                         padding:
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: SizedBox(
-                                                          width: 100,
+                                                          width: 70,
+                                                          height: 30,
                                                           child: UpButton(
                                                             onPressed: () {
-                                                              _addProductCombo();
+                                                              _deleteCombo(
+                                                                  selectedCombo
+                                                                      .id!);
                                                             },
-                                                            text: "Add",
+                                                            text: "Delete",
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Visibility(
-                                              visible:
-                                                  comboBasedProducts.isNotEmpty,
-                                              child: SizedBox(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    ...comboBasedProducts.map(
-                                                      (e) => Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          bottom: 8.0,
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Flexible(
-                                                              child: SizedBox(
-                                                                width: 400,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    UpText(
-                                                                      e.name,
-                                                                      style:
-                                                                          UpStyle(
-                                                                        textSize:
-                                                                            16,
-                                                                        textWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                    UpText(
-                                                                      e.description ??
-                                                                          "",
-                                                                      style: UpStyle(
-                                                                          textSize:
-                                                                              12),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                _deleteProductCombo(
-                                                                    e.id!);
-                                                              },
-                                                              child: UpIcon(
-                                                                icon: Icons
-                                                                    .delete,
-                                                                style: UpStyle(
-                                                                    iconSize:
-                                                                        20),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: SizedBox(
+                                                        width: 70,
+                                                        height: 30,
+                                                        child: UpButton(
+                                                          onPressed: () {
+                                                            _updateCombos(
+                                                                selectedCombo
+                                                                            .id !=
+                                                                        -1
+                                                                    ? selectedCombo
+                                                                    : null);
+                                                          },
+                                                          text: "Save",
                                                         ),
                                                       ),
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
+                                              ]),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Visibility(
+                                          visible: selectedCombo.id != -1,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: 300,
+                                                child: Divider(
+                                                  color: UpConfig.of(context)
+                                                      .theme
+                                                      .primaryColor,
+                                                  thickness: 1,
+                                                ),
                                               ),
-                                            ),
+                                              const Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: UpText(
+                                                    "Products",
+                                                    type: UpTextType.heading4,
+                                                  ),
+                                                ),
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: UpText(
+                                                    "Add new product",
+                                                    type: UpTextType.heading6,
+                                                  ),
+                                                ),
+                                              ),
+                                              productsDropdown.isNotEmpty
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 250,
+                                                            child: UpDropDown(
+                                                              value:
+                                                                  currentSelectedProduct,
+                                                              label: "Product",
+                                                              itemList:
+                                                                  productsDropdown,
+                                                              onChanged:
+                                                                  ((value) {
+                                                                currentSelectedProduct =
+                                                                    value ?? "";
+
+                                                                setState(() {});
+                                                              }),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: SizedBox(
+                                                              width: 100,
+                                                              child: UpButton(
+                                                                onPressed: () {
+                                                                  _addProductCombo();
+                                                                },
+                                                                text: "Add",
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Visibility(
+                                                  visible: comboBasedProducts
+                                                      .isNotEmpty,
+                                                  child: SizedBox(
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        ...comboBasedProducts
+                                                            .map(
+                                                          (e) => Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              bottom: 8.0,
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: 400,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        UpText(
+                                                                          e.name,
+                                                                          style:
+                                                                              UpStyle(
+                                                                            textSize:
+                                                                                16,
+                                                                            textWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        UpText(
+                                                                          e.description ??
+                                                                              "",
+                                                                          style:
+                                                                              UpStyle(textSize: 12),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    _deleteProductCombo(
+                                                                        e.id!);
+                                                                  },
+                                                                  child: UpIcon(
+                                                                    icon: Icons
+                                                                        .delete,
+                                                                    style: UpStyle(
+                                                                        iconSize:
+                                                                            20),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              })
-          : const UpCircularProgress(),
+                      ),
+                    );
+                  })
+              : const UpCircularProgress()
+          : const UnAuthorizedWidget(),
     );
   }
 }

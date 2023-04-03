@@ -7,7 +7,10 @@ class UnAuthorizedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const UpText("You are not authorized to access this page",
-        type: UpTextType.heading3);
+    return const Align(
+      alignment: Alignment.center,
+      child: UpText("You are not authorized to access this page",
+          type: UpTextType.heading3),
+    );
   }
 }

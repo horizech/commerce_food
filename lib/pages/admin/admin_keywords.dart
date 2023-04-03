@@ -9,10 +9,12 @@ import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
+import 'package:shop/isUserAdmin.dart';
 import 'package:shop/models/keyword.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
+import 'package:shop/widgets/unauthorized_widget.dart';
 
 class AdminKeywords extends StatefulWidget {
   const AdminKeywords({
@@ -137,112 +139,117 @@ class _AdminKeywordsState extends State<AdminKeywords> {
     return Scaffold(
       appBar: const UpAppBar(),
       drawer: const NavDrawer(),
-      body: BlocConsumer<StoreCubit, StoreState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (keywords.isEmpty) {
-            if (state.keywords != null && state.keywords!.isNotEmpty) {
-              keywords = state.keywords!.toList();
-            }
-          }
+      body: isUserAdmin()
+          ? BlocConsumer<StoreCubit, StoreState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                if (keywords.isEmpty) {
+                  if (state.keywords != null && state.keywords!.isNotEmpty) {
+                    keywords = state.keywords!.toList();
+                  }
+                }
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  leftSide(),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20,
-                      top: 10,
-                    ),
-                    child: SizedBox(
-                      width: 300,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: UpText(
-                                "Keyword",
-                                type: UpTextType.heading5,
-                              ),
-                            ),
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        leftSide(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20,
+                            top: 10,
                           ),
-                          SizedBox(
+                          child: SizedBox(
                             width: 300,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 300,
-                                    child: UpTextField(
-                                      controller: nameController,
-                                      label: 'Name',
+                                const Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: UpText(
+                                      "Keyword",
+                                      type: UpTextType.heading5,
                                     ),
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Visibility(
-                                      visible: selectedKeyword.id != -1,
-                                      child: Padding(
+                                SizedBox(
+                                  width: 300,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: SizedBox(
-                                          width: 70,
-                                          height: 30,
-                                          child: UpButton(
-                                            onPressed: () {
-                                              _deleteKeyword(
-                                                  selectedKeyword.id!);
-                                            },
-                                            text: "Delete",
+                                          width: 300,
+                                          child: UpTextField(
+                                            controller: nameController,
+                                            label: 'Name',
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SizedBox(
-                                        width: 70,
-                                        height: 30,
-                                        child: UpButton(
-                                          onPressed: () {
-                                            _updateKeyword(
-                                                selectedKeyword.id != -1
-                                                    ? selectedKeyword
-                                                    : null);
-                                          },
-                                          text: "Save",
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Visibility(
+                                            visible: selectedKeyword.id != -1,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                width: 70,
+                                                height: 30,
+                                                child: UpButton(
+                                                  onPressed: () {
+                                                    _deleteKeyword(
+                                                        selectedKeyword.id!);
+                                                  },
+                                                  text: "Delete",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              width: 70,
+                                              height: 30,
+                                              child: UpButton(
+                                                onPressed: () {
+                                                  _updateKeyword(
+                                                      selectedKeyword.id != -1
+                                                          ? selectedKeyword
+                                                          : null);
+                                                },
+                                                text: "Save",
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                );
+              },
+            )
+          : const UnAuthorizedWidget(),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
+import 'package:shop/isUserAdmin.dart';
 import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
@@ -31,13 +32,12 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   TextEditingController nameController = TextEditingController();
   TextEditingController attributeValueNameController = TextEditingController();
   List<AttributeValue> attributeValues = [];
-  User? user;
+
   Attribute selectedAttribute = const Attribute(name: "", id: -1);
   List<AttributeValue> filteredAttributeValues = [];
   @override
   void initState() {
     super.initState();
-    user ??= Apiraiser.authentication.getCurrentUser();
     getAttributes();
     getAttributeValues();
   }
@@ -241,9 +241,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
     return Scaffold(
       appBar: const UpAppBar(),
       drawer: const NavDrawer(),
-      body: user != null &&
-              user!.roleIds != null &&
-              (user!.roleIds!.contains(2) || user!.roleIds!.contains(1))
+      body: isUserAdmin()
           ? BlocConsumer<StoreCubit, StoreState>(
               listener: (context, state) {},
               builder: (context, state) {
