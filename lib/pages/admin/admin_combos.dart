@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
-import 'package:shop/isUserAdmin.dart';
+import 'package:shop/is_user_admin.dart';
 import 'package:shop/widgets/add_media_widget.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
