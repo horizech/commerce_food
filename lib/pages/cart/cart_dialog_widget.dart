@@ -69,6 +69,7 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
   int? selectedProductVariationId;
   List<String> keys = [];
   List<CartItem> combosProducts = [];
+  bool isFurtherRun = false;
 
   @override
   void initState() {
@@ -82,7 +83,13 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                 ? widget.products!.map((e) => e.id!).toList()
                 : [widget.product!.id!])) ??
         [];
+
     if (productVariations.isNotEmpty) {
+      isFurtherRun = true;
+      setState(() {});
+    } else if (productAttributes
+        .every((element) => element.useForVariation == false)) {
+      isFurtherRun = true;
       setState(() {});
     }
   }
@@ -239,8 +246,7 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
             : const SizedBox(),
 
         // in case of combo
-
-        productVariations.isNotEmpty &&
+        productAttributes.isNotEmpty &&
                 widget.products != null &&
                 widget.products!.isNotEmpty
             ? getComboVariationView()
@@ -595,19 +601,19 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
           getAddOnProductsApiCall(addonProductIds);
         }
 
-        return (widget.product != null && widget.product!.isVariedProduct) ||
+        return ((widget.product != null && widget.product!.isVariedProduct) ||
                 (widget.products != null &&
                         widget.products!
                             .any((element) => element.isVariedProduct)) &&
-                    productVariations.isNotEmpty
+                    isFurtherRun)
             ? SizedBox(
                 child: _getDialogView(),
               )
-            : (widget.product != null &&
+            : ((widget.product != null &&
                         widget.product!.isVariedProduct == false) ||
                     (widget.products != null &&
                         widget.products!.every(
-                            (element) => element.isVariedProduct == false))
+                            (element) => element.isVariedProduct == false)))
                 ? SizedBox(
                     child: _getDialogView(),
                   )

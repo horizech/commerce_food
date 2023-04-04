@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
+import 'package:flutter_up/enums/direction.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/enums/up_text_direction.dart';
 import 'package:flutter_up/models/up_radio_button_items.dart';
@@ -99,9 +100,7 @@ class _CarProductAttributesWidgetState
                           ],
                         ),
                         UpRadioButton(
-                          // initialValue: radioValues.length > 1
-                          //     ? false
-                          //     : radioValues.first.value,
+                          direction: UpDirection.vertical,
                           onChange: (radioValue) {
                             Map<String, dynamic> map = {
                               "${attributes.where((element) => element.id == widget.currentProductAttribute.attribute).first.id}":
