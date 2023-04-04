@@ -15,7 +15,7 @@ class AddOn {
     this.lastUpdatedOn,
     this.lastUpdatedBy,
     required this.addOn,
-    required this.price,
+    this.price,
     required this.product,
   });
 
