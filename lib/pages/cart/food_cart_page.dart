@@ -5,7 +5,10 @@ import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
+import 'package:shop/widgets/cart/cart_mob_complete.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
+
+bool isComplete = false;
 
 class FoodCartPage extends StatefulWidget {
   const FoodCartPage({super.key});
@@ -16,84 +19,114 @@ class FoodCartPage extends StatefulWidget {
 
 class _FoodCartPageState extends State<FoodCartPage> {
   @override
+  void dispose() {
+    super.dispose();
+    isComplete = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FoodAppbar(),
-      body: Row(
-        children: [
-          Expanded(
-            flex: 6,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const UpText(
-                    "Need to know your details",
-                    type: UpTextType.heading4,
+      body: isComplete
+          ? CartMobComplete(
+              onChange: (isC) {
+                if (isC) {
+                  isComplete = false;
+                  setState(() {});
+                }
+              },
+            )
+          : Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const UpText(
+                          "Need to know your details",
+                          type: UpTextType.heading4,
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          runSpacing: 8,
+                          spacing: 8,
+                          children: [
+                            SizedBox(
+                              width: 300,
+                              child: UpTextField(
+                                  label: 'YOUR NAME', style: UpStyle()),
+                            ),
+                            SizedBox(
+                              width: 300,
+                              child: UpTextField(
+                                  label: 'TELEPHONE', style: UpStyle()),
+                            ),
+                            SizedBox(
+                              width: 300,
+                              child:
+                                  UpTextField(label: 'EMAIL', style: UpStyle()),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const UpText(
+                          "Pay by cash or card",
+                          type: UpTextType.heading4,
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          runSpacing: 8,
+                          spacing: 8,
+                          children: [
+                            UpButton(
+                              onPressed: () {},
+                              text: "CASH",
+                              icon: Icons.money,
+                              style: UpStyle(buttonWidth: 300),
+                            ),
+                            UpButton(
+                              onPressed: () {},
+                              text: "CARD",
+                              icon: Icons.credit_card,
+                              style: UpStyle(buttonWidth: 300),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            UpButton(
+                              onPressed: () {
+                                setState(() {
+                                  isComplete = true;
+                                });
+                              },
+                              text: "Confirm Order",
+                              style: UpStyle(buttonWidth: 200),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    runSpacing: 8,
-                    spacing: 8,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child:
-                            UpTextField(label: 'YOUR NAME', style: UpStyle()),
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child:
-                            UpTextField(label: 'TELEPHONE', style: UpStyle()),
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child: UpTextField(label: 'EMAIL', style: UpStyle()),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const UpText(
-                    "Pay by cash or card",
-                    type: UpTextType.heading4,
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    runSpacing: 8,
-                    spacing: 8,
-                    children: [
-                      UpButton(
-                        onPressed: () {},
-                        text: "CASH",
-                        icon: Icons.money,
-                        style: UpStyle(buttonWidth: 300),
-                      ),
-                      UpButton(
-                        onPressed: () {},
-                        text: "CARD",
-                        icon: Icons.credit_card,
-                        style: UpStyle(buttonWidth: 300),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Expanded(
+                      flex: 4,
+                      child: SizedBox(
+                          width: 400,
+                          height: 400,
+                          child: CartWidget(
+                            isVisible: true,
+                          ))),
+                )
+              ],
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Expanded(
-                flex: 4,
-                child: SizedBox(
-                    width: 400,
-                    height: 400,
-                    child: CartWidget(
-                      isVisible: true,
-                    ))),
-          )
-        ],
-      ),
     );
   }
 }

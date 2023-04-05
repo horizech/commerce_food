@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
+import 'package:flutter_up/locator.dart';
+import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
+import 'package:shop/constants.dart';
 
 class CartMobComplete extends StatelessWidget {
-  const CartMobComplete({super.key});
+  final Function onChange;
+  CartMobComplete({super.key, required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +129,14 @@ class CartMobComplete extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          UpButton(
+            onPressed: () {
+              onChange(true);
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.home);
+            },
+            text: "New Order",
           )
         ],
       ),

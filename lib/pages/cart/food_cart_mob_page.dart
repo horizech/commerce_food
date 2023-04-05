@@ -103,7 +103,13 @@ class _FoodCartMobPageState extends State<FoodCartMobPage> {
     return Scaffold(
       appBar: FoodAppbar(),
       body: isComplete
-          ? const CartMobComplete()
+          ? CartMobComplete(
+              onChange: (isC) {
+                isComplete = false;
+                currentStep = 0;
+                setState(() {});
+              },
+            )
           : Theme(
               data: Theme.of(context).copyWith(
                 colorScheme: const ColorScheme.light(
