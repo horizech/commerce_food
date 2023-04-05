@@ -15,7 +15,11 @@ import 'package:shop/widgets/counter.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class CartWidget extends StatefulWidget {
-  const CartWidget({super.key});
+  final bool isVisible;
+  const CartWidget({
+    super.key,
+    required this.isVisible,
+  });
 
   @override
   State<CartWidget> createState() => _CartWidgetState();
@@ -480,13 +484,17 @@ class _CartWidgetState extends State<CartWidget> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Center(
-                            child: UpButton(
-                              onPressed: () {
-                                ServiceManager<UpNavigationService>()
-                                    .navigateToNamed(Routes.foodCartPage);
-                              },
-                              text: "GO TO CHECKOUT",
+
+                          Visibility(
+                            visible: widget.isVisible,
+                            child: Center(
+                              child: UpButton(
+                                onPressed: () {
+                                  ServiceManager<UpNavigationService>()
+                                      .navigateToNamed(Routes.foodCartPage);
+                                },
+                                text: "GO TO CHECKOUT",
+                              ),
                             ),
                           )
                         ],

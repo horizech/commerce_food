@@ -85,7 +85,12 @@ class _FoodCartPageState extends State<FoodCartPage> {
             padding: EdgeInsets.all(8.0),
             child: Expanded(
                 flex: 4,
-                child: SizedBox(width: 400, height: 400, child: CartWidget())),
+                child: SizedBox(
+                    width: 400,
+                    height: 400,
+                    child: CartWidget(
+                      isVisible: true,
+                    ))),
           )
         ],
       ),

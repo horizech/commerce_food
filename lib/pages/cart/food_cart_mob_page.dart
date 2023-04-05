@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/themes/up_style.dart';
@@ -11,12 +13,16 @@ import 'package:shop/widgets/cart/cart_widget.dart';
 int currentStep = 0;
 bool isComplete = false;
 
+Dialog CardPaymentBox = Dialog(
+  child: Container(),
+);
+
 List<Step> getSteps() => [
       Step(
         state: currentStep > 0 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 0,
         title: const Text('Cart'),
-        content: const CartWidget(),
+        content: const CartWidget(isVisible: false),
       ),
       Step(
         state: currentStep > 1 ? StepState.complete : StepState.indexed,

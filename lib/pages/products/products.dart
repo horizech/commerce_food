@@ -481,7 +481,9 @@ class _AllProductsState extends State<Products> {
                                       padding: EdgeInsets.all(8.0),
                                       child: Padding(
                                         padding: EdgeInsets.only(right: 8.0),
-                                        child: CartWidget(),
+                                        child: CartWidget(
+                                          isVisible: true,
+                                        ),
                                       ),
                                     )
                                   ],
