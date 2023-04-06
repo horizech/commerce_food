@@ -15,16 +15,16 @@ import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/restaurant/restaurant_grid.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({
+class HomeMobPage extends StatefulWidget {
+  const HomeMobPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeMobPage> createState() => _HomeMobPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeMobPageState extends State<HomeMobPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Restaurant> restaurants = [];
   List<Restaurant> filteredRestaurant = [];
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: FoodAppbar(),
         persistentFooterAlignment: AlignmentDirectional.bottomCenter,
-        bottomNavigationBar: const FooterWidget(),
+        // bottomNavigationBar: const FooterWidget(),
         backgroundColor: Colors.transparent,
         key: scaffoldKey,
         body: BlocConsumer<StoreCubit, StoreState>(
@@ -139,6 +139,7 @@ class _HomePageState extends State<HomePage> {
                             return const UpCircularProgress();
                           }
                         }),
+                    const FooterWidget(),
                   ],
                 ),
               ),

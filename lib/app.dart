@@ -16,6 +16,7 @@ import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
 import 'package:shop/pages/home/home_page.dart';
+import 'package:shop/pages/home/home_mob_page.dart';
 import 'package:shop/pages/products/products_mob.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
@@ -65,14 +66,19 @@ class ShopApp extends StatelessWidget {
               successColor: Colors.green,
             ),
             title: 'Shop',
-            initialRoute: Routes.loginSignup,
+            initialRoute: Routes.home,
             upRoutes: [
               UpRoute(
                 path: Routes.home,
                 name: Routes.home,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
-                    const StoreDependantPage(
-                  page: HomePage(),
+                    const UpResponsivePage(
+                  desktopPage: StoreDependantPage(
+                    page: HomePage(),
+                  ),
+                  mobilePage: StoreDependantPage(
+                    page: HomeMobPage(),
+                  ),
                 ),
               ),
               UpRoute(

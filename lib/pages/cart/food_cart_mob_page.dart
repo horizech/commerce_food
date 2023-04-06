@@ -9,6 +9,7 @@ import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_mob_complete.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
+import 'package:shop/widgets/footer/food_footer.dart';
 
 int currentStep = 0;
 bool isComplete = false;
@@ -102,6 +103,7 @@ class _FoodCartMobPageState extends State<FoodCartMobPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FoodAppbar(),
+      bottomNavigationBar: const FooterWidget(),
       body: isComplete
           ? CartMobComplete(
               onChange: (isC) {

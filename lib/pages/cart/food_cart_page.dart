@@ -7,6 +7,7 @@ import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_mob_complete.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
+import 'package:shop/widgets/footer/food_footer.dart';
 
 bool isComplete = false;
 
@@ -28,6 +29,7 @@ class _FoodCartPageState extends State<FoodCartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FoodAppbar(),
+      bottomNavigationBar: const FooterWidget(),
       body: isComplete
           ? CartMobComplete(
               onChange: (isC) {
@@ -37,94 +39,98 @@ class _FoodCartPageState extends State<FoodCartPage> {
                 }
               },
             )
-          : Row(
+          : Column(
               children: [
-                Expanded(
-                  flex: 6,
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const UpText(
-                          "Need to know your details",
-                          type: UpTextType.heading4,
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          runSpacing: 8,
-                          spacing: 8,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              width: 300,
-                              child: UpTextField(
-                                  label: 'YOUR NAME', style: UpStyle()),
+                            const UpText(
+                              "Need to know your details",
+                              type: UpTextType.heading4,
                             ),
-                            SizedBox(
-                              width: 300,
-                              child: UpTextField(
-                                  label: 'TELEPHONE', style: UpStyle()),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              runSpacing: 8,
+                              spacing: 8,
+                              children: [
+                                SizedBox(
+                                  width: 300,
+                                  child: UpTextField(
+                                      label: 'YOUR NAME', style: UpStyle()),
+                                ),
+                                SizedBox(
+                                  width: 300,
+                                  child: UpTextField(
+                                      label: 'TELEPHONE', style: UpStyle()),
+                                ),
+                                SizedBox(
+                                  width: 300,
+                                  child: UpTextField(
+                                      label: 'EMAIL', style: UpStyle()),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              width: 300,
-                              child:
-                                  UpTextField(label: 'EMAIL', style: UpStyle()),
+                            const SizedBox(height: 8),
+                            const UpText(
+                              "Pay by cash or card",
+                              type: UpTextType.heading4,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const UpText(
-                          "Pay by cash or card",
-                          type: UpTextType.heading4,
-                        ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          runSpacing: 8,
-                          spacing: 8,
-                          children: [
-                            UpButton(
-                              onPressed: () {},
-                              text: "CASH",
-                              icon: Icons.money,
-                              style: UpStyle(buttonWidth: 300),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              runSpacing: 8,
+                              spacing: 8,
+                              children: [
+                                UpButton(
+                                  onPressed: () {},
+                                  text: "CASH",
+                                  icon: Icons.money,
+                                  style: UpStyle(buttonWidth: 300),
+                                ),
+                                UpButton(
+                                  onPressed: () {},
+                                  text: "CARD",
+                                  icon: Icons.credit_card,
+                                  style: UpStyle(buttonWidth: 300),
+                                ),
+                              ],
                             ),
-                            UpButton(
-                              onPressed: () {},
-                              text: "CARD",
-                              icon: Icons.credit_card,
-                              style: UpStyle(buttonWidth: 300),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            UpButton(
-                              onPressed: () {
-                                setState(() {
-                                  isComplete = true;
-                                });
-                              },
-                              text: "Confirm Order",
-                              style: UpStyle(buttonWidth: 200),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                UpButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isComplete = true;
+                                    });
+                                  },
+                                  text: "Confirm Order",
+                                  style: UpStyle(buttonWidth: 200),
+                                )
+                              ],
                             )
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Expanded(
+                          flex: 4,
+                          child: SizedBox(
+                              width: 400,
+                              height: 400,
+                              child: CartWidget(
+                                isVisible: true,
+                              ))),
+                    )
+                  ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Expanded(
-                      flex: 4,
-                      child: SizedBox(
-                          width: 400,
-                          height: 400,
-                          child: CartWidget(
-                            isVisible: true,
-                          ))),
-                )
               ],
             ),
     );

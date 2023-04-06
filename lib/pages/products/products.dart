@@ -23,6 +23,7 @@ import 'package:shop/pages/cart/cart_dialog_widget.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/cart/cart_widget.dart';
+import 'package:shop/widgets/footer/food_footer.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
@@ -128,6 +129,7 @@ class _AllProductsState extends State<Products> {
         backgroundColor: Colors.transparent,
         key: scaffoldKey,
         appBar: FoodAppbar(),
+        // bottomNavigationBar: const FooterWidget(),
         drawerEnableOpenDragGesture: false,
         endDrawerEnableOpenDragGesture: false,
         body: products != null && products!.isNotEmpty
@@ -491,6 +493,7 @@ class _AllProductsState extends State<Products> {
 
                                 const Divider(),
                                 // const Expanded(child: ProductCategoryScroll()),
+                                const FooterWidget(),
                               ],
                             )
                           : const SizedBox();
