@@ -8,18 +8,20 @@ import 'package:shop/models/collection_tree.dart';
 import 'package:shop/models/combo.dart';
 import 'package:shop/models/gallery.dart';
 import 'package:shop/models/keyword.dart';
+import 'package:shop/models/order_status_type.dart';
 import 'package:shop/models/product_attribute.dart';
 import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/attribute.dart';
-import 'package:shop/models/restaurant.dart';
 
 part 'store_state.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   StoreCubit()
-      : super(StoreState(false, false, false, "", [], null, [], [], [], [], [],
-            [], [], [], []));
+      : super(
+          StoreState(false, false, false, "", [], null, [], [], [], [], [], [],
+              [], [], []),
+        );
 
   void getStore() async {
     Apiraiser.validateAuthentication();
@@ -36,7 +38,7 @@ class StoreCubit extends Cubit<StoreState> {
         Apiraiser.data.get("Combos", 0),
         Apiraiser.data.get("ProductAddons", 0),
         Apiraiser.data.get("ProductAttributes", 0),
-        Apiraiser.data.get("Restaurants", 0),
+        Apiraiser.data.get("OrderStatusTypes", 0),
       ]);
 
       List<APIResult> result = futureResult as List<APIResult>;
@@ -73,9 +75,10 @@ class StoreCubit extends Cubit<StoreState> {
                 as List<dynamic>)
             .map((t) => ProductAttribute.fromJson(t as Map<String, dynamic>))
             .toList();
-        List<Restaurant> restaurants = (result[9].data as List<dynamic>)
-            .map((t) => Restaurant.fromJson(t as Map<String, dynamic>))
-            .toList();
+        List<OrderStatusType> orderStatusTypes =
+            (result[9].data as List<dynamic>)
+                .map((t) => OrderStatusType.fromJson(t as Map<String, dynamic>))
+                .toList();
 
         CollectionTree collectionTree =
             CollectionTree.fromCollectionList(collections);
@@ -91,7 +94,7 @@ class StoreCubit extends Cubit<StoreState> {
           combos,
           addons,
           productAttributes,
-          restaurants,
+          orderStatusTypes,
         );
       }
     } catch (e) {
@@ -101,7 +104,22 @@ class StoreCubit extends Cubit<StoreState> {
 
   void setStoreStart() {
     emit(StoreState(
-        true, false, false, "", [], null, [], [], [], [], [], [], [], [], []));
+      true,
+      false,
+      false,
+      "",
+      [],
+      null,
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ));
   }
 
   void setStoreSuccess(
@@ -115,7 +133,7 @@ class StoreCubit extends Cubit<StoreState> {
     List<Combo>? combos,
     List<AddOn>? addOns,
     List<ProductAttribute> productAttributes,
-    List<Restaurant>? restaurants,
+    List<OrderStatusType> orderStatusTypes,
   ) {
     emit(StoreState(
       false,
@@ -132,7 +150,7 @@ class StoreCubit extends Cubit<StoreState> {
       productCombos,
       addOns,
       productAttributes,
-      restaurants,
+      orderStatusTypes,
     ));
   }
 

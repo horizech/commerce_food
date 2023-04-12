@@ -25,9 +25,7 @@ import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class ProductsMob extends StatefulWidget {
-  final Map<String, String>? queryParams;
   const ProductsMob({
-    this.queryParams,
     Key? key,
   }) : super(key: key);
 
@@ -49,22 +47,15 @@ class _AllProductsState extends State<ProductsMob> {
   @override
   void initState() {
     super.initState();
-    if (widget.queryParams != null && widget.queryParams!.isNotEmpty) {
-      if (widget.queryParams!["RestaurantId"] != null &&
-          widget.queryParams!["RestaurantId"]!.isNotEmpty) {
-        restaurantId = int.parse(widget.queryParams!["RestaurantId"] ?? "");
-      }
-    }
+
     getProducts();
   }
 
   getProducts() async {
-    if (restaurantId != null) {
-      // Map<String, dynamic> meta = {"Restaurant": restaurantId};
-      products = await ProductService.getProducts([], {}, null, null, {});
-      if (products != null && products!.isNotEmpty) {
-        setState(() {});
-      }
+    // Map<String, dynamic> meta = {"Restaurant": restaurantId};
+    products = await ProductService.getProducts([], {}, null, null, {});
+    if (products != null && products!.isNotEmpty) {
+      setState(() {});
     }
   }
 
@@ -209,14 +200,6 @@ class _AllProductsState extends State<ProductsMob> {
                     BlocConsumer<StoreCubit, StoreState>(
                         listener: (context, state) {},
                         builder: (context, state) {
-                          if (state.restaurants != null &&
-                              state.restaurants!.isNotEmpty) {
-                            restaurant = state.restaurants!
-                                .where(
-                                    ((element) => element.id == restaurantId))
-                                .first;
-                          }
-
                           if (state.collections != null &&
                               state.collections!.isNotEmpty) {
                             int parentId = state.collections!
@@ -245,7 +228,7 @@ class _AllProductsState extends State<ProductsMob> {
                             }
                           }
 
-                          return restaurant != null && collections.isNotEmpty
+                          return collections.isNotEmpty
                               ? Column(
                                   children: [
                                     Container(
@@ -265,9 +248,8 @@ class _AllProductsState extends State<ProductsMob> {
                                               children: [
                                                 SizedBox(
                                                   height: 200,
-                                                  child: MediaWidget(
-                                                      mediaId: restaurant!
-                                                          .thumbnail),
+                                                  child:
+                                                      MediaWidget(mediaId: 6),
                                                 ),
                                               ],
                                             ),
@@ -280,8 +262,8 @@ class _AllProductsState extends State<ProductsMob> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                UpText(
-                                                  restaurant!.name,
+                                                const UpText(
+                                                  "Horizech Pizzeria",
                                                   type: UpTextType.heading4,
                                                 ),
                                                 const SizedBox(
@@ -303,8 +285,8 @@ class _AllProductsState extends State<ProductsMob> {
                                                                 .primaryColor,
                                                       ),
                                                     ),
-                                                    UpText(
-                                                      restaurant!.address,
+                                                    const UpText(
+                                                      "Greater Manchester",
                                                     ),
                                                   ],
                                                 ),
@@ -327,8 +309,7 @@ class _AllProductsState extends State<ProductsMob> {
                                                                 .primaryColor,
                                                       ),
                                                     ),
-                                                    UpText(restaurant!.phoneNo
-                                                        .toString()),
+                                                    UpText(232.toString()),
                                                   ],
                                                 ),
                                               ],

@@ -18,7 +18,6 @@ import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/product_variation.dart';
-import 'package:shop/models/restaurant.dart';
 import 'package:shop/pages/cart/cart_dialog_widget.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
@@ -28,9 +27,7 @@ import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class Products extends StatefulWidget {
-  final Map<String, String>? queryParams;
   const Products({
-    this.queryParams,
     Key? key,
   }) : super(key: key);
 
@@ -45,30 +42,21 @@ class _AllProductsState extends State<Products> {
   List<Product>? products;
   List<Collection> collections = [];
 
-  int? restaurantId;
   List<ProductVariation> productVariations = [];
-  Restaurant? restaurant;
   List<GlobalKey> collectionKeys = [];
   List<Combo> combos = [];
   List<ProductCombo> productCombos = [];
   @override
   void initState() {
     super.initState();
-    if (widget.queryParams != null && widget.queryParams!.isNotEmpty) {
-      if (widget.queryParams!["RestaurantId"] != null &&
-          widget.queryParams!["RestaurantId"]!.isNotEmpty) {
-        restaurantId = int.parse(widget.queryParams!["RestaurantId"] ?? "");
-      }
-    }
+
     getProducts();
   }
 
   getProducts() async {
-    if (restaurantId != null) {
-      products = await ProductService.getProducts([], {}, null, null, {});
-      if (products != null && products!.isNotEmpty) {
-        setState(() {});
-      }
+    products = await ProductService.getProducts([], {}, null, null, {});
+    if (products != null && products!.isNotEmpty) {
+      setState(() {});
     }
   }
 
@@ -149,12 +137,6 @@ class _AllProductsState extends State<Products> {
                           combos = state.combos!.toList();
                         }
                       }
-                      if (state.restaurants != null &&
-                          state.restaurants!.isNotEmpty) {
-                        restaurant = state.restaurants!
-                            .where(((element) => element.id == restaurantId))
-                            .first;
-                      }
 
                       if (state.collections != null &&
                           state.collections!.isNotEmpty) {
@@ -188,7 +170,7 @@ class _AllProductsState extends State<Products> {
                         }
                       }
 
-                      return restaurant != null && collections.isNotEmpty
+                      return collections.isNotEmpty
                           ? Column(
                               children: [
                                 Container(
@@ -202,14 +184,13 @@ class _AllProductsState extends State<Products> {
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             SizedBox(
-                                              child: MediaWidget(
-                                                  mediaId:
-                                                      restaurant!.thumbnail),
+                                              height: 200,
+                                              child: MediaWidget(mediaId: 6),
                                             ),
                                           ],
                                         ),
@@ -220,25 +201,32 @@ class _AllProductsState extends State<Products> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            UpText(
-                                              restaurant!.name,
+                                            const UpText(
+                                              "Horizech Pizzeria",
                                               type: UpTextType.heading4,
                                             ),
                                             const SizedBox(
                                               height: 10,
                                             ),
                                             Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                const Padding(
+                                                Padding(
                                                   padding:
-                                                      EdgeInsets.only(right: 8),
-                                                  child:
-                                                      Icon(Icons.location_on),
+                                                      const EdgeInsets.only(
+                                                          right: 8),
+                                                  child: Icon(
+                                                    Icons.location_on,
+                                                    color: UpConfig.of(context)
+                                                        .theme
+                                                        .primaryColor,
+                                                  ),
                                                 ),
-                                                UpText(
-                                                  restaurant!.address,
+                                                const UpText(
+                                                  "Greater Manchester",
                                                 ),
                                               ],
                                             ),
@@ -246,16 +234,21 @@ class _AllProductsState extends State<Products> {
                                               height: 10,
                                             ),
                                             Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                const Padding(
+                                                Padding(
                                                   padding:
-                                                      EdgeInsets.only(right: 8),
+                                                      const EdgeInsets.only(
+                                                          right: 8),
                                                   child: Icon(
                                                     Icons.phone,
+                                                    color: UpConfig.of(context)
+                                                        .theme
+                                                        .primaryColor,
                                                   ),
                                                 ),
-                                                UpText(restaurant!.phoneNo
-                                                    .toString()),
+                                                UpText(232.toString()),
                                               ],
                                             ),
                                           ],

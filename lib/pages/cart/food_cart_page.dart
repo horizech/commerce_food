@@ -74,6 +74,11 @@ class _FoodCartPageState extends State<FoodCartPage> {
                                   child: UpTextField(
                                       label: 'EMAIL', style: UpStyle()),
                                 ),
+                                SizedBox(
+                                  width: 300,
+                                  child: UpTextField(
+                                      label: 'Address', style: UpStyle()),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 8),
@@ -121,13 +126,15 @@ class _FoodCartPageState extends State<FoodCartPage> {
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Expanded(
-                          flex: 4,
-                          child: SizedBox(
-                              width: 400,
-                              height: 400,
-                              child: CartWidget(
-                                isVisible: true,
-                              ))),
+                        flex: 4,
+                        child: SizedBox(
+                          width: 400,
+                          height: 400,
+                          child: CartWidget(
+                            isVisible: true,
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),
