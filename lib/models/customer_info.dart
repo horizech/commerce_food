@@ -36,7 +36,7 @@ class CustomerProfile extends Equatable {
               ? DateTime.parse(json['LastUpdatedOn'] as String)
               : null,
           lastUpdatedBy: json['LastUpdatedBy'] as int?,
-          userId: json['UserId'] as int,
+          userId: json['User'] as int,
           primaryInfo: json['PrimaryInformation'] != null
               ? (jsonDecode(json['PrimaryInformation'] as String)
                       as Map<String, dynamic>)
@@ -62,7 +62,7 @@ class CustomerProfile extends Equatable {
         'CreatedBy': instance.createdBy,
         'LastUpdatedOn': instance.lastUpdatedOn,
         'LastUpdatedBy': instance.lastUpdatedBy,
-        'UserId': instance.userId,
+        'User': instance.userId,
         'PrimaryInformation': instance.primaryInfo,
         'SecondaryInformation': instance.secondaryInfo,
       };

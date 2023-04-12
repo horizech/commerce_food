@@ -14,7 +14,7 @@ class CustomerProfileService {
       if (userId != null) {
         conditions = [
           QuerySearchItem(
-            name: "UserId",
+            name: "User",
             condition: ColumnCondition.equal,
             value: userId,
           )
@@ -32,7 +32,7 @@ class CustomerProfileService {
           return customerProfile;
         } else {
           Map<String, dynamic> customerProfile = {
-            "UserId": userId,
+            "User": userId,
             "PrimaryInformation": null,
             "SecondaryInformation": null,
           };

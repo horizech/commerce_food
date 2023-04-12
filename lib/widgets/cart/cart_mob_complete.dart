@@ -20,7 +20,7 @@ class CartMobComplete extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.all(8.0),
-            child: UpText("PERPARING FOOD", type: UpTextType.heading5),
+            child: UpText("PREPARING FOOD", type: UpTextType.heading5),
           ),
           SizedBox(
             height: 200,
