@@ -15,6 +15,7 @@ import 'package:shop/pages/admin/admin_attributes.dart';
 import 'package:shop/pages/admin/admin_products.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
+import 'package:shop/pages/chef/chef.dart';
 import 'package:shop/pages/order/order_status.dart';
 import 'package:shop/pages/products/products_mob.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
@@ -168,6 +169,16 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const StoreDependantPage(
                   page: AdminKeywords(),
+                ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
+              ),
+              UpRoute(
+                path: Routes.chef,
+                name: Routes.chef,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: ChefPage(),
                 ),
                 shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
                 redirectRoute: Routes.loginSignup,
