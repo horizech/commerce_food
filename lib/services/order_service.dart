@@ -30,6 +30,26 @@ class OrderService {
     }
   }
 
+  static Future<List<Order>?> getOrders() async {
+    List<QuerySearchItem> conditions = [];
+    if (Apiraiser.authentication.isSignedIn()) {
+      conditions = [
+        QuerySearchItem(
+            name: "Status", condition: ColumnCondition.includes, value: [1, 2]),
+      ];
+    }
+    APIResult result =
+        await Apiraiser.data.getByConditions("Orders", conditions);
+    if (result.success) {
+      List<Order>? orders = (result.data as List<dynamic>)
+          .map((p) => Order.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return orders;
+    } else {
+      return null;
+    }
+  }
+
   static Future<APIResult?> updateOrder(
       Map<String, dynamic> orderData, int id) async {
     return null;

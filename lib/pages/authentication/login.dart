@@ -62,7 +62,13 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLoginResult(APIResult result) {
     if (result.success) {
+      User? user = Apiraiser.authentication.getCurrentUser();
       // _saveSession(result);
+      if (user != null &&
+          user.roleNames != null &&
+          user.roleNames!.any((element) => element == "Chef")) {
+        ServiceManager<UpNavigationService>().navigateToNamed(Routes.chef);
+      }
       if (loadLastUsedInfo.toString().isNotEmpty) {
         ServiceManager<UpNavigationService>()
             .navigateToNamed(Routes.foodCartPage);
