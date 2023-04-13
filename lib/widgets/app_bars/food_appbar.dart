@@ -1,3 +1,4 @@
+import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,24 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
+            ServiceManager<UpNavigationService>().navigateToNamed(Routes.cart);
+          },
+          icon: const Icon(
+            Icons.shopping_cart,
+            color: Colors.white,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            Apiraiser.authentication.signOut();
+          },
+          icon: const Icon(
+            Icons.logout,
+            color: Colors.white,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
             ServiceManager<UpNavigationService>()
                 .navigateToNamed(Routes.loginSignup);
           },
@@ -41,15 +60,6 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
         ),
-        IconButton(
-          onPressed: () {
-            ServiceManager<UpNavigationService>().navigateToNamed(Routes.cart);
-          },
-          icon: const Icon(
-            Icons.shopping_cart,
-            color: Colors.white,
-          ),
-        )
       ],
     );
   }

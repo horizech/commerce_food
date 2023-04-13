@@ -9,8 +9,7 @@ import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/constants.dart';
 
 class PreparingFood extends StatelessWidget {
-  final Function onChange;
-  const PreparingFood({super.key, required this.onChange});
+  const PreparingFood({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +131,6 @@ class PreparingFood extends StatelessWidget {
           ),
           UpButton(
             onPressed: () {
-              onChange(true);
               ServiceManager<UpNavigationService>()
                   .navigateToNamed(Routes.home);
             },

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
-import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/models/order_status_type.dart';
 import 'package:shop/services/order_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
+import 'package:shop/widgets/cart/preparing_food.dart';
+import 'package:shop/widgets/cart/waiting.dart';
 import 'package:shop/widgets/footer/food_footer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
@@ -34,8 +35,7 @@ class _OrderStatusState extends State<OrderStatus> {
         builder: (context, state) {
           if (state.orderStatusType != null &&
               state.orderStatusType!.isNotEmpty) {
-            if (state.orderStatusType!
-                .any((element) => element.name.toLowerCase() == "waiting")) {
+            {
               orderStatusTypes = state.orderStatusType!.toList();
             }
           }
@@ -56,8 +56,8 @@ class _OrderStatusState extends State<OrderStatus> {
                                   element.name.toLowerCase() == "waiting")
                               .first
                               .id
-                      ? const WaitingWidget()
-                      : const PreparingWidget();
+                      ? const WaitingForChef()
+                      : const PreparingFood();
                 }
               } else {
                 return const UpCircularProgress();
@@ -72,24 +72,22 @@ class _OrderStatusState extends State<OrderStatus> {
   }
 }
 
-class WaitingWidget extends StatelessWidget {
-  const WaitingWidget({Key? key}) : super(key: key);
+// class WaitingWidget extends StatelessWidget {
+//   const WaitingWidget({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const UpText("waiting"),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: const UpText("waiting"),
+//     );
+//   }
+// }
 
-class PreparingWidget extends StatelessWidget {
-  const PreparingWidget({Key? key}) : super(key: key);
+// class PreparingWidget extends StatelessWidget {
+//   const PreparingWidget({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const UpText("Prepairing"),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(child: const PreparingFood());
+//   }
+// }
