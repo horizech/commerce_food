@@ -16,8 +16,6 @@ class OrderService {
             name: "User",
             condition: ColumnCondition.equal,
             value: Apiraiser.authentication.getCurrentUser()!.id!),
-        QuerySearchItem(
-            name: "Status", condition: ColumnCondition.equal, value: 1)
       ];
     }
     APIResult result =

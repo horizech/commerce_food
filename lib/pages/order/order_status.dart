@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
+import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/models/order_status_type.dart';
 import 'package:shop/services/order_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
@@ -15,7 +16,14 @@ class OrderStatus extends StatefulWidget {
 }
 
 class _OrderStatusState extends State<OrderStatus> {
+  int seconds = 1;
+  int? orderId;
   List<OrderStatusType> orderStatusTypes = [];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,19 +40,25 @@ class _OrderStatusState extends State<OrderStatus> {
             }
           }
           return StreamBuilder(
-            stream: Stream.periodic(const Duration(seconds: 10))
+            stream: Stream.periodic(Duration(seconds: seconds))
                 .asyncMap((i) => OrderService.getOrder()),
             builder: (BuildContext context, snapshot) {
               if (orderStatusTypes.isNotEmpty &&
                   snapshot.data != null &&
                   snapshot.data!.id != null) {
-                return snapshot.data!.status ==
-                        orderStatusTypes
-                            .where((element) => element.name == "waiting")
-                            .first
-                            .id
-                    ? const WaitingWidget()
-                    : const WaitingWidget();
+                if (seconds == 1) {
+                  seconds = 20;
+                }
+                {
+                  return snapshot.data!.status ==
+                          orderStatusTypes
+                              .where((element) =>
+                                  element.name.toLowerCase() == "waiting")
+                              .first
+                              .id
+                      ? const WaitingWidget()
+                      : const PreparingWidget();
+                }
               } else {
                 return const UpCircularProgress();
 
@@ -63,6 +77,19 @@ class WaitingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: const UpText("waiting"),
+    );
+  }
+}
+
+class PreparingWidget extends StatelessWidget {
+  const PreparingWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: const UpText("Prepairing"),
+    );
   }
 }
