@@ -94,9 +94,13 @@ class ProductVariation extends Equatable {
     }
     return <String, dynamic>{
       'Id': instance.id,
-      'CreatedOn': instance.createdOn,
+      'CreatedOn': instance.createdOn != null
+          ? instance.createdOn!.toIso8601String()
+          : null,
       'CreatedBy': instance.createdBy,
-      'LastUpdatedOn': instance.lastUpdatedOn,
+      'LastUpdatedOn': instance.lastUpdatedOn != null
+          ? instance.lastUpdatedOn!.toIso8601String()
+          : null,
       'LastUpdatedBy': instance.lastUpdatedBy,
       'Description': instance.description,
       'Product': instance.product,

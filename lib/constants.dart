@@ -16,6 +16,7 @@ class Routes {
   static const String foodCartPage = '/cart_food';
   static const String adminGallery = '/admin/gallery';
   static const String adminProduct = '/admin/product';
+  static const String orderStatus = '/order/status';
 }
 
 class Constant {

@@ -59,7 +59,6 @@ dependencies:
 
   flutter_up: ^2.0.3
   # path: ../flutter_up
-  video_player: ^2.5.1
 
   # flutter_up:
   #   path: ../flutter_up
