@@ -80,7 +80,11 @@ class _UserDetailsState extends State<UserDetails> {
       List<Map<String, dynamic>> items =
           cartItems.map((e) => e.toJson()).toList();
       Map<String, dynamic> map = {
-        "OrderDetails": jsonEncode(items),
+        "OrderDetails": jsonEncode({"CartItems": items}),
+        // "OrderDetails": jsonEncode({
+        //   "Product": 1,
+        // }),
+
         "User": Apiraiser.authentication.getCurrentUser()!.id!,
         "Status": status!
       };

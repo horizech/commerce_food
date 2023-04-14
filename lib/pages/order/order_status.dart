@@ -71,23 +71,3 @@ class _OrderStatusState extends State<OrderStatus> {
     );
   }
 }
-
-// class WaitingWidget extends StatelessWidget {
-//   const WaitingWidget({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: const UpText("waiting"),
-//     );
-//   }
-// }
-
-// class PreparingWidget extends StatelessWidget {
-//   const PreparingWidget({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(child: const PreparingFood());
-//   }
-// }

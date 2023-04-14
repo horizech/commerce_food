@@ -10,7 +10,6 @@ import 'package:flutter_up/services/up_dialog.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/dialogs/up_loading.dart';
 import 'package:flutter_up/dialogs/up_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:shop/constants.dart';
 
@@ -53,25 +52,15 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<String> loadLastUsedInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    String lastUsedInformation = prefs.getString("FromCart") ?? "";
-    debugPrint(lastUsedInformation);
-    return lastUsedInformation;
-  }
-
   void _handleLoginResult(APIResult result) {
     if (result.success) {
       User? user = Apiraiser.authentication.getCurrentUser();
       // _saveSession(result);
       if (user != null &&
           user.roleNames != null &&
-          user.roleNames!.any((element) => element == "Chef")) {
+          user.roleNames!.isNotEmpty &&
+          user.roleNames!.any((element) => element.toLowerCase() == "chef")) {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.chef);
-      }
-      if (loadLastUsedInfo.toString().isNotEmpty) {
-        ServiceManager<UpNavigationService>()
-            .navigateToNamed(Routes.foodCartPage);
       } else {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.home);
       }

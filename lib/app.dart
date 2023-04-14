@@ -108,8 +108,8 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const LoginSignupPage(),
                 name: Routes.loginSignup,
-                shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
-                redirectRoute: Routes.products,
+                // shouldRedirect: () => Apiraiser.authentication.isSignedIn(),
+                // redirectRoute: Routes.products,
               ),
               UpRoute(
                 path: Routes.adminCombos,
