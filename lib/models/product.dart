@@ -148,7 +148,7 @@ class Product extends Equatable {
           ? instance.discountEndDate!.toIso8601String()
           : null,
       'SKU': instance.sku,
-      'Options': jsonEncode(optionsMap),
+      'Options': json.encode(optionsMap),
       'Meta': jsonEncode(metaMap),
     };
   }

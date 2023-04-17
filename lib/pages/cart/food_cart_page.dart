@@ -77,14 +77,74 @@ class _UserDetailsState extends State<UserDetails> {
     if (cartItems.isNotEmpty &&
         Apiraiser.authentication.getCurrentUser() != null &&
         status != null) {
-      List<Map<String, dynamic>> items =
-          cartItems.map((e) => e.toJson()).toList();
+      List<Map<String, dynamic>> items = [];
+      for (var cartItem in cartItems) {
+        Map<String, dynamic> map = {
+          "Product": cartItem.product != null
+              ? {
+                  "Id": cartItem.product!.id,
+                  "Name": cartItem.product!.name,
+                  "Price": cartItem.product!.price,
+                }
+              : null,
+          'Variations': cartItem.selectedVariation != null
+              ? {
+                  "Id": cartItem.selectedVariation!.id,
+                  "Name": cartItem.selectedVariation!.name,
+                  "Price": cartItem.selectedVariation!.price,
+                  "Option": cartItem.selectedVariation!.options,
+                }
+              : null,
+          'Combo': cartItem.combo != null
+              ? {
+                  "Id": cartItem.combo!.id,
+                  "Name": cartItem.combo!.name,
+                  "Price": cartItem.combo!.price,
+                }
+              : null,
+          'Quantity': cartItem.quantity,
+          'Instructions': cartItem.instructions,
+          'Type': cartItem.type,
+          "SelectedProductAttributes": cartItem.selectedProductAttributes,
+          "ComboItems": cartItem.comboItems != null
+              ? cartItem.comboItems!
+                  .map((element) => {
+                        "Product": element.product != null
+                            ? {
+                                "Id": element.product!.id,
+                                "Name": element.product!.name,
+                                "Price": element.product!.price,
+                              }
+                            : null,
+                        'Variations': element.selectedVariation != null
+                            ? {
+                                "Id": element.selectedVariation!.id,
+                                "Name": element.selectedVariation!.name,
+                                "Price": element.selectedVariation!.price,
+                                "Option": element.selectedVariation!.options,
+                              }
+                            : null,
+                        'Combo': element.combo != null
+                            ? {
+                                "Id": element.combo!.id,
+                                "Name": element.combo!.name,
+                                "Price": element.combo!.price,
+                              }
+                            : null,
+                        'Quantity': element.quantity,
+                        'Instructions': element.instructions,
+                        'Type': element.type,
+                        "SelectedProductAttributes":
+                            element.selectedProductAttributes,
+                      })
+                  .toList()
+              : null,
+        };
+        items.add(map);
+      }
+      String orderDetails = jsonEncode({"CartItems": items});
       Map<String, dynamic> map = {
-        "OrderDetails": jsonEncode({"CartItems": items}),
-        // "OrderDetails": jsonEncode({
-        //   "Product": 1,
-        // }),
-
+        "OrderDetails": orderDetails,
         "User": Apiraiser.authentication.getCurrentUser()!.id!,
         "Status": status!
       };
@@ -97,6 +157,8 @@ class _UserDetailsState extends State<UserDetails> {
           showUpToast(context: context, text: result.message ?? "");
         }
       }
+    } else {
+      showUpToast(context: context, text: "There are no items in cart");
     }
   }
 

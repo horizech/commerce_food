@@ -34,7 +34,8 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
-            ServiceManager<UpNavigationService>().navigateToNamed(Routes.cart);
+            ServiceManager<UpNavigationService>()
+                .navigateToNamed(Routes.foodCartPage);
           },
           icon: const Icon(
             Icons.shopping_cart,
@@ -42,8 +43,10 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         IconButton(
-          onPressed: () {
+          onPressed: () async {
             Apiraiser.authentication.signOut();
+            ServiceManager<UpNavigationService>()
+                .navigateToNamed(Routes.loginSignup);
           },
           icon: const Icon(
             Icons.logout,

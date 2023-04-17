@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
           user.roleNames!.any((element) => element.toLowerCase() == "chef")) {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.chef);
       } else {
-        ServiceManager<UpNavigationService>().navigateToNamed(Routes.home);
+        ServiceManager<UpNavigationService>().navigateToNamed(Routes.products);
       }
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),

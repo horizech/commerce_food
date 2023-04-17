@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/models/attribute_value.dart';
@@ -46,10 +45,10 @@ class _CartReceiptState extends State<CartReceipt> {
   }
 
   _orderDetail(List<dynamic> orderDetail) {
-    List<Map<String, dynamic>> orderDetailsMap = [];
-    for (var element in orderDetail) {
-      orderDetailsMap.add(element as Map<String, dynamic>);
-    }
+    // List<Map<String, dynamic>> orderDetailsMap = [];
+    // for (var element in orderDetail) {
+    //   orderDetailsMap.add(element as Map<String, dynamic>);
+    // }
     return Column(
       children: [
         SizedBox(
@@ -57,7 +56,7 @@ class _CartReceiptState extends State<CartReceipt> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ...orderDetailsMap
+              ...orderDetail
                   .map((item) => Column(
                         children: [
                           Visibility(
@@ -111,31 +110,31 @@ class _CartReceiptState extends State<CartReceipt> {
                                       // : const SizedBox(),
 
                                       // product attributes
-                                      item["SelectedProductAttributes"] != null
-                                          ? Wrap(
-                                              crossAxisAlignment:
-                                                  WrapCrossAlignment.center,
-                                              children: [
-                                                ...item["SelectedProductAttributes"]
-                                                    .entries
-                                                    .map(
-                                                      (entry) => UpText(
-                                                          style: UpStyle(
-                                                            textColor: UpConfig
-                                                                    .of(context)
-                                                                .theme
-                                                                .primaryColor[500],
-                                                          ),
-                                                          item["SelectedProductAttributes"]
-                                                                      .last ==
-                                                                  entry.value
-                                                              ? getAttributeName(
-                                                                  entry)
-                                                              : "${getAttributeName(entry)}, "),
-                                                    )
-                                              ],
-                                            )
-                                          : const SizedBox(),
+                                      // item["SelectedProductAttributes"] != null
+                                      //     ? Wrap(
+                                      //         crossAxisAlignment:
+                                      //             WrapCrossAlignment.center,
+                                      //         children: [
+                                      //           ...item["SelectedProductAttributes"]
+                                      //               .entries
+                                      //               .map(
+                                      //                 (entry) => UpText(
+                                      //                     style: UpStyle(
+                                      //                       textColor: UpConfig
+                                      //                               .of(context)
+                                      //                           .theme
+                                      //                           .primaryColor[500],
+                                      //                     ),
+                                      //                     item["SelectedProductAttributes"]
+                                      //                                 .last ==
+                                      //                             entry.value
+                                      //                         ? getAttributeName(
+                                      //                             entry)
+                                      //                         : "${getAttributeName(entry)}, "),
+                                      //               )
+                                      //         ],
+                                      //       )
+                                      //     : const SizedBox(),
 
                                       const SizedBox(
                                         height: 10,
@@ -143,14 +142,14 @@ class _CartReceiptState extends State<CartReceipt> {
                                     ],
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "£ ${getPrice(item)}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                                // Expanded(
+                                //   flex: 2,
+                                //   child: Text(
+                                //     "£ ${getPrice(item)}",
+                                //     style: const TextStyle(
+                                //         fontWeight: FontWeight.bold),
+                                //   ),
+                                // ),
                               ],
                             ),
                           )
