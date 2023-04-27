@@ -22,19 +22,19 @@ import 'package:shop/widgets/footer/food_footer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
-class ChefPage extends StatefulWidget {
-  const ChefPage({Key? key}) : super(key: key);
+class RiderPage extends StatefulWidget {
+  const RiderPage({Key? key}) : super(key: key);
 
   @override
-  State<ChefPage> createState() => _ChefPageState();
+  State<RiderPage> createState() => _RiderPageState();
 }
 
-class _ChefPageState extends State<ChefPage> {
+class _RiderPageState extends State<RiderPage> {
   List<AttributeValue> attributeValues = [];
   int seconds = 2;
   List<OrderStatusType> orderStausTypes = [];
-  int? waitingStatusId;
-  int? preparingStatusId;
+  int? deliveredStatusId;
+  int? deliveringStatusId;
   int? preparedStatusId;
 
   @override
@@ -46,14 +46,14 @@ class _ChefPageState extends State<ChefPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: UpIcon(
-                icon: Icons.restaurant_menu,
+                icon: Icons.drive_eta,
                 style: UpStyle(iconColor: Colors.white, iconSize: 20),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: UpText(
-                "Chef",
+                "Rider",
                 style: UpStyle(textColor: Colors.white, textSize: 20),
               ),
             ),
@@ -80,15 +80,16 @@ class _ChefPageState extends State<ChefPage> {
           if (state.orderStatusType != null &&
               state.orderStatusType!.isNotEmpty) {
             orderStausTypes = state.orderStatusType!.toList();
-            if (orderStausTypes.any((element) => element.name == "Waiting")) {
-              waitingStatusId = orderStausTypes
-                  .where((element) => element.name == "Waiting")
+            if (orderStausTypes.any((element) => element.name == "Delivered")) {
+              deliveredStatusId = orderStausTypes
+                  .where((element) => element.name == "Delivered")
                   .first
                   .id;
             }
-            if (orderStausTypes.any((element) => element.name == "Preparing")) {
-              preparingStatusId = orderStausTypes
-                  .where((element) => element.name == "Preparing")
+            if (orderStausTypes
+                .any((element) => element.name == "Delivering")) {
+              deliveringStatusId = orderStausTypes
+                  .where((element) => element.name == "Delivering")
                   .first
                   .id;
             }
@@ -105,7 +106,7 @@ class _ChefPageState extends State<ChefPage> {
           }
           return StreamBuilder(
             stream: Stream.periodic(Duration(seconds: seconds)).asyncMap((i) =>
-                OrderService.getOrders(waitingStatusId, preparingStatusId)),
+                OrderService.getOrders(preparedStatusId, deliveringStatusId)),
             builder: (BuildContext context, snapshot) {
               if (orderStausTypes.isNotEmpty &&
                   snapshot.data != null &&
@@ -124,10 +125,10 @@ class _ChefPageState extends State<ChefPage> {
                             .entries
                             .map((e) => Padding(
                                   padding: const EdgeInsets.only(
+                                      left: 40.0,
+                                      right: 40,
                                       top: 8.0,
-                                      bottom: 8.0,
-                                      left: 40,
-                                      right: 40),
+                                      bottom: 8.0),
                                   child: UpExpansionTile(
                                     initiallyExpanded: false,
                                     expandedCrossAxisAlignment:
@@ -149,16 +150,18 @@ class _ChefPageState extends State<ChefPage> {
                                     ),
                                     children: [
                                       CartReceipt(
+                                          order: e.value,
                                           orderDetails:
                                               e.value.orderDetail["CartItems"]
                                                   as List<dynamic>),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: ChefOrderStatusUpdate(
+                                        child: RiderOrderStatusUpdate(
                                           order: e.value,
-                                          preparingStatusId: preparingStatusId,
+                                          deliveringStatusId:
+                                              deliveringStatusId,
                                           status: e.value.status,
-                                          waitingStatusId: waitingStatusId,
+                                          deliveredStatusId: deliveredStatusId,
                                           preparedStatusId: preparedStatusId,
                                         ),
                                       ),
@@ -181,47 +184,47 @@ class _ChefPageState extends State<ChefPage> {
   }
 }
 
-class ChefOrderStatusUpdate extends StatefulWidget {
+class RiderOrderStatusUpdate extends StatefulWidget {
   final int status;
-  final int? waitingStatusId;
-  final int? preparingStatusId;
+  final int? deliveredStatusId;
+  final int? deliveringStatusId;
   final int? preparedStatusId;
 
   final Order order;
 
-  const ChefOrderStatusUpdate({
+  const RiderOrderStatusUpdate({
     Key? key,
     required this.status,
-    this.preparingStatusId,
-    this.waitingStatusId,
+    this.deliveringStatusId,
+    this.deliveredStatusId,
     this.preparedStatusId,
     required this.order,
   }) : super(key: key);
 
   @override
-  State<ChefOrderStatusUpdate> createState() => _ChefOrderStatusUpdateState();
+  State<RiderOrderStatusUpdate> createState() => _RiderOrderStatusUpdateState();
 }
 
-class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
+class _RiderOrderStatusUpdateState extends State<RiderOrderStatusUpdate> {
   double minutes = 20;
   _updateStatus() async {
-    if (widget.preparingStatusId != null &&
-        widget.waitingStatusId != null &&
-        widget.status == widget.waitingStatusId) {
+    if (widget.preparedStatusId != null &&
+        widget.deliveringStatusId != null &&
+        widget.status == widget.preparedStatusId) {
       Map<String, dynamic> map = {
         "Id": widget.order.id,
         "OrderDetail": widget.order.orderDetail,
         "User": widget.order.user,
-        "Status": widget.preparingStatusId!,
+        "Status": widget.deliveringStatusId!,
         "Message": widget.order.message,
-        "Rider": widget.order.rider,
-        "Chef": Apiraiser.authentication.getCurrentUser() != null
+        "Rider": Apiraiser.authentication.getCurrentUser() != null
             ? Apiraiser.authentication.getCurrentUser()!.id
             : null,
+        "Chef": widget.order.chef,
         "EstimatedTime": DateTime.now()
             .add(
               Duration(
-                minutes: (minutes.toInt() + 20),
+                minutes: (minutes.toInt()),
               ),
             )
             .toIso8601String()
@@ -231,25 +234,18 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
       if (apiResult != null && apiResult.success) {
         showUpToast(context: context, text: "Status updated");
       }
-    } else if (widget.preparingStatusId != null &&
-        widget.waitingStatusId != null &&
-        widget.preparedStatusId != null &&
-        widget.status == widget.preparingStatusId) {
+    } else if (widget.deliveringStatusId != null &&
+        widget.deliveredStatusId != null &&
+        widget.status == widget.deliveringStatusId) {
       Map<String, dynamic> map = {
         "Id": widget.order.id,
         "OrderDetail": widget.order.orderDetail,
         "User": widget.order.user,
-        "Status": widget.preparedStatusId!,
+        "Status": widget.deliveredStatusId!,
         "Message": widget.order.message,
         "Rider": widget.order.rider,
         "Chef": widget.order.chef,
-        "EstimatedTime": DateTime.now()
-            .add(
-              const Duration(
-                minutes: 20,
-              ),
-            )
-            .toIso8601String()
+        "EstimatedTime": DateTime.now().toIso8601String()
       };
       APIResult? apiResult =
           await OrderService.updateOrder(map, widget.order.id!);
@@ -266,7 +262,7 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Visibility(
-          visible: widget.status == widget.waitingStatusId,
+          visible: widget.status == widget.preparedStatusId,
           child: SleekCircularSlider(
             min: 0,
             max: 60,
@@ -289,8 +285,8 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
           ),
         ),
         Visibility(
-          visible: widget.waitingStatusId != null &&
-              widget.status == widget.waitingStatusId,
+          visible: widget.preparedStatusId != null &&
+              widget.status == widget.preparedStatusId,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -299,14 +295,14 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
                 onPressed: () {
                   _updateStatus();
                 },
-                text: "Preparing",
+                text: "Start",
               ),
             ),
           ),
         ),
         Visibility(
-          visible: widget.preparingStatusId != null &&
-              widget.status == widget.preparingStatusId,
+          visible: widget.deliveringStatusId != null &&
+              widget.status == widget.deliveringStatusId,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -315,7 +311,7 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
                 onPressed: () {
                   _updateStatus();
                 },
-                text: "Completed",
+                text: "Finish",
               ),
             ),
           ),

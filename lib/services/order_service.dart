@@ -21,21 +21,29 @@ class OrderService {
     APIResult result =
         await Apiraiser.data.getByConditions("Orders", conditions);
     if (result.success) {
-      Order order = (result.data as List<dynamic>)
+      List<Order> orders = (result.data as List<dynamic>)
           .map((p) => Order.fromJson(p as Map<String, dynamic>))
-          .first;
-      return order;
+          .toList();
+      if (orders.isNotEmpty) {
+        orders.sort((a, b) => a.id!.compareTo(b.id!));
+      }
+      return orders.last;
     } else {
       return null;
     }
   }
 
-  static Future<List<Order>?> getOrders() async {
+  static Future<List<Order>?> getOrders(statusId1, statusId2) async {
     List<QuerySearchItem> conditions = [];
     if (Apiraiser.authentication.isSignedIn()) {
       conditions = [
         QuerySearchItem(
-            name: "Status", condition: ColumnCondition.includes, value: [1, 2]),
+            name: "Status",
+            condition: ColumnCondition.includes,
+            value: [
+              statusId1,
+              statusId2,
+            ]),
       ];
     }
     APIResult result =
@@ -52,6 +60,8 @@ class OrderService {
 
   static Future<APIResult?> updateOrder(
       Map<String, dynamic> orderData, int id) async {
-    return null;
+    APIResult? result = await Apiraiser.data.update("Orders", id, orderData);
+
+    return result;
   }
 }

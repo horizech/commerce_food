@@ -36,6 +36,11 @@ class NavDrawer extends StatelessWidget {
           .navigateToNamed(Routes.adminKeywords);
     }
 
+    void userRole(context) {
+      ServiceManager<UpNavigationService>()
+          .navigateToNamed(Routes.adminUserRoles);
+    }
+
     actions = [
       ...actions,
       UpDrawerItem(
@@ -62,6 +67,11 @@ class NavDrawer extends StatelessWidget {
         title: Constant.keywords,
         icon: Icons.folder_special,
         onTap: keywords,
+      ),
+      UpDrawerItem(
+        title: Constant.userrole,
+        icon: Icons.person,
+        onTap: userRole,
       ),
     ];
 

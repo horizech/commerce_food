@@ -13,11 +13,13 @@ import 'package:shop/pages/admin/admin_gallery.dart';
 import 'package:shop/pages/admin/admin_keywords.dart';
 import 'package:shop/pages/admin/admin_attributes.dart';
 import 'package:shop/pages/admin/admin_products.dart';
+import 'package:shop/pages/admin/admin_user_roles.dart';
 import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
 import 'package:shop/pages/chef/chef.dart';
-import 'package:shop/pages/order/order_status.dart';
+import 'package:shop/pages/order/user_order_status.dart';
 import 'package:shop/pages/products/products_mob.dart';
+import 'package:shop/pages/rider/rider.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -154,6 +156,16 @@ class ShopApp extends StatelessWidget {
                 redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
+                path: Routes.adminUserRoles,
+                name: Routes.adminUserRoles,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: AdminUserRoles(),
+                ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
+              ),
+              UpRoute(
                 path: Routes.admin,
                 name: Routes.admin,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
@@ -184,11 +196,21 @@ class ShopApp extends StatelessWidget {
                 redirectRoute: Routes.loginSignup,
               ),
               UpRoute(
+                path: Routes.rider,
+                name: Routes.rider,
+                pageBuilder: (BuildContext context, UpRouterState state) =>
+                    const StoreDependantPage(
+                  page: RiderPage(),
+                ),
+                shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
+                redirectRoute: Routes.loginSignup,
+              ),
+              UpRoute(
                 path: Routes.orderStatus,
                 name: Routes.orderStatus,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const StoreDependantPage(
-                  page: OrderStatus(),
+                  page: UserOrderStatus(),
                 ),
                 shouldRedirect: () => !Apiraiser.authentication.isSignedIn(),
                 redirectRoute: Routes.loginSignup,

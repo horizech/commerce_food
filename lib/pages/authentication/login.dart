@@ -61,6 +61,11 @@ class _LoginPageState extends State<LoginPage> {
           user.roleNames!.isNotEmpty &&
           user.roleNames!.any((element) => element.toLowerCase() == "chef")) {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.chef);
+      } else if (user != null &&
+          user.roleNames != null &&
+          user.roleNames!.isNotEmpty &&
+          user.roleNames!.any((element) => element.toLowerCase() == "rider")) {
+        ServiceManager<UpNavigationService>().navigateToNamed(Routes.rider);
       } else {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.products);
       }

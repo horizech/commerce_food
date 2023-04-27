@@ -10,7 +10,7 @@ import 'package:shop/constants.dart';
 
 class CartMobComplete extends StatelessWidget {
   final Function onChange;
-  CartMobComplete({super.key, required this.onChange});
+  const CartMobComplete({super.key, required this.onChange});
 
   @override
   Widget build(BuildContext context) {

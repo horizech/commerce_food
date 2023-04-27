@@ -7,7 +7,7 @@ import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/date_time_picker.dart';
+import 'package:shop/widgets/date_time_picker.dart';
 import 'package:shop/models/add_on.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/product.dart';
@@ -17,8 +17,8 @@ import 'package:shop/pages/admin/add_edit_keyword_widget.dart';
 import 'package:shop/pages/admin/add_edit_product_attributes.dart';
 import 'package:shop/pages/admin/admin_product_variations.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
-import 'package:shop/widgets/add_media_widget.dart';
-import 'package:shop/widgets/gallery_dropdown.dart';
+import 'package:shop/widgets/media/add_media_widget.dart';
+import 'package:shop/widgets/media/gallery_dropdown.dart';
 
 class AdminProduct extends StatefulWidget {
   final Product? currentProduct;

@@ -13,6 +13,8 @@ import 'package:shop/models/attribute.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shop/models/product_variation.dart';
+import 'package:shop/models/role.dart';
+import 'package:shop/models/user.dart';
 
 class AddEditProductService {
   static Future<APIResult?> addEditAttributeValues({
@@ -300,6 +302,19 @@ class AddEditProductService {
     }
   }
 
+  static Future<List<Role>> getRoles() async {
+    APIResult result = await Apiraiser.data.get("Roles", -1);
+
+    if (result.success) {
+      List<Role> roles = (result.data as List<dynamic>)
+          .map((p) => Role.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return roles;
+    } else {
+      return [];
+    }
+  }
+
   static Future<List<Collection>?> getCollections() async {
     APIResult result = await Apiraiser.data.get("Collections", -1);
 
@@ -466,6 +481,19 @@ class AddEditProductService {
     }
   }
 
+  static Future<List<User1>> getUser() async {
+    APIResult result = await Apiraiser.data.get("Users", -1);
+
+    if (result.success) {
+      List<User1> users = (result.data as List<dynamic>)
+          .map((p) => User1.fromJson(p as Map<String, dynamic>))
+          .toList();
+      return users;
+    } else {
+      return [];
+    }
+  }
+
   static Future<List<ProductCombo>?> getProductCombos() async {
     APIResult result = await Apiraiser.data.get("ProductCombos", -1);
 
@@ -591,6 +619,12 @@ class AddEditProductService {
     } else {
       result = await Apiraiser.data.insert("Keywords", data);
     }
+
+    return result;
+  }
+
+  static Future<APIResult?> addRole(Map<String, dynamic> data) async {
+    APIResult? result = await Apiraiser.data.insert("UserRoles", data);
 
     return result;
   }

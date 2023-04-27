@@ -15,9 +15,12 @@ class Routes {
   static const String addEditProductVariaton = '/add_edit_product_variation';
   static const String foodCartPage = '/cart_food';
   static const String adminGallery = '/admin/gallery';
+  static const String adminUserRoles = '/admin/user_roles';
+
   static const String adminProduct = '/admin/product';
   static const String orderStatus = '/order/status';
   static const String chef = '/chef';
+  static const String rider = '/rider';
 }
 
 class Constant {
@@ -31,4 +34,5 @@ class Constant {
   static const String productVariations = "Product Variations";
   static const String gallery = "Gallery";
   static const String keywords = "Keywords";
+  static const String userrole = "User roles";
 }

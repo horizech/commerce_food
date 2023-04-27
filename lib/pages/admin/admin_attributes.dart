@@ -5,7 +5,6 @@ import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/themes/up_style.dart';
-import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -15,6 +14,7 @@ import 'package:shop/is_user_admin.dart';
 import 'package:shop/models/attribute_value.dart';
 import 'package:shop/models/attribute.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/app_bars/admin_appbar.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
@@ -239,7 +239,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const UpAppBar(),
+      appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()
           ? BlocConsumer<StoreCubit, StoreState>(

@@ -14,7 +14,7 @@
 // import 'package:shop/pages/admin/add_edit_attribute_widget.dart';
 // import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
 // import 'package:shop/widgets/add_media_widget.dart';
-// import 'package:shop/widgets/gallery_dropdown.dart';
+// import 'package:shop/widgets/media/gallery_dropdown.dart';
 
 // class AddEditProductDialog extends StatefulWidget {
 //   final Product? currentProduct;

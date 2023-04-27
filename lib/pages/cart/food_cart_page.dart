@@ -74,6 +74,12 @@ class _UserDetailsState extends State<UserDetails> {
   TextEditingController emailController = TextEditingController();
 
   _createOrder() async {
+    Map<String, String> userMap = {
+      "Email": emailController.text,
+      "Address": addressController.text,
+      "PhoneNo": phnNoController.text,
+      "Name": nameController.text,
+    };
     if (cartItems.isNotEmpty &&
         Apiraiser.authentication.getCurrentUser() != null &&
         status != null) {
@@ -104,7 +110,7 @@ class _UserDetailsState extends State<UserDetails> {
               : null,
           'Quantity': cartItem.quantity,
           'Instructions': cartItem.instructions,
-          'Type': cartItem.type,
+          'Type': cartItem.combo != null ? "Combo" : "Product",
           "SelectedProductAttributes": cartItem.selectedProductAttributes,
           "ComboItems": cartItem.comboItems != null
               ? cartItem.comboItems!
@@ -146,7 +152,10 @@ class _UserDetailsState extends State<UserDetails> {
       Map<String, dynamic> map = {
         "OrderDetails": orderDetails,
         "User": Apiraiser.authentication.getCurrentUser()!.id!,
-        "Status": status!
+        "Status": status!,
+        "UserInfo": jsonEncode(userMap),
+        "EstimatedTime":
+            DateTime.now().add(const Duration(minutes: 30)).toIso8601String(),
       };
       APIResult? result = await OrderService.createOrder(map);
       if (result != null) {
@@ -168,19 +177,30 @@ class _UserDetailsState extends State<UserDetails> {
     if (widget.customerProfile != null) {
       _initialize();
     }
-    widget.customerProfile;
   }
 
   _initialize() {
     if (widget.customerProfile?.primaryInfo != null) {
-      nameController.text =
-          widget.customerProfile?.primaryInfo!["FirstName"] ?? "";
+      nameController.text = widget.customerProfile?.primaryInfo!["Name"] ?? "";
       phnNoController.text =
           widget.customerProfile?.primaryInfo!["PhoneNo"] ?? "";
       addressController.text =
           widget.customerProfile?.primaryInfo!["Address"] ?? "";
       emailController.text =
           widget.customerProfile?.primaryInfo!["Email"] ?? "";
+    }
+  }
+
+  _updateProfile() async {
+    Map<String, String> map = {
+      "Email": emailController.text,
+      "Address": addressController.text,
+      "PhoneNo": phnNoController.text,
+      "Name": nameController.text,
+    };
+    if (widget.customerProfile != null) {
+      APIResult? apiResult = await CustomerProfileService.updatecustomerProfile(
+          widget.customerProfile, map, true, false);
     }
   }
 
@@ -289,6 +309,7 @@ class _UserDetailsState extends State<UserDetails> {
                                 UpButton(
                                   onPressed: () {
                                     _createOrder();
+                                    _updateProfile();
                                   },
                                   text: "Confirm Order",
                                   style: UpStyle(buttonWidth: 200),

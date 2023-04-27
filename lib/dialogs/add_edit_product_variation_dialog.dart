@@ -9,7 +9,7 @@
 // import 'package:shop/models/product_variation.dart';
 // import 'package:shop/pages/admin/add_edit_attribute_widget.dart';
 // import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
-// import 'package:shop/widgets/gallery_dropdown.dart';
+// import 'package:shop/widgets/media/gallery_dropdown.dart';
 
 // class AddEditProductVariationDialog extends StatefulWidget {
 //   final int currentProduct;

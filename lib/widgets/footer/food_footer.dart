@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_up/config/up_config.dart';
+
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:shop/constants.dart';

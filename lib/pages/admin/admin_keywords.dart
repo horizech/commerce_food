@@ -12,6 +12,7 @@ import 'package:shop/dialogs/delete_dialog.dart';
 import 'package:shop/is_user_admin.dart';
 import 'package:shop/models/keyword.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/app_bars/admin_appbar.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
@@ -137,7 +138,7 @@ class _AdminKeywordsState extends State<AdminKeywords> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const UpAppBar(),
+      appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()
           ? BlocConsumer<StoreCubit, StoreState>(

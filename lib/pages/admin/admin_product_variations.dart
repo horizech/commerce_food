@@ -8,7 +8,7 @@ import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
-import 'package:shop/date_time_picker.dart';
+import 'package:shop/widgets/date_time_picker.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
 import 'package:shop/models/attribute.dart';
 import 'package:shop/models/attribute_value.dart';
@@ -16,7 +16,7 @@ import 'package:shop/models/product.dart';
 import 'package:shop/models/product_attribute.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
-import 'package:shop/widgets/gallery_dropdown.dart';
+import 'package:shop/widgets/media/gallery_dropdown.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class AdminProductVariations extends StatefulWidget {

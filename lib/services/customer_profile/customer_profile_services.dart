@@ -7,9 +7,7 @@ class CustomerProfileService {
   static Future<CustomerProfile?> getcustomerProfile() async {
     int? userId = Apiraiser.authentication.getCurrentUser()!.id;
     APIResult customerProfileResult;
-
     List<QuerySearchItem> conditions = [];
-
     try {
       if (userId != null) {
         conditions = [

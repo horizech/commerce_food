@@ -15,6 +15,7 @@ import 'package:shop/dialogs/media_dialog.dart';
 import 'package:shop/is_user_admin.dart';
 import 'package:shop/models/gallery.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';
+import 'package:shop/widgets/app_bars/admin_appbar.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
@@ -189,7 +190,7 @@ class _AdminGalleryState extends State<AdminGallery> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const UpAppBar(),
+      appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()
           ? BlocConsumer<StoreCubit, StoreState>(

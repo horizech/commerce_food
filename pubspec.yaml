@@ -58,6 +58,8 @@ dependencies:
   input_quantity: ^1.1.4
 
   flutter_up: ^2.0.3
+  sleek_circular_slider: ^2.0.1
+  circular_countdown_timer: ^0.2.3
   # path: ../flutter_up
 
   # flutter_up:
@@ -90,6 +92,11 @@ flutter:
     - assets/loading.gif
     - assets/ef3-placeholder-image.jpg
     - assets/logo.png
+    - assets/not-allowed.png
+    - assets/perparingfood.jpg
+    - assets/food_delivery.jpg
+    - assets/order_Delivered.png
+    - assets/cancelled_order.png
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
