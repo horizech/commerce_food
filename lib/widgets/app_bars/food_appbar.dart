@@ -42,25 +42,31 @@ class FoodAppbar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
         ),
-        IconButton(
-          onPressed: () async {
-            Apiraiser.authentication.signOut();
-            ServiceManager<UpNavigationService>()
-                .navigateToNamed(Routes.loginSignup);
-          },
-          icon: const Icon(
-            Icons.logout,
-            color: Colors.white,
+        Visibility(
+          visible: Apiraiser.authentication.isSignedIn(),
+          child: IconButton(
+            onPressed: () async {
+              Apiraiser.authentication.signOut();
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.loginSignup);
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            ServiceManager<UpNavigationService>()
-                .navigateToNamed(Routes.loginSignup);
-          },
-          icon: const Icon(
-            Icons.person,
-            color: Colors.white,
+        Visibility(
+          visible: !Apiraiser.authentication.isSignedIn(),
+          child: IconButton(
+            onPressed: () {
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.loginSignup);
+            },
+            icon: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
           ),
         ),
       ],

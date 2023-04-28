@@ -116,7 +116,7 @@ class _RestaurantGridItemState extends State<RestaurantGridItem>
                       mediaId: 2,
                       onChange: () => {
                         ServiceManager<UpNavigationService>().navigateToNamed(
-                          Routes.products,
+                          Routes.home,
                           queryParams: {
                             'RestaurantId': '${widget.restaurant.id}',
                           },

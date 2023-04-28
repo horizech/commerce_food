@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
           user.roleNames!.any((element) => element.toLowerCase() == "rider")) {
         ServiceManager<UpNavigationService>().navigateToNamed(Routes.rider);
       } else {
-        ServiceManager<UpNavigationService>().navigateToNamed(Routes.products);
+        ServiceManager<UpNavigationService>().navigateToNamed(Routes.home);
       }
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),

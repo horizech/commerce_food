@@ -68,24 +68,11 @@ class ShopApp extends StatelessWidget {
               successColor: Colors.green,
             ),
             title: 'Shop',
-            initialRoute: Routes.products,
+            initialRoute: Routes.home,
             upRoutes: [
-              // UpRoute(
-              //   path: Routes.home,
-              //   name: Routes.home,
-              //   pageBuilder: (BuildContext context, UpRouterState state) =>
-              //       const UpResponsivePage(
-              //     desktopPage: StoreDependantPage(
-              //       page: HomePage(),
-              //     ),
-              //     mobilePage: StoreDependantPage(
-              //       page: HomeMobPage(),
-              //     ),
-              //   ),
-              // ),
               UpRoute(
-                path: Routes.products,
-                name: Routes.products,
+                path: Routes.home,
+                name: Routes.home,
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const UpResponsivePage(
                   desktopPage: StoreDependantPage(

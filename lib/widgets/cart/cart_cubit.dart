@@ -52,4 +52,9 @@ class CartCubit extends Cubit<CartState> {
     cart.items.removeAt(index);
     emit(CartState(cart));
   }
+
+  void emptyCart() {
+    Cart cart = state.cart;
+    cart.items.clear();
+  }
 }

@@ -149,7 +149,7 @@
 //                         mediaId: item.product.thumbnail,
 //                         onChange: () => ServiceManager<UpNavigationService>()
 //                             .navigateToNamed(
-//                           Routes.product,
+//                           Routes.home,
 //                           queryParams: {
 //                             'productId': '${item.product.id}',
 //                           },
