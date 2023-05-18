@@ -94,56 +94,68 @@ class _SignupPageState extends State<SignupPage> {
         key: _formKey,
         child: Container(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: UpTextField(
-                  validation: UpValidation(minLength: 6),
-                  label: "Username",
-                  onSaved: (input) => _username = input!,
-                ),
+          child: Center(
+            child: SizedBox(
+              width: 400,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "foodlogo.jpg",
+                    height: 300,
+                    width: 300,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpTextField(
+                      validation: UpValidation(minLength: 6),
+                      label: "Username",
+                      onSaved: (input) => _username = input!,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpTextField(
+                      label: 'Full name',
+                      validation: UpValidation(isRequired: true),
+                      onSaved: (input) => _fullname = input!,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpTextField(
+                      label: 'Email',
+                      validation: UpValidation(isRequired: true, isEmail: true),
+                      onSaved: (input) => _email = input!,
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: UpTextField(
+                        label: 'Password',
+                        validation:
+                            UpValidation(isRequired: true, minLength: 6),
+                        maxLines: 1,
+                        onSaved: (input) => _password = input!,
+                        obscureText: true,
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: SizedBox(
+                        height: 42,
+                        width: 160,
+                        child: UpButton(
+                          text: "Signup",
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("Signup"),
+                          ),
+                          onPressed: () => _signup(),
+                        )),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: UpTextField(
-                  label: 'Full name',
-                  validation: UpValidation(isRequired: true),
-                  onSaved: (input) => _fullname = input!,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: UpTextField(
-                  label: 'Email',
-                  validation: UpValidation(isRequired: true, isEmail: true),
-                  onSaved: (input) => _email = input!,
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: UpTextField(
-                    label: 'Password',
-                    validation: UpValidation(isRequired: true, minLength: 6),
-                    maxLines: 1,
-                    onSaved: (input) => _password = input!,
-                    obscureText: true,
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                    width: 192,
-                    child: UpButton(
-                      text: "Signup",
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("Signup"),
-                      ),
-                      onPressed: () => _signup(),
-                    )),
-              ),
-            ],
+            ),
           ),
         ));
   }
