@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class Media extends Equatable {
-  final int id;
+  final int? id;
   final DateTime? createdOn;
   final int? createdBy;
   final DateTime? lastUpdatedOn;
@@ -10,37 +10,37 @@ class Media extends Equatable {
   final List<int>? img;
   final String? url;
 
-  const Media(
+  const Media({
     this.id,
     this.createdOn,
     this.createdBy,
     this.lastUpdatedOn,
     this.lastUpdatedBy,
-    this.name,
+    required this.name,
     this.img,
     this.url,
-  );
+  });
 
   factory Media.fromJson(Map<String, dynamic> json) {
     Media media = Media(
-      json['Id'] as int,
-      json['CreatedOn'] != null
+      id: json['Id'] as int,
+      createdOn: json['CreatedOn'] != null
           ? (json['CreatedOn'] is String)
               ? DateTime.parse(json['CreatedOn'] as String)
               : json['CreatedOn']
           : null,
-      json['CreatedBy'] as int?,
-      json['LastUpdatedOn'] != null
+      createdBy: json['CreatedBy'] as int?,
+      lastUpdatedOn: json['LastUpdatedOn'] != null
           ? (json['LastUpdatedOn'] is String)
               ? DateTime.parse(json['LastUpdatedOn'] as String)
               : json['LastUpdatedOn']
           : null,
-      json['LastUpdatedBy'] as int?,
-      json['Name'] as String,
-      json['Data'] != null
+      lastUpdatedBy: json['LastUpdatedBy'] as int?,
+      name: json['Name'] as String,
+      img: json['Data'] != null
           ? (json['Data'] as List<dynamic>).map((e) => e as int).toList()
           : null,
-      json['URL'] as String?,
+      url: json['URL'] as String?,
     );
     return media;
   }

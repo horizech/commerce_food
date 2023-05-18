@@ -1,6 +1,16 @@
+// import 'dart:io';
+import 'dart:convert';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'dart:typed_data';
+
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:shop/environment.dart';
 import 'package:shop/models/media.dart';
+import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 class MediaService {
   static Future<Media?> getMedia(int? mediaId) async {
@@ -21,6 +31,21 @@ class MediaService {
           .map((c) => Media.fromJson(c as Map<String, dynamic>))
           .first;
       return media;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List<Media>?> getAllMedia() async {
+    APIResult result;
+
+    result = await Apiraiser.data.get("Media", -1);
+
+    if (result.success) {
+      List<Media> mediaList = (result.data as List<dynamic>)
+          .map((c) => Media.fromJson(c as Map<String, dynamic>))
+          .toList();
+      return mediaList;
     } else {
       return null;
     }
@@ -54,5 +79,37 @@ class MediaService {
       debugPrint(e.toString());
     }
     return [];
+  }
+
+  static Future<APIResult?> uploadMedia(Uint8List list, String name) async {
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: "jwt");
+    Map<String, String> headers = {
+      "Authorization": "Bearer $jwt",
+    };
+    var uuid = const Uuid();
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${Environment.apiUrl}/API/Media'),
+    );
+    request.fields.addEntries({
+      "MediaId": "0",
+      "FileName": "${uuid.v1()}name",
+      "MediaSource": "0",
+      "Path": ""
+    }.entries);
+    request.headers.addAll(headers);
+
+    request.files.add(http.MultipartFile.fromBytes("FormFile", list,
+        filename: name.split("/").last));
+
+    var res = await request.send();
+    APIResult? result = APIResult.fromJson(
+      json.decode(
+        await res.stream.bytesToString(),
+      ),
+    );
+    return result;
   }
 }

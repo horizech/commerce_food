@@ -488,8 +488,8 @@ class _AllProductsState extends State<ProductsMob> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          child: Column(children: const []),
+                                        const SizedBox(
+                                          child: Column(children: []),
                                         ),
                                       ],
                                     ),

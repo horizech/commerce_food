@@ -87,13 +87,13 @@ class CartMobComplete extends StatelessWidget {
                     ],
                   ),
                   const UpText("Order Details", type: UpTextType.heading6),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [UpText("Product Name"), UpText("Price")],
+                    children: [UpText("Product Name"), UpText("Price")],
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [UpText("Product Name"), UpText("Price")],
+                    children: [UpText("Product Name"), UpText("Price")],
                   ),
                   const SizedBox(height: 4),
                   Divider(

@@ -7,13 +7,13 @@ class EmptyCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 200.0, bottom: 200),
+        padding: EdgeInsets.only(top: 200.0, bottom: 200),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
+            children: [
               Icon(
                 Icons.shopping_cart,
                 size: 50,

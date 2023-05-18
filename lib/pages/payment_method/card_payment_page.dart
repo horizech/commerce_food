@@ -21,16 +21,16 @@ class CardPaymentPage extends StatelessWidget {
               listener: (context, state) {},
               builder: (context, state) {
                 return width > 1000
-                    ? Row(
-                        children: const [
+                    ? const Row(
+                        children: [
                           Expanded(
                             child: CardPaymentForm(),
                           ),
                           // CartDisplay(cartItem: state.cart.items),
                         ],
                       )
-                    : Column(
-                        children: const [
+                    : const Column(
+                        children: [
                           Padding(
                             padding:
                                 EdgeInsets.only(top: 20.0, left: 10, right: 10),
@@ -123,7 +123,7 @@ class _CardPaymentFormState extends State<CardPaymentForm> {
                           "Payment detail",
                           style: Theme.of(context)
                               .textTheme
-                              .headline6!
+                              .titleLarge!
                               .copyWith(fontSize: 20, color: Colors.black),
                         ),
                       ],

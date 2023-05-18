@@ -25,16 +25,16 @@ class PaymentMethodsPage extends StatelessWidget {
           listener: (context, state) {},
           builder: (context, state) {
             return width > 1000
-                ? Row(
-                    children: const [
+                ? const Row(
+                    children: [
                       Expanded(
                         child: PaymentMethodsForm(),
                       ),
                       // CartDisplay(cartItem: state.cart.items),
                     ],
                   )
-                : Column(
-                    children: const [
+                : const Column(
+                    children: [
                       Padding(
                         padding:
                             EdgeInsets.only(top: 20.0, left: 10, right: 10),
@@ -197,17 +197,16 @@ class _PaymentMethodsFormState extends State<PaymentMethodsForm> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
+                      const Padding(
+                        padding: EdgeInsets.all(10.0),
                         child: SizedBox(
                           width: 550,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
                                   "Method",
                                   style: TextStyle(
@@ -352,7 +351,7 @@ class _PaymentMethodsFormState extends State<PaymentMethodsForm> {
                       Text("< Return to Payment",
                           style: Theme.of(context)
                               .textTheme
-                              .headline6!
+                              .titleLarge!
                               .copyWith(color: Colors.black, fontSize: 16)),
                       ElevatedButton(
                           onPressed: () {

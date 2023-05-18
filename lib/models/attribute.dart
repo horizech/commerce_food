@@ -8,15 +8,16 @@ class Attribute extends Equatable {
   final DateTime? lastUpdatedOn;
   final int? lastUpdatedBy;
   final String name;
+  final int? swatch;
 
-  const Attribute({
-    this.id,
-    this.createdOn,
-    this.createdBy,
-    this.lastUpdatedOn,
-    this.lastUpdatedBy,
-    required this.name,
-  });
+  const Attribute(
+      {this.id,
+      this.createdOn,
+      this.createdBy,
+      this.lastUpdatedOn,
+      this.lastUpdatedBy,
+      required this.name,
+      this.swatch});
 
   factory Attribute.fromJson(Map<String, dynamic> json) {
     try {
@@ -31,6 +32,7 @@ class Attribute extends Equatable {
             : null,
         lastUpdatedBy: json['LastUpdatedBy'] as int?,
         name: json['Name'] as String,
+        swatch: json['Swatch'] as int?,
       );
       return attribute;
     } catch (e) {
@@ -46,6 +48,7 @@ class Attribute extends Equatable {
         'LastUpdatedOn': instance.lastUpdatedOn,
         'LastUpdatedBy': instance.lastUpdatedBy,
         'Name': instance.name,
+        'Swatch': instance.swatch
       };
 
   @override

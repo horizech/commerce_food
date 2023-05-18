@@ -41,6 +41,10 @@ class NavDrawer extends StatelessWidget {
           .navigateToNamed(Routes.adminUserRoles);
     }
 
+    void media(context) {
+      ServiceManager<UpNavigationService>().navigateToNamed(Routes.adminMedia);
+    }
+
     actions = [
       ...actions,
       UpDrawerItem(
@@ -73,6 +77,11 @@ class NavDrawer extends StatelessWidget {
         icon: Icons.person,
         onTap: userRole,
       ),
+      UpDrawerItem(
+        title: Constant.media,
+        icon: Icons.image,
+        onTap: media,
+      ),
     ];
 
     return actions;
@@ -84,9 +93,9 @@ class NavDrawer extends StatelessWidget {
       decoration: BoxDecoration(
         color: UpConfig.of(context).theme.primaryColor.shade50,
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: const [
+        children: [
           Text(
             'Shop',
             style: TextStyle(color: Colors.white, fontSize: 25),

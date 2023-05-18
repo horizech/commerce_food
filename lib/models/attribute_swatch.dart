@@ -1,31 +1,28 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class AttributeValue extends Equatable {
+class AttributeSwatch extends Equatable {
   final int? id;
   final DateTime? createdOn;
   final int? createdBy;
   final DateTime? lastUpdatedOn;
   final int? lastUpdatedBy;
   final String name;
-  final int attribute;
-  final String? colorCode;
-  final int? media;
-  const AttributeValue({
+  final String? description;
+
+  const AttributeSwatch({
     this.id,
     this.createdOn,
     this.createdBy,
     this.lastUpdatedOn,
     this.lastUpdatedBy,
     required this.name,
-    required this.attribute,
-    this.colorCode,
-    this.media,
+    this.description,
   });
 
-  factory AttributeValue.fromJson(Map<String, dynamic> json) {
+  factory AttributeSwatch.fromJson(Map<String, dynamic> json) {
     try {
-      AttributeValue attributeValues = AttributeValue(
+      AttributeSwatch attributeSwatch = AttributeSwatch(
         id: json['Id'] as int,
         createdOn: json['CreatedOn'] != null
             ? DateTime.parse(json['CreatedOn'] as String)
@@ -36,27 +33,23 @@ class AttributeValue extends Equatable {
             : null,
         lastUpdatedBy: json['LastUpdatedBy'] as int?,
         name: json['Name'] as String,
-        attribute: json['Attribute'] as int,
-        colorCode: json['ColorCode'] as String?,
-        media: json['Media'] as int?,
+        description: json['Description'] as String?,
       );
-      return attributeValues;
+      return attributeSwatch;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
   }
 
-  Map<String, dynamic> toJson(AttributeValue instance) => <String, dynamic>{
+  Map<String, dynamic> toJson(AttributeSwatch instance) => <String, dynamic>{
         'Id': instance.id,
         'CreatedOn': instance.createdOn,
         'CreatedBy': instance.createdBy,
         'LastUpdatedOn': instance.lastUpdatedOn,
         'LastUpdatedBy': instance.lastUpdatedBy,
         'Name': instance.name,
-        'ColorCode': instance.colorCode,
-        'Media': instance.media,
-        'Attribute': instance.attribute,
+        'Description': instance.description,
       };
 
   @override
@@ -67,6 +60,5 @@ class AttributeValue extends Equatable {
         lastUpdatedOn,
         lastUpdatedBy,
         name,
-        attribute,
       ];
 }
