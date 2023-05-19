@@ -95,7 +95,7 @@ class MediaService {
     );
     request.fields.addEntries({
       "MediaId": "0",
-      "FileName": "${uuid.v1()}name",
+      "FileName": name,
       "MediaSource": "0",
       "Path": ""
     }.entries);

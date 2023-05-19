@@ -15,6 +15,7 @@ import 'package:shop/models/media.dart';
 import 'package:shop/widgets/app_bars/admin_appbar.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 import 'package:shop/widgets/media/media_service.dart';
+import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 import 'package:shop/widgets/unauthorized_widget.dart';
 
@@ -155,9 +156,9 @@ class _AdminMediaState extends State<AdminMedia> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: const Align(
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Align(
                                     alignment: Alignment.topLeft,
                                     child: UpText(
                                       "Media",
@@ -165,93 +166,57 @@ class _AdminMediaState extends State<AdminMedia> {
                                     ),
                                   ),
                                 ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SizedBox(
-                                        width: 150,
-                                        height: 50,
-                                        child: UpButton(
-                                          text: "Upload Media",
-                                          onPressed: () {
-                                            uploadMedia();
-                                          },
+                                Visibility(
+                                  visible: selectedMedia.id == -1,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: 150,
+                                          height: 50,
+                                          child: UpButton(
+                                            text: "Upload Media",
+                                            onPressed: () {
+                                              uploadMedia();
+                                            },
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Visibility(
-                                      visible: isUploading == true,
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: UpCircularProgress(
-                                          width: 20,
-                                          height: 20,
+                                      Visibility(
+                                        visible: isUploading == true,
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: UpCircularProgress(
+                                            width: 20,
+                                            height: 20,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: selectedMedia.id != -1,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: 100,
+                                          height: 100,
+                                          child: MediaWidget(
+                                            media: selectedMedia,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
-
-                                // Padding(
-                                //   padding: const EdgeInsets.all(8.0),
-                                //   child: SizedBox(
-                                //     width: 300,
-                                //     child: AddMediaWidget(
-                                //       selectedMedia: selectedMedia.id,
-                                //       onChnage: (media) {
-                                //         selectedMedia = media;
-                                //         setState(() {});
-                                //       },
-                                //     ),
-                                //   ),
-                                // ),
-                                // Visibility(
-                                //   visible: selectedMedia.id != -1,
-                                //   child: const Padding(
-                                //     padding: EdgeInsets.all(8.0),
-                                //     child: SizedBox(
-                                //       width: 300,
-                                //       child: UpText(
-                                //         "*To delete a collection you must need to delete all its products",
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   width: 300,
-                                //   child: Row(
-                                //     mainAxisAlignment: MainAxisAlignment.end,
-                                //     children: [
-                                //       Visibility(
-                                //         visible: selectedMedia.id != -1,
-                                //         child: Padding(
-                                //           padding: const EdgeInsets.all(8.0),
-                                //           child: SizedBox(
-                                //             width: 70,
-                                //             height: 30,
-                                //             child: UpButton(
-                                //               onPressed: () {},
-                                //               text: "Delete",
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //       Padding(
-                                //         padding: const EdgeInsets.all(8.0),
-                                //         child: SizedBox(
-                                //           width: 70,
-                                //           height: 30,
-                                //           child: UpButton(
-                                //             onPressed: () {},
-                                //             text: "Save",
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
                               ]),
                         ),
                       ),
