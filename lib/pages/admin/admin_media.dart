@@ -74,44 +74,47 @@ class _AdminMediaState extends State<AdminMedia> {
       child: Container(
         color: Colors.grey[200],
         width: 300,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            GestureDetector(
-                onTap: (() {
-                  selectedMedia = const Media(name: "", id: -1);
-                  nameController.text = selectedMedia.name;
+        height: 900,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              GestureDetector(
+                  onTap: (() {
+                    selectedMedia = const Media(name: "", id: -1);
+                    nameController.text = selectedMedia.name;
 
-                  setState(() {});
-                }),
-                child: Container(
-                  color: selectedMedia.id == -1
-                      ? UpConfig.of(context).theme.primaryColor[100]
-                      : Colors.transparent,
-                  child: const ListTile(
-                    title: UpText("Create a new media"),
-                  ),
-                )),
-            ...media
-                .map(
-                  (e) => GestureDetector(
-                    onTap: (() {
-                      selectedMedia = e;
-                      nameController.text = selectedMedia.name;
-                      setState(() {});
-                    }),
-                    child: Container(
-                      color: selectedMedia.id == e.id
-                          ? UpConfig.of(context).theme.primaryColor[100]
-                          : Colors.transparent,
-                      child: ListTile(
-                        title: UpText(e.name),
+                    setState(() {});
+                  }),
+                  child: Container(
+                    color: selectedMedia.id == -1
+                        ? UpConfig.of(context).theme.primaryColor[100]
+                        : Colors.transparent,
+                    child: const ListTile(
+                      title: UpText("Create a new media"),
+                    ),
+                  )),
+              ...media
+                  .map(
+                    (e) => GestureDetector(
+                      onTap: (() {
+                        selectedMedia = e;
+                        nameController.text = selectedMedia.name;
+                        setState(() {});
+                      }),
+                      child: Container(
+                        color: selectedMedia.id == e.id
+                            ? UpConfig.of(context).theme.primaryColor[100]
+                            : Colors.transparent,
+                        child: ListTile(
+                          title: UpText(e.name),
+                        ),
                       ),
                     ),
-                  ),
-                )
-                .toList()
-          ],
+                  )
+                  .toList()
+            ],
+          ),
         ),
       ),
     );
@@ -129,10 +132,7 @@ class _AdminMediaState extends State<AdminMedia> {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: leftSide(),
-                    ),
+                    leftSide(),
 
                     // Padding(
                     //   padding: const EdgeInsets.all(8.0),
@@ -155,11 +155,14 @@ class _AdminMediaState extends State<AdminMedia> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Align(
-                                  alignment: Alignment.topLeft,
-                                  child: UpText(
-                                    "Media",
-                                    type: UpTextType.heading6,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: const Align(
+                                    alignment: Alignment.topLeft,
+                                    child: UpText(
+                                      "Media",
+                                      type: UpTextType.heading6,
+                                    ),
                                   ),
                                 ),
                                 Row(

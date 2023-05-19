@@ -59,12 +59,12 @@ class _AdminProductsState extends State<AdminProducts> {
   }
 
   Widget leftSide() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Container(
-        color: Colors.grey[200],
-        width: 300,
-        height: MediaQuery.of(context).size.height,
+    return Container(
+      color: Colors.grey[200],
+      width: 300,
+      height: 900,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             GestureDetector(
@@ -220,8 +220,8 @@ class _AdminProductsState extends State<AdminProducts> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Align(

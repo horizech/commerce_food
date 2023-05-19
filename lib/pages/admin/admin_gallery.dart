@@ -5,7 +5,6 @@ import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/themes/up_style.dart';
-import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -136,12 +135,12 @@ class _AdminGalleryState extends State<AdminGallery> {
   }
 
   Widget leftSide() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Container(
-        color: Colors.grey[200],
-        width: 300,
-        height: MediaQuery.of(context).size.height,
+    return Container(
+      color: Colors.grey[200],
+      width: 300,
+      height: 900,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             GestureDetector(
