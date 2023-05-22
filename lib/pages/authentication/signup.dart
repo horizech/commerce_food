@@ -48,13 +48,14 @@ class _SignupPageState extends State<SignupPage> {
           email: _email,
           password: _password,
         ),
-      );
+      );  
 
+      if(mounted){
       ServiceManager<UpDialogService>().completeDialog(
           context: context,
           completerId: loadingDialogCompleterId,
           result: null);
-
+}
       _handleSignupResult(result);
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),

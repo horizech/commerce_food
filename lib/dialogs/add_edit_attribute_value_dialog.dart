@@ -104,33 +104,33 @@ class _AddEditAttributeValueDialogState
                             ? widget.attributeValue!.id
                             : null);
                 if (result != null) {
-                  if (result.success) {
-                    showUpToast(
+                  if (result.success) {if(mounted){
+                    UpToast().showToast(
                       context: context,
                       text: result.message ?? "",
-                    );
+                    );}
                     if (mounted) {
                       Navigator.pop(
                         context,
                         "success",
                       );
                     }
-                  } else {
-                    showUpToast(
+                  } else {if(mounted){
+                    UpToast().showToast(
                       context: context,
                       text: result.message ?? "",
-                    );
+                    );}
                     if (mounted) {
                       Navigator.pop(
                         context,
                       );
                     }
                   }
-                } else {
-                  showUpToast(
+                } else {if(mounted){
+                  UpToast().showToast(
                     context: context,
                     text: "An Error Occurred",
-                  );
+                  );}
                 }
               },
             ),

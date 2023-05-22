@@ -20,14 +20,14 @@ class DeleteDialog extends StatelessWidget {
       actionsPadding: const EdgeInsets.all(0),
       titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      content: Padding(
-        padding: const EdgeInsets.all(8.0),
+      content:const Padding(
+        padding: EdgeInsets.all(8.0),
         child: SizedBox(
           height: 100,
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children:  [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: UpText(

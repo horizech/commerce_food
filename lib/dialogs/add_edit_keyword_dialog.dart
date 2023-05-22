@@ -88,21 +88,22 @@ class _AddEditKeywordDialogState extends State<AddEditKeywordDialog> {
                         ? widget.currentKeyword!.id
                         : null);
                 if (result != null) {
-                  showUpToast(
+                  if(mounted){
+                  UpToast().showToast(
                     context: context,
                     text: result.message ?? "",
-                  );
+                  );}
                   if (mounted) {
                     Navigator.pop(
                       context,
                       "success",
                     );
                   }
-                } else {
-                  showUpToast(
+                } else {if(mounted){
+                  UpToast().showToast(
                     context: context,
                     text: "An Error Occurred",
-                  );
+                  );}
                 }
               },
             ),

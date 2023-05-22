@@ -491,7 +491,7 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                               cubit.addToCart(comboItem);
                               Navigator.pop(context, "Success");
                             } else {
-                              showUpToast(
+                              UpToast().showToast(
                                   context: context,
                                   text: "Select All Variations");
                             }

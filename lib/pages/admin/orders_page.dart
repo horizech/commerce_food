@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
-import 'package:flutter_up/widgets/up_table.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/widgets/drawers/nav_drawer.dart';
 
@@ -27,22 +26,22 @@ class _OrdersPageState extends State<OrdersPage> {
                 border: Border.all(
                     width: 1, color: UpConfig.of(context).theme.primaryColor),
                 borderRadius: BorderRadius.circular(8)),
-            padding: EdgeInsets.all(8),
-            child: Column(
+            padding:const EdgeInsets.all(8),
+            child:const Column(
               children: [
-                const Align(
+                 Align(
                   alignment: Alignment.topLeft,
                   child: UpText(
                     "Orders",
                     type: UpTextType.heading4,
                   ),
                 ),
-                const SizedBox(
+                 SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children:  [
                     UpText("ORDER", type: UpTextType.heading6),
                     UpText("TIME/DATE", type: UpTextType.heading6),
                     UpText("STATUS", type: UpTextType.heading6),
@@ -50,7 +49,7 @@ class _OrdersPageState extends State<OrdersPage> {
                     UpText("DETAILS", type: UpTextType.heading6),
                   ],
                 ),
-                const SizedBox(height: 12)
+                 SizedBox(height: 12)
               ],
             ),
           ),

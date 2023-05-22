@@ -60,10 +60,11 @@ class _AddEditProductAttributesState extends State<AddEditProductAttributes> {
         proAttributeId:
             newProductAttribute.id != null ? newProductAttribute.id! : null);
     if (result != null && result.success) {
-      showUpToast(context: context, text: result.message ?? "");
+      if (mounted){
+      UpToast().showToast(context: context, text: result.message ?? "");}
       getProductAttribute();
-    } else if (result == null) {
-      showUpToast(context: context, text: result!.message ?? "");
+    } else if (result == null) {if(mounted){
+      UpToast().showToast(context: context, text: result!.message ?? "");}
     }
   }
 
@@ -140,7 +141,7 @@ class _AddEditProductAttributesState extends State<AddEditProductAttributes> {
                             ))) {
                           selectedAttributes.add(int.parse(currentAttribute));
                         } else {
-                          showUpToast(
+                          UpToast().showToast(
                               context: context,
                               text: "Product Attribute already exists");
                         }

@@ -65,18 +65,22 @@ class _AdminUserRolesState extends State<AdminUserRoles> {
       };
       APIResult? result = await AddEditProductService.addRole(map);
       if (result != null && result.success) {
-        showUpToast(
-          context: context,
-          text: result.message ?? "",
-        );
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: result.message ?? "",
+          );
+        }
       } else {
-        showUpToast(
-          context: context,
-          text: "An Error Occurred",
-        );
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
       }
     } else {
-      showUpToast(
+      UpToast().showToast(
         context: context,
         text: "Select all values",
       );
@@ -92,49 +96,53 @@ class _AdminUserRolesState extends State<AdminUserRoles> {
           ? rolesDropdown.isNotEmpty && usersDropdown.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 300,
-                    child: Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: UpText(
-                            "Update User role",
-                            type: UpTextType.heading6,
+                  child: Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width <= 600
+                          ? MediaQuery.of(context).size.width
+                          : MediaQuery.of(context).size.width / 1.8,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: UpText(
+                              "Update User role",
+                              type: UpTextType.heading6,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: UpDropDown(
-                            value: currentUser,
-                            itemList: usersDropdown,
-                            label: "User",
-                            onChanged: (value) => {
-                              currentUser = value ?? "",
-                            },
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: UpDropDown(
+                              value: currentUser,
+                              itemList: usersDropdown,
+                              label: "User",
+                              onChanged: (value) => {
+                                currentUser = value ?? "",
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: UpDropDown(
-                            value: currentRole,
-                            itemList: rolesDropdown,
-                            label: "Roles",
-                            onChanged: (value) => {
-                              currentRole = value ?? "",
-                            },
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: UpDropDown(
+                              value: currentRole,
+                              itemList: rolesDropdown,
+                              label: "Roles",
+                              onChanged: (value) => {
+                                currentRole = value ?? "",
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: UpButton(
-                            onPressed: () {
-                              _updateRole();
-                            },
-                            text: "Update",
-                          ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: UpButton(
+                              onPressed: () {
+                                _updateRole();
+                              },
+                              text: "Update",
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )

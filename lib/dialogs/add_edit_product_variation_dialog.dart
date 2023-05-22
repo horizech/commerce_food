@@ -131,7 +131,7 @@
 //       if (mounted) {}
 //       Navigator.pop(context, "success");
 
-//       showUpToast(
+//       UpToast().showToast(
 //         context: context,
 //         text: result.message ?? "",
 //       );
@@ -140,7 +140,7 @@
 //         context,
 //       );
 
-//       showUpToast(
+//       UpToast().showToast(
 //         context: context,
 //         text: "An error occurred",
 //       );

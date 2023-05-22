@@ -68,25 +68,25 @@ class _AdminGalleryState extends State<AdminGallery> {
       APIResult? result = await AddEditProductService.addEditGallery(
           data: Gallery.toJson(gallery),
           galleryId: selectedGallery.id != -1 ? selectedGallery.id! : null);
-      if (result != null) {
-        showUpToast(
+      if (result != null) {if(mounted){
+        UpToast().showToast(
           context: context,
           text: result.message ?? "",
-        );
+        );}
         if (selectedGallery.id == -1) {
           selectedMediaList.clear();
           nameController.text = "";
         }
 
         getAllGallery();
-      } else {
-        showUpToast(
+      } else {if(mounted){
+        UpToast().showToast(
           context: context,
           text: "An Error Occurred",
-        );
+        );}
       }
     } else {
-      showUpToast(context: context, text: "Please enter all fields");
+      UpToast().showToast(context: context, text: "Please enter all fields");
     }
   }
 
@@ -101,17 +101,17 @@ class _AdminGalleryState extends State<AdminGallery> {
       if (result == "success") {
         APIResult? result =
             await AddEditProductService.deleteGallery(galleryId);
-        if (result != null && result.success) {
-          showUpToast(context: context, text: result.message ?? "");
+        if (result != null && result.success) {if(mounted){
+          UpToast().showToast(context: context, text: result.message ?? "");}
           selectedGallery = const Gallery(name: "", mediaList: [], id: -1);
           nameController.text = "";
           selectedMediaList.clear();
           getAllGallery();
-        } else {
-          showUpToast(
+        } else {if (mounted){
+          UpToast().showToast(
             context: context,
             text: "An Error Occurred",
-          );
+          );}
         }
       }
     });

@@ -145,13 +145,13 @@ class _UserOrderStatusState extends State<UserOrderStatus> {
                                               "delivered")
                                           .first
                                           .id
-                                  ? SingleChildScrollView(
+                                  ? const SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Center(
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
-                                          children: const [
+                                          children:  [
                                             DeliveredFood(),
                                           ],
                                         ),
@@ -164,13 +164,13 @@ class _UserOrderStatusState extends State<UserOrderStatus> {
                                                   "cancelled")
                                               .first
                                               .id
-                                      ? SingleChildScrollView(
+                                      ?const SingleChildScrollView(
                                           scrollDirection: Axis.vertical,
                                           child: Center(
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
-                                              children: const [
+                                              children:  [
                                                 OrderCancelled(),
                                               ],
                                             ),

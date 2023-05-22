@@ -232,7 +232,9 @@ class _RiderOrderStatusUpdateState extends State<RiderOrderStatusUpdate> {
       APIResult? apiResult =
           await OrderService.updateOrder(map, widget.order.id!);
       if (apiResult != null && apiResult.success) {
-        showUpToast(context: context, text: "Status updated");
+        if (mounted) {
+          UpToast().showToast(context: context, text: "Status updated");
+        }
       }
     } else if (widget.deliveringStatusId != null &&
         widget.deliveredStatusId != null &&
@@ -249,8 +251,8 @@ class _RiderOrderStatusUpdateState extends State<RiderOrderStatusUpdate> {
       };
       APIResult? apiResult =
           await OrderService.updateOrder(map, widget.order.id!);
-      if (apiResult != null && apiResult.success) {
-        showUpToast(context: context, text: "Status updated");
+      if (apiResult != null && apiResult.success) {if(mounted){
+        UpToast().showToast(context: context, text: "Status updated");}
       }
     }
   }

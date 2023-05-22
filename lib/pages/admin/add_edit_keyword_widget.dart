@@ -87,41 +87,38 @@ class _AddEditKeywordWidgetState extends State<AddEditKeywordWidget> {
         }
 
         return keywords.isNotEmpty && keywordsDropdown.isNotEmpty
-            ? SizedBox(
-                width: 500,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Visibility(
-                      visible: keywordsDropdown.isNotEmpty,
-                      child: SizedBox(
-                        width: 420,
-                        child: UpDropDown(
-                          isMultipleSelect: true,
-                          onMultipleChanged: ((value) => {
-                                if (widget.change != null)
-                                  {
-                                    widget.change!(value),
-                                  }
-                              }),
-                          values: selectedKeywords,
-                          label: "Keyword",
-                          itemList: keywordsDropdown,
-                        ),
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Visibility(
+                    visible: keywordsDropdown.isNotEmpty,
+                    child: SizedBox(
+                      width: 200,
+                      child: UpDropDown(
+                        isMultipleSelect: true,
+                        onMultipleChanged: ((value) => {
+                              if (widget.change != null)
+                                {
+                                  widget.change!(value),
+                                }
+                            }),
+                        values: selectedKeywords,
+                        label: "Keyword",
+                        itemList: keywordsDropdown,
                       ),
                     ),
-                    SizedBox(
-                      width: 40,
-                      child: UpButton(
-                        onPressed: () {
-                          _keywordsAddDialog();
-                        },
-                        type: UpButtonType.icon,
-                        child: const Icon(Icons.add),
-                      ),
+                  ),
+                  SizedBox(
+                    width: 40,
+                    child: UpButton(
+                      onPressed: () {
+                        _keywordsAddDialog();
+                      },
+                      type: UpButtonType.icon,
+                      child: const Icon(Icons.add),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               )
             : const SizedBox();
       },

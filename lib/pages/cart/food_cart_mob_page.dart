@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:js';
-
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/enums/text_style.dart';
-import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';

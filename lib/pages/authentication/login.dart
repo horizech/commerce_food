@@ -39,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
 
       APIResult result = await Apiraiser.authentication
           .login(LoginRequest(email: _email, password: _password));
-
-      ServiceManager<UpDialogService>().completeDialog(
-          context: context,
-          completerId: loadingDialogCompleterId,
-          result: null);
-
+      if (mounted) {
+        ServiceManager<UpDialogService>().completeDialog(
+            context: context,
+            completerId: loadingDialogCompleterId,
+            result: null);
+      }
       _handleLoginResult(result);
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),

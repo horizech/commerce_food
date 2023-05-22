@@ -229,7 +229,8 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
       APIResult? apiResult =
           await OrderService.updateOrder(map, widget.order.id!);
       if (apiResult != null && apiResult.success) {
-        showUpToast(context: context, text: "Status updated");
+        if(mounted){
+        UpToast().showToast(context: context, text: "Status updated");}
       }
     } else if (widget.preparingStatusId != null &&
         widget.waitingStatusId != null &&
@@ -254,7 +255,8 @@ class _ChefOrderStatusUpdateState extends State<ChefOrderStatusUpdate> {
       APIResult? apiResult =
           await OrderService.updateOrder(map, widget.order.id!);
       if (apiResult != null && apiResult.success) {
-        showUpToast(context: context, text: "Status updated");
+        if(mounted){
+        UpToast().showToast(context: context, text: "Status updated");}
       }
     }
   }

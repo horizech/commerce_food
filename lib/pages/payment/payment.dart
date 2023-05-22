@@ -34,16 +34,16 @@ class PaymentPage extends StatelessWidget {
           builder: (context, state) {
             return !Apiraiser.authentication.isSignedIn()
                 ? width > 1000
-                    ? Row(
-                        children: const [
+                    ?const Row(
+                        children:  [
                           Expanded(
                             child: PaymentForm(),
                           ),
                           // CartDisplay(cartItem: state.cart.items),
                         ],
                       )
-                    : Column(
-                        children: const [
+                    :const Column(
+                        children:  [
                           Padding(
                             padding:
                                 EdgeInsets.only(top: 20.0, left: 10, right: 10),

@@ -162,12 +162,12 @@ class _UserDetailsState extends State<UserDetails> {
         if (result.success) {
           ServiceManager<UpNavigationService>()
               .navigateToNamed(Routes.orderStatus);
-        } else {
-          showUpToast(context: context, text: result.message ?? "");
-        }
+        } else {if(mounted){
+          UpToast().showToast(context: context, text: result.message ?? "");
+        }}
       }
     } else {
-      showUpToast(context: context, text: "There are no items in cart");
+      UpToast().showToast(context: context, text: "There are no items in cart");
     }
   }
 

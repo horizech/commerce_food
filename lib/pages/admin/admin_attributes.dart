@@ -184,7 +184,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
           attributeValueId: value?.id);
       if (result != null) {
         if (mounted) {
-          showUpToast(
+          UpToast().showToast(
             context: context,
             text: result.message ?? "",
           );
@@ -195,14 +195,14 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
         getAttributeValues();
       } else {
         if (mounted) {
-          showUpToast(
+          UpToast().showToast(
             context: context,
             text: "An Error Occurred",
           );
         }
       }
     } else {
-      showUpToast(
+      UpToast().showToast(
         context: context,
         text: "Please enter attribute value name",
       );
@@ -564,23 +564,23 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       APIResult? result = await AddEditProductService.addEditAttribute(
           data: newAttribute.toJson(newAttribute), attributeId: attribute?.id);
 
-      if (result != null) {
-        showUpToast(
+      if (result != null) {if(mounted){
+        UpToast().showToast(
           context: context,
           text: result.message ?? "",
-        );
+        );}
         if (attribute == null) {
           nameController.text = "";
         }
         getAttributes();
-      } else {
-        showUpToast(
+      } else {if(mounted){
+        UpToast().showToast(
           context: context,
           text: "An Error Occurred",
-        );
+        );}
       }
     } else {
-      showUpToast(
+      UpToast().showToast(
         context: context,
         text: "Please enter attribute name",
       );
@@ -621,16 +621,16 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       if (result == "success") {
         APIResult? result =
             await AddEditProductService.deleteAttribute(attributeId);
-        if (result != null && result.success) {
-          showUpToast(context: context, text: result.message ?? "");
+        if (result != null && result.success) {if(mounted){
+          UpToast().showToast(context: context, text: result.message ?? "");}
           nameController.text = "";
           selectedAttribute = const Attribute(name: "", id: -1);
           getAttributes();
-        } else {
-          showUpToast(
+        } else {if(mounted){
+          UpToast().showToast(
             context: context,
             text: "An Error Occurred",
-          );
+          );}
         }
       }
     });
@@ -647,14 +647,14 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       if (result == "success") {
         APIResult? result =
             await AddEditProductService.deleteAttributeValue(attributeValueId);
-        if (result != null && result.success) {
-          showUpToast(context: context, text: result.message ?? "");
-          getAttributeValues();
-        } else {
-          showUpToast(
+        if (result != null && result.success) {if(mounted){
+          UpToast().showToast(context: context, text: result.message ?? "");
+}          getAttributeValues();
+        } else {if(mounted){
+          UpToast().showToast(
             context: context,
             text: "An Error Occurred",
-          );
+          );}
         }
       }
     });
