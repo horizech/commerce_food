@@ -58,13 +58,13 @@ dependencies:
   scrollable_positioned_list: ^0.3.5
   input_quantity: ^1.1.4
 
-  # flutter_up: ^2.0.3
+  flutter_up: ^2.0.4
   sleek_circular_slider: ^2.0.1
   circular_countdown_timer: ^0.2.3
   # path: ../flutter_up
 
-  flutter_up:
-    path: ../flutter_up
+  # flutter_up:
+  #   path: ../flutter_up
   im_stepper: ^1.0.1+1
 
 dev_dependencies:
