@@ -257,28 +257,12 @@ class _AllProductsState extends State<Products> {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: GestureDetector(
-                                            onTap: () {
-                                              ServiceManager<
-                                                      UpNavigationService>()
-                                                  .navigateToNamed(
-                                                Routes.home,
-                                              );
-                                            },
-                                            child: const UpText("Home / ")),
-                                      ),
-                                      const UpText("Menu"),
-                                    ],
-                                  ),
-                                ),
                                 UpOrientationalColumnRow(
-                                  widths: const [300, 0, 400],
+                                  widths: [
+                                    MediaQuery.of(context).size.width / 7.5,
+                                    MediaQuery.of(context).size.width / 1.67,
+                                    MediaQuery.of(context).size.width / 4
+                                  ],
                                   children: [
                                     FoodCategoriesListWidget(
                                       collections: collections,
@@ -456,14 +440,18 @@ class _AllProductsState extends State<Products> {
                                                                             .toList()
                                                                       ]),
                                                       ),
-                                                      const Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
                                                                 vertical: 8.0,
                                                                 horizontal: 0),
                                                         child: Divider(
                                                           thickness: 2,
-                                                          color: Colors.black,
+                                                          color: UpConfig.of(
+                                                                  context)
+                                                              .theme
+                                                              .primaryColor,
                                                         ),
                                                       ),
                                                     ],
@@ -549,7 +537,7 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
       height: 500,
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ...widget.collections
                 .asMap()
@@ -560,41 +548,44 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
                       // onHover: _updateLocation,
                       onExit: (event) => _incrementExit(e.key),
 
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 3,
-                                  color: currentSelected == e.value.id
-                                      ? Colors.orange
-                                      : Colors.transparent)),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (widget.onChange != null) {
-                              widget.onChange!(e.value);
-                            }
-                            setState(() {
-                              currentSelected = e.value.id;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 4.0,
-                              bottom: 4.0,
-                              right: 8.0,
-                            ),
-                            child: UpText(
-                              e.value.name,
-                              style: UpStyle(
-                                textSize: 16,
-                                textColor: optionValuesHovered[e.key]
-                                    ? Colors.orange
-                                    : currentSelected == e.value.id
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                                left: BorderSide(
+                                    width: 3,
+                                    color: currentSelected == e.value.id
                                         ? Colors.orange
-                                        : UpConfig.of(context)
-                                            .theme
-                                            .primaryColor,
+                                        : Colors.transparent)),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              if (widget.onChange != null) {
+                                widget.onChange!(e.value);
+                              }
+                              setState(() {
+                                currentSelected = e.value.id;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 4.0,
+                                bottom: 4.0,
+                                right: 8.0,
+                              ),
+                              child: UpText(
+                                e.value.name,
+                                style: UpStyle(
+                                  textSize: 16,
+                                  textColor: optionValuesHovered[e.key]
+                                      ? Colors.orange
+                                      : currentSelected == e.value.id
+                                          ? Colors.orange
+                                          : UpConfig.of(context)
+                                              .theme
+                                              .primaryColor,
+                                ),
                               ),
                             ),
                           ),

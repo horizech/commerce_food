@@ -318,28 +318,11 @@ class _AllProductsState extends State<ProductsMob> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          MouseRegion(
-                                            cursor: SystemMouseCursors.click,
-                                            child: GestureDetector(
-                                                onTap: () {
-                                                  ServiceManager<
-                                                          UpNavigationService>()
-                                                      .navigateToNamed(
-                                                    Routes.home,
-                                                  );
-                                                },
-                                                child: const UpText("Home / ")),
-                                          ),
-                                          const UpText("Menu"),
-                                        ],
-                                      ),
-                                    ),
                                     UpOrientationalColumnRow(
-                                      widths: const [200, 1000],
+                                      widths: [
+                                        MediaQuery.of(context).size.width / 5,
+                                        MediaQuery.of(context).size.width / 1.25
+                                      ],
                                       children: [
                                         FoodCategoriesListWidgetMobile(
                                           collections: collections,
@@ -559,9 +542,12 @@ class _FoodCategoriesListWidgetMobileState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         child: Wrap(
+          direction: MediaQuery.of(context).size.width >= 696
+              ? Axis.vertical
+              : Axis.horizontal,
           alignment: WrapAlignment.center,
           children: [
             ...widget.collections
@@ -575,13 +561,19 @@ class _FoodCategoriesListWidgetMobileState
 
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 3,
-                                  color: currentSelected == e.value.id
-                                      ? Colors.orange
-                                      : Colors.transparent)),
-                        ),
+                            border: MediaQuery.of(context).size.width >= 696
+                                ? Border(
+                                    left: BorderSide(
+                                        width: 3,
+                                        color: currentSelected == e.value.id
+                                            ? Colors.orange
+                                            : Colors.transparent))
+                                : Border(
+                                    bottom: BorderSide(
+                                        width: 3,
+                                        color: currentSelected == e.value.id
+                                            ? Colors.orange
+                                            : Colors.transparent))),
                         child: GestureDetector(
                           onTap: () {
                             if (widget.onChange != null) {
@@ -597,17 +589,20 @@ class _FoodCategoriesListWidgetMobileState
                               bottom: 4.0,
                               right: 8.0,
                             ),
-                            child: UpText(
-                              e.value.name,
-                              style: UpStyle(
-                                textSize: 16,
-                                textColor: optionValuesHovered[e.key]
-                                    ? Colors.orange
-                                    : currentSelected == e.value.id
-                                        ? Colors.orange
-                                        : UpConfig.of(context)
-                                            .theme
-                                            .primaryColor,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left:4),
+                              child: UpText(
+                                e.value.name,
+                                style: UpStyle(
+                                  textSize: 16,
+                                  textColor: optionValuesHovered[e.key]
+                                      ? Colors.orange
+                                      : currentSelected == e.value.id
+                                          ? Colors.orange
+                                          : UpConfig.of(context)
+                                              .theme
+                                              .primaryColor,
+                                ),
                               ),
                             ),
                           ),

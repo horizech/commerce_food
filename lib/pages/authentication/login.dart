@@ -39,12 +39,13 @@ class _LoginPageState extends State<LoginPage> {
 
       APIResult result = await Apiraiser.authentication
           .login(LoginRequest(email: _email, password: _password));
-      if (mounted) {
+      if (context.mounted) {
         ServiceManager<UpDialogService>().completeDialog(
             context: context,
             completerId: loadingDialogCompleterId,
             result: null);
       }
+
       _handleLoginResult(result);
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),
@@ -54,21 +55,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLoginResult(APIResult result) {
     if (result.success) {
-      User? user = Apiraiser.authentication.getCurrentUser();
       // _saveSession(result);
-      if (user != null &&
-          user.roleNames != null &&
-          user.roleNames!.isNotEmpty &&
-          user.roleNames!.any((element) => element.toLowerCase() == "chef")) {
-        ServiceManager<UpNavigationService>().navigateToNamed(Routes.chef);
-      } else if (user != null &&
-          user.roleNames != null &&
-          user.roleNames!.isNotEmpty &&
-          user.roleNames!.any((element) => element.toLowerCase() == "rider")) {
-        ServiceManager<UpNavigationService>().navigateToNamed(Routes.rider);
-      } else {
-        ServiceManager<UpNavigationService>().navigateToNamed(Routes.home);
-      }
+      ServiceManager<UpNavigationService>().navigateToNamed(Routes.home);
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),
           data: {'title': 'Error', 'text': result.message});
@@ -89,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Image.asset(
                   "foodlogo.jpg",
-                  height: 300,
+                  height: 150,
                   width: 300,
                 ),
                 Padding(

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_up/validation/up_valdation.dart';
@@ -24,13 +22,13 @@ class _SignupPageState extends State<SignupPage> {
   String _username = "", _fullname = "", _email = "", _password = "";
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  _gotoHome() {
-    Timer(
-        const Duration(seconds: 1),
-        () =>
-            ServiceManager<UpNavigationService>().navigateToNamed(Routes.home));
-  }
+// _gotoHome
+//   () {
+//     Timer(
+//         const Duration(seconds: 1),
+//         () =>
+//             ServiceManager<UpNavigationService>().navigateToNamed(Routes.home));
+//   }
 
   _signup() async {
     var formState = _formKey.currentState;
@@ -48,14 +46,14 @@ class _SignupPageState extends State<SignupPage> {
           email: _email,
           password: _password,
         ),
-      );  
+      );
+      if (context.mounted) {
+        ServiceManager<UpDialogService>().completeDialog(
+            context: context,
+            completerId: loadingDialogCompleterId,
+            result: null);
+      }
 
-      if(mounted){
-      ServiceManager<UpDialogService>().completeDialog(
-          context: context,
-          completerId: loadingDialogCompleterId,
-          result: null);
-}
       _handleSignupResult(result);
     } else {
       ServiceManager<UpDialogService>().showDialog(context, UpInfoDialog(),
@@ -93,17 +91,17 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Form(
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: Center(
-            child: SizedBox(
-              width: 400,
+        child: Center(
+          child: SizedBox(
+            width: 400,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     "foodlogo.jpg",
-                    height: 300,
+                    height: 150,
                     width: 300,
                   ),
                   Padding(
