@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/validation/up_valdation.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 
 import 'package:flutter_up/locator.dart';
@@ -70,52 +71,54 @@ class _LoginPageState extends State<LoginPage> {
       child: Center(
         child: SizedBox(
           width: 400,
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  "foodlogo.jpg",
-                  height: 150,
-                  width: 300,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: UpTextField(
-                    controller: _emailController,
-                    label: 'Email',
-                    validation: UpValidation(isRequired: true, isEmail: true),
-                    onSaved: (input) => _email = input ?? "",
+            child: UpCard(
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "foodlogo.jpg",
+                    height: 150,
+                    width: 300,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: UpTextField(
-                    label: "Password",
-                    controller: _passwordController,
-                    validation: UpValidation(isRequired: true, minLength: 6),
-                    maxLines: 1,
-                    onSaved: (input) => _password = input ?? "",
-                    obscureText: true,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpTextField(
+                      controller: _emailController,
+                      label: 'Email',
+                      validation: UpValidation(isRequired: true, isEmail: true),
+                      onSaved: (input) => _email = input ?? "",
+                    ),
                   ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
-                  child: SizedBox(
-                      height: 42,
-                      width: 160,
-                      child: UpButton(
-                        text: "Login",
-                        style: UpStyle(
-                          isRounded: true,
-                          borderRadius: 8,
-                        ),
-                        onPressed: () => _login(),
-                      )),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UpTextField(
+                      label: "Password",
+                      controller: _passwordController,
+                      validation: UpValidation(isRequired: true, minLength: 6),
+                      maxLines: 1,
+                      onSaved: (input) => _password = input ?? "",
+                      obscureText: true,
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+                    child: SizedBox(
+                        height: 42,
+                        width: 160,
+                        child: UpButton(
+                          text: "Login",
+                          style: UpStyle(
+                            isRounded: true,
+                            borderRadius: 8,
+                          ),
+                          onPressed: () => _login(),
+                        )),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

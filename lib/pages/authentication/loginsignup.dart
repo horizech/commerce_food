@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/helpers/up_layout.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
+import 'package:flutter_up/widgets/up_card.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/pages/authentication/login.dart';
 import 'package:shop/pages/authentication/signup.dart';
@@ -39,26 +41,10 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     List<Widget> view = [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: 500,
-          decoration: UpLayout.isLandscape(context)
-              ? BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                  boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ])
-              : const BoxDecoration(),
-          child: Column(
+        child: UpCard(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _mode == Constant.authLogin
                   ? const Padding(
@@ -80,8 +66,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                       text: _mode == Constant.authLogin
                           ? 'Dont have an account?'
                           : 'Already have an account?',
-                      style: const TextStyle(
-                        color: Colors.black,
+                      style: TextStyle(
+                        color: UpConfig.of(context).theme.baseColor.shade900,
                         fontSize: 14,
                       ),
                       children: <TextSpan>[
@@ -90,9 +76,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                               ? ' Signup now'
                               : ' Login now',
                           style: TextStyle(
-                            color: UpConfig.of(context).theme.primaryColor,
-                            fontSize: 14,
-                          ),
+                              color: UpConfig.of(context).theme.primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               _mode == Constant.authLogin
@@ -118,9 +104,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         ? Align(
             alignment: Alignment.center,
             child: Container(
-              constraints:
-                  BoxConstraints(minHeight: MediaQuery.of(context).size.height),
-              // height: MediaQuery.of(context).size.height,
+              constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -128,21 +113,23 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               ),
             ),
           )
-        : Container(
-            constraints:
-                BoxConstraints(minHeight: MediaQuery.of(context).size.height),
-            // height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: view,
+        : Align(
+            alignment: Alignment.center,
+            child: Container(
+              constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 100),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: view,
+              ),
             ),
           );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: const UpAppBar(
         title: 'Shop',
       ),

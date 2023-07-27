@@ -6,10 +6,12 @@ import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_orientational_column_row.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 // import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -67,6 +69,7 @@ class _AllProductsState extends State<ProductsMob> {
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: AlertDialog(
+            backgroundColor: UpConfig.of(context).theme.baseColor.shade50,
             contentPadding: EdgeInsets.zero,
             content: Padding(
                 padding: const EdgeInsets.all(0),
@@ -77,35 +80,6 @@ class _AllProductsState extends State<ProductsMob> {
                       product: product,
                     ))),
             actionsPadding: const EdgeInsets.all(0),
-            // actions: [
-            //   Padding(
-            //     padding: const EdgeInsets.fromLTRB(0, 12, 14, 8),
-            //     child: SizedBox(
-            //       width: 100,
-            //       child: UpButton(
-            //         onPressed: () {
-            //           Navigator.pop(context);
-            //         },
-            //         text: "Cancel",
-            //       ),
-            //     ),
-            //   ),
-            //   Padding(
-            //     padding: const EdgeInsets.fromLTRB(0, 12, 8, 8),
-            //     child: SizedBox(
-            //       width: 100,
-            //       child: UpButton(
-            //         text: "Add to cart",
-            //         onPressed: () async {
-            //           Navigator.pop(context);
-            //           setState(() {
-            //             counter++;
-            //           });
-            //         },
-            //       ),
-            //     ),
-            //   ),
-            // ],
           ),
         );
       },
@@ -116,125 +90,123 @@ class _AllProductsState extends State<ProductsMob> {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: UpConfig.of(context).theme.secondaryColor,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        key: scaffoldKey,
-        // bottomNavigationBar: const FooterWidget(),
-        appBar: UpAppBar(
-          titleWidget: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                ServiceManager<UpNavigationService>()
-                    .navigateToNamed(Routes.home);
-              },
-              child: const MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Image(
-                    image: AssetImage("assets/logo.png"),
-                  ),
+    return UpScaffold(
+      key: scaffoldKey,
+      appBar: UpAppBar(
+        titleWidget: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.home);
+            },
+            child: const MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: Image(
+                  image: AssetImage("assets/logo.png"),
                 ),
               ),
             ),
           ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                ServiceManager<UpNavigationService>()
-                    .navigateToNamed(Routes.loginSignup);
-              },
-              icon: const Icon(
-                Icons.person,
-                color: Colors.white,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                ServiceManager<UpNavigationService>()
-                    .navigateToNamed(Routes.foodCartPage);
-              },
-              icon: Stack(children: [
-                const Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                ),
-                Positioned(
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 12,
-                        minHeight: 12,
-                      ),
-                      child: Text(
-                        '$counter',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ))
-              ]),
-            )
-          ],
         ),
-        drawerEnableOpenDragGesture: false,
-        endDrawerEnableOpenDragGesture: false,
-        body: products != null && products!.isNotEmpty
-            ? SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    BlocConsumer<StoreCubit, StoreState>(
-                        listener: (context, state) {},
-                        builder: (context, state) {
-                          if (state.collections != null &&
-                              state.collections!.isNotEmpty) {
-                            int parentId = state.collections!
-                                .where((element) => element.name == "Main")
-                                .first
-                                .id!;
-                            for (var product in products!) {
-                              if (state.collections!
-                                      .where((element) =>
-                                          element.id == product.collection)
-                                      .first
-                                      .parent ==
-                                  parentId) {
-                                collections.add(state.collections!
+        actions: [
+          IconButton(
+            onPressed: () {
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.loginSignup);
+            },
+            icon: const UpIcon(
+              icon: Icons.person,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              ServiceManager<UpNavigationService>()
+                  .navigateToNamed(Routes.foodCartPage);
+            },
+            icon: Stack(children: [
+              const UpIcon(
+                icon: Icons.shopping_cart,
+              ),
+              Positioned(
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: Center(
+                      child: UpText(
+                        '$counter',
+                        style: UpStyle(
+                          textSize: 8,
+                        ),
+                      ),
+                    ),
+                  ))
+            ]),
+          )
+        ],
+      ),
+      drawerEnableOpenDragGesture: false,
+      endDrawerEnableOpenDragGesture: false,
+      body: products != null && products!.isNotEmpty
+          ? SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  BlocConsumer<StoreCubit, StoreState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        if (state.collections != null &&
+                            state.collections!.isNotEmpty) {
+                          int parentId = state.collections!
+                              .where((element) => element.name == "Main")
+                              .first
+                              .id!;
+                          for (var product in products!) {
+                            if (state.collections!
                                     .where((element) =>
                                         element.id == product.collection)
-                                    .first);
-                              }
-                              collections = collections.toSet().toList();
+                                    .first
+                                    .parent ==
+                                parentId) {
+                              collections.add(state.collections!
+                                  .where((element) =>
+                                      element.id == product.collection)
+                                  .first);
                             }
-
-                            if (collections.isNotEmpty) {
-                              for (var element in collections.toSet()) {
-                                collectionKeys.add(GlobalKey());
-                              }
-                            }
+                            collections = collections.toSet().toList();
                           }
 
-                          return collections.isNotEmpty
-                              ? Column(
-                                  children: [
-                                    Container(
-                                      color: Colors.pink[100],
-                                      height: 350,
-                                      child: Center(
+                          if (collections.isNotEmpty) {
+                            for (var element in collections.toSet()) {
+                              collectionKeys.add(GlobalKey());
+                            }
+                          }
+                        }
+
+                        return collections.isNotEmpty
+                            ? Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: UpCard(
+                                      style: UpStyle(
+                                          cardHeight: 350,
+                                          cardWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              16),
+                                      body: Center(
                                         child: UpOrientationalColumnRow(
                                           widths: const [
                                             250,
@@ -246,6 +218,9 @@ class _AllProductsState extends State<ProductsMob> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
                                                 SizedBox(
                                                   height: 200,
                                                   child:
@@ -253,15 +228,15 @@ class _AllProductsState extends State<ProductsMob> {
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              width: 40,
-                                            ),
                                             Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
                                                 const UpText(
                                                   "Horizech Pizzeria",
                                                   type: UpTextType.heading4,
@@ -269,23 +244,18 @@ class _AllProductsState extends State<ProductsMob> {
                                                 const SizedBox(
                                                   height: 10,
                                                 ),
-                                                Row(
+                                                const Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8),
-                                                      child: Icon(
-                                                        Icons.location_on,
-                                                        color:
-                                                            UpConfig.of(context)
-                                                                .theme
-                                                                .primaryColor,
+                                                      padding: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: UpIcon(
+                                                        icon: Icons.location_on,
                                                       ),
                                                     ),
-                                                    const UpText(
+                                                    UpText(
                                                       "Greater Manchester",
                                                     ),
                                                   ],
@@ -297,16 +267,11 @@ class _AllProductsState extends State<ProductsMob> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8),
-                                                      child: Icon(
-                                                        Icons.phone,
-                                                        color:
-                                                            UpConfig.of(context)
-                                                                .theme
-                                                                .primaryColor,
+                                                    const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: UpIcon(
+                                                        icon: Icons.phone,
                                                       ),
                                                     ),
                                                     UpText(232.toString()),
@@ -318,183 +283,174 @@ class _AllProductsState extends State<ProductsMob> {
                                         ),
                                       ),
                                     ),
-                                    UpOrientationalColumnRow(
-                                      widths: [
-                                        MediaQuery.of(context).size.width / 5,
-                                        MediaQuery.of(context).size.width / 1.25
-                                      ],
-                                      children: [
-                                        FoodCategoriesListWidgetMobile(
-                                          collections: collections,
-                                          onChange: (value) {
-                                            int index = collections.indexWhere(
-                                                (element) => element == value);
-                                            collectionKeys[index]
-                                                .currentContext;
-                                            Scrollable.ensureVisible(
-                                                collectionKeys[index]
-                                                    .currentContext!,
-                                                duration:
-                                                    const Duration(seconds: 2),
-                                                curve: Curves.easeInOutCubic);
-                                          },
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  ...collections
-                                                      .asMap()
-                                                      .entries
-                                                      .map((e) => Container(
-                                                            key: collectionKeys[
-                                                                e.key],
-                                                            child: Column(
-                                                              children: [
-                                                                Theme(
-                                                                  data: ThemeData()
-                                                                      .copyWith(
-                                                                          dividerColor:
-                                                                              Colors.transparent),
-                                                                  child: UpExpansionTile(
-                                                                      initiallyExpanded:
-                                                                          true,
-                                                                      title: e
-                                                                          .value
-                                                                          .name,
-                                                                      textType:
-                                                                          UpTextType
-                                                                              .heading5,
-                                                                      expandedAlignment:
-                                                                          Alignment
-                                                                              .topLeft,
-                                                                      childrenPadding: const EdgeInsets.only(
-                                                                          left:
-                                                                              20.0,
-                                                                          top:
-                                                                              4.0,
-                                                                          bottom:
-                                                                              4.0,
-                                                                          right:
-                                                                              20.0),
-                                                                      children: [
-                                                                        ...products!
-                                                                            .where((element) =>
-                                                                                element.collection ==
-                                                                                e.value.id)
-                                                                            .map(
-                                                                              (e) => Row(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  const Padding(
-                                                                                    padding: EdgeInsets.only(right: 8),
-                                                                                    child: UpIcon(
-                                                                                      icon: Icons.circle,
-                                                                                    ),
+                                  ),
+                                  UpOrientationalColumnRow(
+                                    widths: [
+                                      MediaQuery.of(context).size.width / 5,
+                                      MediaQuery.of(context).size.width / 1.25
+                                    ],
+                                    children: [
+                                      FoodCategoriesListWidgetMobile(
+                                        collections: collections,
+                                        onChange: (value) {
+                                          int index = collections.indexWhere(
+                                              (element) => element == value);
+                                          collectionKeys[index].currentContext;
+                                          Scrollable.ensureVisible(
+                                              collectionKeys[index]
+                                                  .currentContext!,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              curve: Curves.easeInOutCubic);
+                                        },
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                ...collections
+                                                    .asMap()
+                                                    .entries
+                                                    .map((e) => Container(
+                                                          key: collectionKeys[
+                                                              e.key],
+                                                          child: Column(
+                                                            children: [
+                                                              Theme(
+                                                                data: ThemeData()
+                                                                    .copyWith(
+                                                                        dividerColor:
+                                                                            Colors.transparent),
+                                                                child: UpExpansionTile(
+                                                                    initiallyExpanded:
+                                                                        true,
+                                                                    title: e
+                                                                        .value
+                                                                        .name,
+                                                                    textType:
+                                                                        UpTextType
+                                                                            .heading5,
+                                                                    expandedAlignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    childrenPadding: const EdgeInsets.only(
+                                                                        left:
+                                                                            20.0,
+                                                                        top:
+                                                                            4.0,
+                                                                        bottom:
+                                                                            4.0,
+                                                                        right:
+                                                                            20.0),
+                                                                    children: [
+                                                                      ...products!
+                                                                          .where((element) =>
+                                                                              element.collection ==
+                                                                              e.value.id)
+                                                                          .map(
+                                                                            (e) =>
+                                                                                Row(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                const Padding(
+                                                                                  padding: EdgeInsets.only(right: 8),
+                                                                                  child: UpIcon(
+                                                                                    icon: Icons.circle,
                                                                                   ),
-                                                                                  Expanded(
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        UpText(
-                                                                                          e.name,
-                                                                                          style: UpStyle(
-                                                                                            textColor: UpConfig.of(context).theme.primaryColor[600],
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          height: 10,
-                                                                                        ),
-                                                                                        UpText(
-                                                                                          e.description ?? "",
-                                                                                          style: UpStyle(
-                                                                                            textColor: UpConfig.of(context).theme.primaryColor[200],
-                                                                                          ),
-                                                                                        ),
-                                                                                        const SizedBox(
-                                                                                          height: 20,
-                                                                                        ),
-                                                                                        e.price != null && e.price! > 0
-                                                                                            ? UpText(
-                                                                                                "£${e.price}",
-                                                                                                style: UpStyle(
-                                                                                                  textColor: UpConfig.of(context).theme.primaryColor[900],
-                                                                                                ),
-                                                                                              )
-                                                                                            : const Text("")
-                                                                                      ],
-                                                                                    ),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      UpText(
+                                                                                        e.name,
+                                                                                        style: UpStyle(textSize: 16),
+                                                                                      ),
+                                                                                      const SizedBox(
+                                                                                        height: 10,
+                                                                                      ),
+                                                                                      UpText(
+                                                                                        e.description ?? "",
+                                                                                      ),
+                                                                                      const SizedBox(
+                                                                                        height: 20,
+                                                                                      ),
+                                                                                      e.price != null && e.price! > 0
+                                                                                          ? UpText(
+                                                                                              "£${e.price}",
+                                                                                            )
+                                                                                          : const Text("")
+                                                                                    ],
                                                                                   ),
-                                                                                  const SizedBox(
-                                                                                    width: 20,
-                                                                                  ),
-                                                                                  GestureDetector(
-                                                                                    onTap: () {
-                                                                                      _showDialog(e);
-                                                                                    },
-                                                                                    child: const Icon(Icons.add),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            )
-                                                                            .toList()
-                                                                      ]),
+                                                                                ),
+                                                                                const SizedBox(
+                                                                                  width: 20,
+                                                                                ),
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    _showDialog(e);
+                                                                                  },
+                                                                                  child: const UpIcon(icon: Icons.add),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          )
+                                                                          .toList()
+                                                                    ]),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical:
+                                                                        8.0,
+                                                                    horizontal:
+                                                                        0),
+                                                                child: Divider(
+                                                                  thickness: 1,
+                                                                  color: UpConfig.of(
+                                                                          context)
+                                                                      .theme
+                                                                      .baseColor
+                                                                      .shade800,
                                                                 ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          8.0,
-                                                                      horizontal:
-                                                                          0),
-                                                                  child:
-                                                                      Divider(
-                                                                    thickness:
-                                                                        2,
-                                                                    color: UpConfig.of(
-                                                                            context)
-                                                                        .theme
-                                                                        .primaryColor,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ))
-                                                      .toList(),
-                                                ],
-                                              ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ))
+                                                    .toList(),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          child: Column(children: []),
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        child: Column(children: []),
+                                      ),
+                                    ],
+                                  ),
 
-                                    const Divider(),
-                                    // const Expanded(child: ProductCategoryScroll()),
-                                  ],
-                                )
-                              : const SizedBox();
-                        }),
-                    const FooterWidget(),
-                  ],
-                ),
-              )
-            : const Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: UpCircularProgress(),
-                ),
+                                  const Divider(),
+                                  // const Expanded(child: ProductCategoryScroll()),
+                                ],
+                              )
+                            : const SizedBox();
+                      }),
+                  const FooterWidget(),
+                ],
               ),
-      ),
+            )
+          : const Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: UpCircularProgress(),
+              ),
+            ),
     );
   }
 }
@@ -566,13 +522,17 @@ class _FoodCategoriesListWidgetMobileState
                                     left: BorderSide(
                                         width: 3,
                                         color: currentSelected == e.value.id
-                                            ? Colors.orange
+                                            ? UpConfig.of(context)
+                                                .theme
+                                                .primaryColor
                                             : Colors.transparent))
                                 : Border(
                                     bottom: BorderSide(
                                         width: 3,
                                         color: currentSelected == e.value.id
-                                            ? Colors.orange
+                                            ? UpConfig.of(context)
+                                                .theme
+                                                .primaryColor
                                             : Colors.transparent))),
                         child: GestureDetector(
                           onTap: () {
@@ -590,19 +550,26 @@ class _FoodCategoriesListWidgetMobileState
                               right: 8.0,
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left:4),
+                              padding: const EdgeInsets.only(left: 4),
                               child: UpText(
                                 e.value.name,
                                 style: UpStyle(
-                                  textSize: 16,
-                                  textColor: optionValuesHovered[e.key]
-                                      ? Colors.orange
-                                      : currentSelected == e.value.id
-                                          ? Colors.orange
-                                          : UpConfig.of(context)
-                                              .theme
-                                              .primaryColor,
-                                ),
+                                    textSize: 16,
+                                    textColor: optionValuesHovered[e.key]
+                                        ? UpConfig.of(context)
+                                            .theme
+                                            .primaryColor
+                                        : currentSelected == e.value.id
+                                            ? UpConfig.of(context)
+                                                .theme
+                                                .primaryColor
+                                            : UpConfig.of(context)
+                                                .theme
+                                                .baseColor
+                                                .shade900,
+                                    textWeight: currentSelected == e.value.id
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
                               ),
                             ),
                           ),

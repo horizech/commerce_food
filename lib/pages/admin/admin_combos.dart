@@ -4,6 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
+import 'package:flutter_up/themes/up_themes.dart';
+import 'package:flutter_up/widgets/up_card.dart';
+import 'package:flutter_up/widgets/up_list_tile.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:shop/is_user_admin.dart';
 import 'package:shop/widgets/media/add_media_widget.dart';
 import 'package:flutter_up/models/up_label_value.dart';
@@ -89,17 +93,20 @@ class _AdminCombosState extends State<AdminCombos> {
     APIResult? result = await AddEditProductService.addEditCombos(
         data: Combo.toJson(combo), comboId: c != null ? c.id! : null);
     if (result != null && result.success) {
-      if(mounted){
-      UpToast().showToast(
-        context: context,
-        text: result.message ?? "",
-      );}
+      if (mounted) {
+        UpToast().showToast(
+          context: context,
+          text: result.message ?? "",
+        );
+      }
       getCombos();
-    } else {if(mounted){
-      UpToast().showToast(
-        context: context,
-        text: "An Error Occurred",
-      );}
+    } else {
+      if (mounted) {
+        UpToast().showToast(
+          context: context,
+          text: "An Error Occurred",
+        );
+      }
     }
   }
 
@@ -113,8 +120,10 @@ class _AdminCombosState extends State<AdminCombos> {
     ).then((result) async {
       if (result == "success") {
         APIResult? result = await AddEditProductService.deleteCombo(comboId);
-        if (result != null && result.success) {if(mounted){
-          UpToast().showToast(context: context, text: result.message ?? "");}
+        if (result != null && result.success) {
+          if (mounted) {
+            UpToast().showToast(context: context, text: result.message ?? "");
+          }
           selectedCombo =
               const Combo(name: "", price: 0, id: -1, thumbnail: null);
           nameController.text = "";
@@ -122,11 +131,13 @@ class _AdminCombosState extends State<AdminCombos> {
           descriptionController.text = "";
           selectedMedia = null;
           getCombos();
-        } else {if(mounted){
-          UpToast().showToast(
-            context: context,
-            text: "An Error Occurred",
-          );}
+        } else {
+          if (mounted) {
+            UpToast().showToast(
+              context: context,
+              text: "An Error Occurred",
+            );
+          }
         }
       }
     });
@@ -141,74 +152,95 @@ class _AdminCombosState extends State<AdminCombos> {
       APIResult? result = await AddEditProductService.insertProductCombo(
           ProductCombo.toJson(productCombo));
       if (result != null && result.success) {
-        if(mounted){
-        UpToast().showToast(
-          context: context,
-          text: result.message ?? "",
-        );}
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: result.message ?? "",
+          );
+        }
 
         getProductCombos();
-      } else {if (mounted){
-        UpToast().showToast(
-          context: context,
-          text: "An Error Occurred",
-        );}
+      } else {
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
       }
     }
   }
 
   Widget leftSide() {
-    return Container(
-      color: Colors.grey[200],
-      width: 300,
-      height: 900,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            GestureDetector(
-                onTap: (() {
-                  selectedCombo = const Combo(name: "", price: 0, id: -1);
-                  nameController.text = selectedCombo.name;
-                  priceController = TextEditingController();
-                  descriptionController.text = selectedCombo.description ?? "";
-                  selectedMedia = null;
-                  setState(() {});
-                }),
-                child: Container(
-                  color: selectedCombo.id == -1
-                      ? UpConfig.of(context).theme.primaryColor[100]
-                      : Colors.transparent,
-                  child: const ListTile(
-                    title: UpText("Create a new combo"),
-                  ),
-                )),
-            ...combos
-                .map(
-                  (e) => GestureDetector(
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: UpCard(
+        style: UpStyle(cardWidth: 300),
+        body: Container(
+          constraints:
+              BoxConstraints(minHeight: MediaQuery.of(context).size.height - 80),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                GestureDetector(
                     onTap: (() {
-                      selectedCombo = e;
+                      selectedCombo = const Combo(name: "", price: 0, id: -1);
                       nameController.text = selectedCombo.name;
-                      priceController.text = selectedCombo.price.toString();
+                      priceController = TextEditingController();
                       descriptionController.text =
                           selectedCombo.description ?? "";
-                      gallery = selectedCombo.gallery;
-                      selectedMedia = selectedCombo.thumbnail;
-                      _setProducts();
+                      selectedMedia = null;
                       setState(() {});
                     }),
                     child: Container(
-                      color: selectedCombo.id == e.id
-                          ? UpConfig.of(context).theme.primaryColor[100]
+                      color: selectedCombo.id == -1
+                          ? UpConfig.of(context).theme.primaryColor
                           : Colors.transparent,
-                      child: ListTile(
-                        title: UpText(e.name),
+                      child: UpListTile(
+                        title: "Create a new combo",
+                        style: UpStyle(
+                          listTileTextColor: selectedCombo.id == -1
+                              ? UpThemes.getContrastColor(
+                                  UpConfig.of(context).theme.primaryColor)
+                              : UpConfig.of(context).theme.baseColor.shade900,
+                        ),
                       ),
-                    ),
-                  ),
-                )
-                .toList()
-          ],
+                    )),
+                ...combos
+                    .map(
+                      (e) => GestureDetector(
+                        onTap: (() {
+                          selectedCombo = e;
+                          nameController.text = selectedCombo.name;
+                          priceController.text = selectedCombo.price.toString();
+                          descriptionController.text =
+                              selectedCombo.description ?? "";
+                          gallery = selectedCombo.gallery;
+                          selectedMedia = selectedCombo.thumbnail;
+                          _setProducts();
+                          setState(() {});
+                        }),
+                        child: Container(
+                          color: selectedCombo.id == e.id
+                              ? UpConfig.of(context).theme.primaryColor
+                              : Colors.transparent,
+                          child: UpListTile(
+                            title: (e.name),
+                            style: UpStyle(
+                              listTileTextColor: selectedCombo.id == e.id
+                                  ? UpThemes.getContrastColor(
+                                      UpConfig.of(context).theme.primaryColor)
+                                  : UpConfig.of(context).theme.baseColor.shade900,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList()
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -234,19 +266,22 @@ class _AdminCombosState extends State<AdminCombos> {
               .id!;
           APIResult? result =
               await AddEditProductService.deleteProductCombo(id);
-          if (result != null && result.success) {if(mounted){
-            UpToast().showToast(
-              context: context,
-              text: result.message ?? "",
-            );}
+          if (result != null && result.success) {
+            if (mounted) {
+              UpToast().showToast(
+                context: context,
+                text: result.message ?? "",
+              );
+            }
 
             getProductCombos();
           } else {
-            if(mounted){
-            UpToast().showToast(
-              context: context,
-              text: "An Error Occurred",
-            );}
+            if (mounted) {
+              UpToast().showToast(
+                context: context,
+                text: "An Error Occurred",
+              );
+            }
           }
         }
       }
@@ -270,7 +305,7 @@ class _AdminCombosState extends State<AdminCombos> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()

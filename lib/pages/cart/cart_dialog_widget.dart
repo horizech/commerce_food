@@ -230,12 +230,12 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              UpText(
                 widget.combo != null
                     ? widget.combo!.name
                     : (widget.product != null ? widget.product!.name : ""),
               ),
-              Text(getProductPrice())
+              UpText(getProductPrice())
             ],
           ),
         ),
@@ -264,12 +264,12 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const UpText("Addons", type: UpTextType.heading5),
+                        const UpText("Addons", type: UpTextType.heading6),
                         UpText(
                           "Optional",
                           style: UpStyle(
                               textColor:
-                                  UpConfig.of(context).theme.primaryColor[200]),
+                                  UpConfig.of(context).theme.baseColor[600]),
                         ),
                       ],
                     ),
@@ -308,13 +308,13 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const UpText("Special instructions", type: UpTextType.heading5),
+              const UpText("Special instructions", type: UpTextType.heading6),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4, left: 2, top: 4),
                 child: UpText(
                   "Any specific preferences? Let the restaurant know.",
                   style: UpStyle(
-                      textColor: const Color.fromARGB(255, 80, 79, 79),
+                      textColor: UpConfig.of(context).theme.baseColor[600],
                       textSize: 12),
                 ),
               ),
@@ -343,166 +343,339 @@ class _CartDialogWidgetState extends State<CartDialogWidget> {
         ),
 
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                      child: Counter(
-                    defaultValue: quantity,
-                    onChange: (q) {
-                      quantity = q;
+            padding: const EdgeInsets.all(8.0),
+            child: MediaQuery.of(context).size.width > 350
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        height: 40,
+                        child: Expanded(
+                            child: Counter(
+                          defaultValue: quantity,
+                          onChange: (q) {
+                            quantity = q;
 
-                      setState(() {});
-                    },
-                  )),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SizedBox(
-                      width: 100,
-                      child: UpButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        text: "Cancel",
+                            setState(() {});
+                          },
+                        )),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SizedBox(
-                      width: 100,
-                      child: UpButton(
-                          text: "Add to cart",
-                          onPressed: () {
-                            CartCubit cubit = context.read<CartCubit>();
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 40,
+                            child: UpButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              text: "Cancel",
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SizedBox(
+                            width: 80,
+                            height: 40,
+                            child: UpButton(
+                                text: "Add to cart",
+                                onPressed: () {
+                                  CartCubit cubit = context.read<CartCubit>();
 
-                            //add on products add to cart
-                            if (addonCheckboxes
-                                .any((element) => element == true)) {
-                              for (var c in addonCheckboxes.asMap().entries) {
-                                if (addonCheckboxes[c.key] == true) {
-                                  CartItem item = CartItem(
-                                    type: "Product",
-                                    product: addonsProducts!
-                                        .asMap()
-                                        .entries
-                                        .where(
-                                            (element) => element.key == c.key)
-                                        .first
-                                        .value,
-                                    quantity: 1,
-                                  );
-                                  cubit.addToCart(item);
-                                }
-                              }
-                            }
+                                  //add on products add to cart
+                                  if (addonCheckboxes
+                                      .any((element) => element == true)) {
+                                    for (var c
+                                        in addonCheckboxes.asMap().entries) {
+                                      if (addonCheckboxes[c.key] == true) {
+                                        CartItem item = CartItem(
+                                          type: "Product",
+                                          product: addonsProducts!
+                                              .asMap()
+                                              .entries
+                                              .where((element) =>
+                                                  element.key == c.key)
+                                              .first
+                                              .value,
+                                          quantity: 1,
+                                        );
+                                        cubit.addToCart(item);
+                                      }
+                                    }
+                                  }
 
-                            //product add to cart
-                            if (selectedVarriedVariations.isNotEmpty &&
-                                widget.product != null &&
-                                selectedVarriedVariations.length ==
-                                    keys.length &&
-                                productAttributes.any(
-                                    (element) => element.useForVariation)) {
-                              if (productVariations.any(
-                                (element) => mapEquals(
-                                    element.options, selectedVarriedVariations),
-                              )) {
-                                selectedProductVariationId = productVariations
-                                    .where(
+                                  //product add to cart
+                                  if (selectedVarriedVariations.isNotEmpty &&
+                                      widget.product != null &&
+                                      selectedVarriedVariations.length ==
+                                          keys.length &&
+                                      productAttributes.any((element) =>
+                                          element.useForVariation)) {
+                                    if (productVariations.any(
                                       (element) => mapEquals(element.options,
                                           selectedVarriedVariations),
-                                    )
-                                    .first
-                                    .id!;
-                              }
+                                    )) {
+                                      selectedProductVariationId =
+                                          productVariations
+                                              .where(
+                                                (element) => mapEquals(
+                                                    element.options,
+                                                    selectedVarriedVariations),
+                                              )
+                                              .first
+                                              .id!;
+                                    }
 
-                              if (selectedProductVariationId != null) {
-                                ProductVariation selectedVariation =
-                                    productVariations
-                                        .where((element) =>
-                                            element.id ==
-                                            selectedProductVariationId!)
-                                        .first;
-                                CartItem item = CartItem(
-                                  product: widget.product!,
-                                  selectedVariation: selectedVariation,
-                                  quantity: quantity,
-                                  type: "Product",
-                                  selectedProductAttributes:
-                                      selectedProductAttributes,
-                                  instructions: _instructionsController.text,
-                                );
-                                cubit.addToCart(item);
-                                Navigator.pop(context, "Success");
-                              }
-                            } else if (widget.product != null &&
-                                productAttributes.every((element) =>
-                                    element.useForVariation == false)) {
-                              CartItem item = CartItem(
-                                product: widget.product!,
-                                selectedVariation: null,
-                                quantity: quantity,
-                                type: "Product",
-                                selectedProductAttributes:
-                                    selectedProductAttributes,
-                                instructions: _instructionsController.text,
-                              );
-                              cubit.addToCart(item);
-                              Navigator.pop(context, "Success");
-                            } else if (widget.combo != null) {
-                              List<CartItem> notVariedProducts = [];
-                              // products without any variations
-                              if (widget.products != null &&
-                                  widget.products!.isNotEmpty &&
-                                  combosProducts.length !=
-                                      widget.products!.length) {
-                                for (var p in widget.products!) {
-                                  if (combosProducts
-                                      .every((cp) => cp.product!.id != p.id)) {
-                                    notVariedProducts.add(CartItem(
-                                      quantity: 1,
+                                    if (selectedProductVariationId != null) {
+                                      ProductVariation selectedVariation =
+                                          productVariations
+                                              .where((element) =>
+                                                  element.id ==
+                                                  selectedProductVariationId!)
+                                              .first;
+                                      CartItem item = CartItem(
+                                        product: widget.product!,
+                                        selectedVariation: selectedVariation,
+                                        quantity: quantity,
+                                        type: "Product",
+                                        selectedProductAttributes:
+                                            selectedProductAttributes,
+                                        instructions:
+                                            _instructionsController.text,
+                                      );
+                                      cubit.addToCart(item);
+                                      Navigator.pop(context, "Success");
+                                    }
+                                  } else if (widget.product != null &&
+                                      productAttributes.every((element) =>
+                                          element.useForVariation == false)) {
+                                    CartItem item = CartItem(
+                                      product: widget.product!,
+                                      selectedVariation: null,
+                                      quantity: quantity,
                                       type: "Product",
-                                      product: p,
-                                    ));
+                                      selectedProductAttributes:
+                                          selectedProductAttributes,
+                                      instructions:
+                                          _instructionsController.text,
+                                    );
+                                    cubit.addToCart(item);
+                                    Navigator.pop(context, "Success");
+                                  } else if (widget.combo != null) {
+                                    List<CartItem> notVariedProducts = [];
+                                    // products without any variations
+                                    if (widget.products != null &&
+                                        widget.products!.isNotEmpty &&
+                                        combosProducts.length !=
+                                            widget.products!.length) {
+                                      for (var p in widget.products!) {
+                                        if (combosProducts.every(
+                                            (cp) => cp.product!.id != p.id)) {
+                                          notVariedProducts.add(CartItem(
+                                            quantity: 1,
+                                            type: "Product",
+                                            product: p,
+                                          ));
+                                        }
+                                      }
+                                    }
+
+                                    // products with variations
+                                    if (notVariedProducts.isNotEmpty) {
+                                      for (var element in notVariedProducts) {
+                                        combosProducts.add(element);
+                                      }
+                                    }
+                                    CartItem comboItem = CartItem(
+                                      quantity: quantity,
+                                      combo: widget.combo,
+                                      comboItems: combosProducts,
+                                      instructions:
+                                          _instructionsController.text,
+                                    );
+
+                                    cubit.addToCart(comboItem);
+                                    Navigator.pop(context, "Success");
+                                  } else {
+                                    UpToast().showToast(
+                                        context: context,
+                                        text: "Select All Variations");
                                   }
-                                }
-                              }
+                                }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        height: 40,
+                        child: Expanded(
+                            child: Counter(
+                          defaultValue: quantity,
+                          onChange: (q) {
+                            quantity = q;
 
-                              // products with variations
-                              if (notVariedProducts.isNotEmpty) {
-                                for (var element in notVariedProducts) {
-                                  combosProducts.add(element);
-                                }
-                              }
-                              CartItem comboItem = CartItem(
-                                quantity: quantity,
-                                combo: widget.combo,
-                                comboItems: combosProducts,
-                                instructions: _instructionsController.text,
-                              );
+                            setState(() {});
+                          },
+                        )),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 70,
+                            height: 40,
+                            child: UpButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              text: "Cancel",
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SizedBox(
+                            width: 75,
+                            height: 40,
+                            child: UpButton(
+                                text: "Add to cart",
+                                onPressed: () {
+                                  CartCubit cubit = context.read<CartCubit>();
 
-                              cubit.addToCart(comboItem);
-                              Navigator.pop(context, "Success");
-                            } else {
-                              UpToast().showToast(
-                                  context: context,
-                                  text: "Select All Variations");
-                            }
-                          }),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+                                  //add on products add to cart
+                                  if (addonCheckboxes
+                                      .any((element) => element == true)) {
+                                    for (var c
+                                        in addonCheckboxes.asMap().entries) {
+                                      if (addonCheckboxes[c.key] == true) {
+                                        CartItem item = CartItem(
+                                          type: "Product",
+                                          product: addonsProducts!
+                                              .asMap()
+                                              .entries
+                                              .where((element) =>
+                                                  element.key == c.key)
+                                              .first
+                                              .value,
+                                          quantity: 1,
+                                        );
+                                        cubit.addToCart(item);
+                                      }
+                                    }
+                                  }
+
+                                  //product add to cart
+                                  if (selectedVarriedVariations.isNotEmpty &&
+                                      widget.product != null &&
+                                      selectedVarriedVariations.length ==
+                                          keys.length &&
+                                      productAttributes.any((element) =>
+                                          element.useForVariation)) {
+                                    if (productVariations.any(
+                                      (element) => mapEquals(element.options,
+                                          selectedVarriedVariations),
+                                    )) {
+                                      selectedProductVariationId =
+                                          productVariations
+                                              .where(
+                                                (element) => mapEquals(
+                                                    element.options,
+                                                    selectedVarriedVariations),
+                                              )
+                                              .first
+                                              .id!;
+                                    }
+
+                                    if (selectedProductVariationId != null) {
+                                      ProductVariation selectedVariation =
+                                          productVariations
+                                              .where((element) =>
+                                                  element.id ==
+                                                  selectedProductVariationId!)
+                                              .first;
+                                      CartItem item = CartItem(
+                                        product: widget.product!,
+                                        selectedVariation: selectedVariation,
+                                        quantity: quantity,
+                                        type: "Product",
+                                        selectedProductAttributes:
+                                            selectedProductAttributes,
+                                        instructions:
+                                            _instructionsController.text,
+                                      );
+                                      cubit.addToCart(item);
+                                      Navigator.pop(context, "Success");
+                                    }
+                                  } else if (widget.product != null &&
+                                      productAttributes.every((element) =>
+                                          element.useForVariation == false)) {
+                                    CartItem item = CartItem(
+                                      product: widget.product!,
+                                      selectedVariation: null,
+                                      quantity: quantity,
+                                      type: "Product",
+                                      selectedProductAttributes:
+                                          selectedProductAttributes,
+                                      instructions:
+                                          _instructionsController.text,
+                                    );
+                                    cubit.addToCart(item);
+                                    Navigator.pop(context, "Success");
+                                  } else if (widget.combo != null) {
+                                    List<CartItem> notVariedProducts = [];
+                                    // products without any variations
+                                    if (widget.products != null &&
+                                        widget.products!.isNotEmpty &&
+                                        combosProducts.length !=
+                                            widget.products!.length) {
+                                      for (var p in widget.products!) {
+                                        if (combosProducts.every(
+                                            (cp) => cp.product!.id != p.id)) {
+                                          notVariedProducts.add(CartItem(
+                                            quantity: 1,
+                                            type: "Product",
+                                            product: p,
+                                          ));
+                                        }
+                                      }
+                                    }
+
+                                    // products with variations
+                                    if (notVariedProducts.isNotEmpty) {
+                                      for (var element in notVariedProducts) {
+                                        combosProducts.add(element);
+                                      }
+                                    }
+                                    CartItem comboItem = CartItem(
+                                      quantity: quantity,
+                                      combo: widget.combo,
+                                      comboItems: combosProducts,
+                                      instructions:
+                                          _instructionsController.text,
+                                    );
+
+                                    cubit.addToCart(comboItem);
+                                    Navigator.pop(context, "Success");
+                                  } else {
+                                    UpToast().showToast(
+                                        context: context,
+                                        text: "Select All Variations");
+                                  }
+                                }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
       ],
     );
   }

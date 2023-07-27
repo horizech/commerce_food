@@ -6,6 +6,7 @@ import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/is_user_admin.dart';
 import 'package:shop/models/role.dart';
@@ -89,7 +90,7 @@ class _AdminUserRolesState extends State<AdminUserRoles> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()

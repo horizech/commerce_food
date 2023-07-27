@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/constants.dart';
@@ -37,7 +39,7 @@ class FoodCartMobPage extends StatefulWidget {
 class _FoodCartMobPageState extends State<FoodCartMobPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: FoodAppbar(),
       bottomNavigationBar: const FooterWidget(),
       body: Apiraiser.authentication.isSignedIn()
@@ -86,13 +88,13 @@ class _UserDetailsState extends State<UserDetails> {
         Step(
           state: currentStep > 0 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 0,
-          title: const Text('Cart'),
-          content: const CartWidget(isVisible: false),
+          title: const UpText('Cart'),
+          content: const Center(child: CartWidget(isVisible: false)),
         ),
         Step(
           state: currentStep > 1 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 1,
-          title: const Text('Payment'),
+          title: const UpText('Payment'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -101,39 +103,41 @@ class _UserDetailsState extends State<UserDetails> {
                 type: UpTextType.heading4,
               ),
               const SizedBox(height: 8),
-              Wrap(
-                runSpacing: 8,
-                spacing: 8,
-                children: [
-                  SizedBox(
-                    width: 300,
-                    child: UpTextField(
-                      label: 'YOUR NAME',
-                      controller: nameController,
+              Center(
+                child: Wrap(
+                  runSpacing: 8,
+                  spacing: 8,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: UpTextField(
+                        label: 'YOUR NAME',
+                        controller: nameController,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: UpTextField(
-                      label: 'TELEPHONE',
-                      controller: phnNoController,
+                    SizedBox(
+                      width: 300,
+                      child: UpTextField(
+                        label: 'TELEPHONE',
+                        controller: phnNoController,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: UpTextField(
-                      label: 'EMAIL',
-                      controller: emailController,
+                    SizedBox(
+                      width: 300,
+                      child: UpTextField(
+                        label: 'EMAIL',
+                        controller: emailController,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: UpTextField(
-                      label: 'ADDRESS',
-                      controller: addressController,
+                    SizedBox(
+                      width: 300,
+                      child: UpTextField(
+                        label: 'ADDRESS',
+                        controller: addressController,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 8),
               const UpText(
@@ -141,23 +145,25 @@ class _UserDetailsState extends State<UserDetails> {
                 type: UpTextType.heading4,
               ),
               const SizedBox(height: 8),
-              Wrap(
-                runSpacing: 8,
-                spacing: 8,
-                children: [
-                  UpButton(
-                    onPressed: () {},
-                    text: "CASH",
-                    icon: Icons.money,
-                    style: UpStyle(buttonWidth: 300),
-                  ),
-                  UpButton(
-                    onPressed: () {},
-                    text: "CARD",
-                    icon: Icons.credit_card,
-                    style: UpStyle(buttonWidth: 300),
-                  ),
-                ],
+              Center(
+                child: Wrap(
+                  runSpacing: 8,
+                  spacing: 8,
+                  children: [
+                    UpButton(
+                      onPressed: () {},
+                      text: "CASH",
+                      icon: Icons.money,
+                      style: UpStyle(buttonWidth: 300),
+                    ),
+                    UpButton(
+                      onPressed: () {},
+                      text: "CARD",
+                      icon: Icons.credit_card,
+                      style: UpStyle(buttonWidth: 300),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -165,7 +171,7 @@ class _UserDetailsState extends State<UserDetails> {
         Step(
             state: currentStep > 2 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 2,
-            title: const Text('Confirm Details'),
+            title: const UpText('Confirm Details'),
             content: Container()),
       ];
 
@@ -236,15 +242,18 @@ class _UserDetailsState extends State<UserDetails> {
               cartItems = state.cart.items;
             }
             return isComplete
-                ? CartMobComplete(
-                    onChange: (isC) {
-                      isComplete = false;
-                      currentStep = 0;
-                      setState(() {});
-                    },
+                ? Center(
+                    child: CartMobComplete(
+                      onChange: (isC) {
+                        isComplete = false;
+                        currentStep = 0;
+                        setState(() {});
+                      },
+                    ),
                   )
                 : Theme(
                     data: Theme.of(context).copyWith(
+                      canvasColor: UpConfig.of(context).theme.baseColor,
                       colorScheme: const ColorScheme.light(
                         primary: Color.fromRGBO(200, 16, 46, 1.0),
                       ),
@@ -283,7 +292,8 @@ class _UserDetailsState extends State<UserDetails> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: details.onStepContinue,
-                                  child: Text(isLastStep ? "CONFIRM" : "NEXT"),
+                                  child:
+                                      UpText(isLastStep ? "CONFIRM" : "NEXT"),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -291,7 +301,7 @@ class _UserDetailsState extends State<UserDetails> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: details.onStepCancel,
-                                    child: const Text("BACK"),
+                                    child: const UpText("BACK"),
                                   ),
                                 ),
                             ],

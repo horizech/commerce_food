@@ -48,12 +48,8 @@ class ShopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UpThemeData theme = UpThemes.generateThemeByColor(
-      primaryColor: const Color.fromRGBO(
-        64,
-        64,
-        64,
-        1.0,
-      ),
+      baseColor: const Color.fromARGB(255, 54, 54, 54),
+      primaryColor: const Color.fromRGBO(200, 16, 46, 1.0),
     );
     theme.primaryStyle = theme.primaryStyle.copyWith(
       UpStyle(textColor: Colors.white, iconColor: Colors.white),
@@ -68,6 +64,8 @@ class ShopApp extends StatelessWidget {
           child: UpApp(
             theme: UpThemes.generateThemeByColor(
               // primaryColor: Colors.greenAccent,
+              isDark: true,
+              baseColor: const Color.fromARGB(255, 54, 54, 54),
               primaryColor: const Color.fromRGBO(200, 16, 46, 1.0),
               secondaryColor: Colors.white,
               tertiaryColor: const Color.fromARGB(255, 222, 84, 107),

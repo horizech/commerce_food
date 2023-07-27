@@ -5,6 +5,7 @@ import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/constants.dart';
 
@@ -35,32 +36,14 @@ class CartMobComplete extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: UpConfig.of(context).theme.primaryColor,
-                  width: 1,
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(08),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Column(
+            child: UpCard(
+              style: UpStyle(cardWidth: MediaQuery.of(context).size.width - 16),
+              body: Column(
                 children: [
                   Row(
                     children: [
                       const UpText(
-                        "Name:           ",
+                        "Name:            ",
                       ),
                       UpText(
                         "text",
@@ -79,7 +62,7 @@ class CartMobComplete extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const UpText("Email:            "),
+                      const UpText("Email:             "),
                       UpText(
                         "text",
                         style: UpStyle(textColor: Colors.grey),

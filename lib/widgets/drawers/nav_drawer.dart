@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/models/up_drawer_item.dart';
 import 'package:flutter_up/services/up_navigation.dart';
+import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/themes/up_themes.dart';
+import 'package:flutter_up/widgets/up_icon.dart';
+import 'package:flutter_up/widgets/up_list_tile.dart';
+import 'package:flutter_up/widgets/up_nav_drawer.dart';
+import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/constants.dart';
 
 class NavDrawer extends StatelessWidget {
@@ -88,17 +93,15 @@ class NavDrawer extends StatelessWidget {
   }
 
   Widget getDrawerHeader(context) {
-    return DrawerHeader(
+    return Container(
+      height: 150,
       padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-      decoration: BoxDecoration(
-        color: UpConfig.of(context).theme.primaryColor.shade50,
-      ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(
+          UpText(
             'Shop',
-            style: TextStyle(color: Colors.white, fontSize: 25),
+            style: UpStyle(textSize: 25),
           ),
         ],
       ),
@@ -106,7 +109,7 @@ class NavDrawer extends StatelessWidget {
   }
 
   List<Widget> getView(context) {
-    List<Widget> view = [getDrawerHeader(context)];
+    List<Widget> view = [];
 
     view = [
       ...view,
@@ -114,12 +117,31 @@ class NavDrawer extends StatelessWidget {
           .map<Widget>((action) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    leading: Icon(
-                      action.icon,
-                      color: UpConfig.of(context).theme.primaryStyle.iconColor,
+                  UpListTile(
+                    style: UpStyle(
+                        listTileColor: Uri.base.fragment.toLowerCase() ==
+                                "/admin/${action.title.toLowerCase()}"
+                            ? UpConfig.of(context).theme.primaryColor
+                            : Colors.transparent,
+                        listTileTextColor: Uri.base.fragment.toLowerCase() ==
+                                "/admin/${action.title.toLowerCase()}"
+                            ? UpThemes.getContrastColor(
+                                UpConfig.of(context).theme.primaryColor)
+                            : UpConfig.of(context).theme.baseColor.shade900,
+                        listTileHoveredColor: Uri.base.fragment.toLowerCase() ==
+                                "/admin/${action.title.toLowerCase()}"
+                            ? Colors.transparent
+                            : UpConfig.of(context).theme.baseColor.shade100),
+                    leading: UpIcon(
+                      icon: action.icon,
+                      style: UpStyle(
+                          iconColor: Uri.base.fragment.toLowerCase() ==
+                                  "/admin/${action.title.toLowerCase()}"
+                              ? UpThemes.getContrastColor(
+                                  UpConfig.of(context).theme.primaryColor)
+                              : UpConfig.of(context).theme.baseColor.shade900),
                     ),
-                    title: Text(action.title),
+                    title: (action.title),
                     onTap: () => {action.onTap(context)},
                   ),
                 ],
@@ -132,8 +154,9 @@ class NavDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(padding: EdgeInsets.zero, children: getView(context)),
+    return UpNavDrawer(
+      body: getView(context),
+      header: getDrawerHeader(context),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:flutter_up/services/up_navigation.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/constants.dart';
@@ -28,7 +29,7 @@ class FoodCartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: FoodAppbar(),
       bottomNavigationBar: const FooterWidget(),
       body: Apiraiser.authentication.isSignedIn()
@@ -162,9 +163,11 @@ class _UserDetailsState extends State<UserDetails> {
         if (result.success) {
           ServiceManager<UpNavigationService>()
               .navigateToNamed(Routes.orderStatus);
-        } else {if(mounted){
-          UpToast().showToast(context: context, text: result.message ?? "");
-        }}
+        } else {
+          if (mounted) {
+            UpToast().showToast(context: context, text: result.message ?? "");
+          }
+        }
       }
     } else {
       UpToast().showToast(context: context, text: "There are no items in cart");
@@ -240,7 +243,7 @@ class _UserDetailsState extends State<UserDetails> {
                               "Need to know your details",
                               type: UpTextType.heading4,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 12),
                             Wrap(
                               runSpacing: 8,
                               spacing: 8,
@@ -321,7 +324,7 @@ class _UserDetailsState extends State<UserDetails> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.only(top: 100.0, right: 8, left: 8),
                       child: SizedBox(
                         width: 400,
                         height: 400,

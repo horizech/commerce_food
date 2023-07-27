@@ -2,6 +2,7 @@ import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_up/validation/up_valdation.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:flutter_up/locator.dart';
 import 'package:flutter_up/services/up_dialog.dart';
@@ -92,15 +93,14 @@ class _SignupPageState extends State<SignupPage> {
     return Form(
         key: _formKey,
         child: Center(
-          child: SizedBox(
-            width: 400,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: Column(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: UpCard(
+              body: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
-                    "foodlogo.jpg",
+                    "foodlogo.png",
                     height: 150,
                     width: 300,
                   ),

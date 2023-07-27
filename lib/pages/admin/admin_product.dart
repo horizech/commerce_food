@@ -5,6 +5,7 @@ import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_checkbox.dart';
+import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/widgets/date_time_picker.dart';
@@ -234,8 +235,8 @@ class _AdminProductState extends State<AdminProduct> {
                         bottom: BorderSide(width: 0, color: Colors.transparent),
                       ),
                 color: view == 1
-                    ? UpConfig.of(context).theme.primaryColor[50]
-                    : Colors.transparent,
+                    ? UpConfig.of(context).theme.baseColor.shade200
+                    : UpConfig.of(context).theme.baseColor.shade50,
               ),
               child: SizedBox(
                   width: 120,
@@ -243,9 +244,8 @@ class _AdminProductState extends State<AdminProduct> {
                   child: Column(
                     children: [
                       const SizedBox(height: 4),
-                      Icon(
-                        Icons.info,
-                        color: UpConfig.of(context).theme.primaryColor,
+                      const UpIcon(
+                        icon: Icons.info,
                       ),
                       const SizedBox(height: 2),
                       UpText(
@@ -280,8 +280,8 @@ class _AdminProductState extends State<AdminProduct> {
                               BorderSide(width: 0, color: Colors.transparent),
                         ),
                   color: view == 2
-                      ? UpConfig.of(context).theme.primaryColor[50]
-                      : Colors.transparent,
+                      ? UpConfig.of(context).theme.baseColor.shade200
+                      : UpConfig.of(context).theme.baseColor.shade50,
                 ),
                 child: SizedBox(
                   width: 120,
@@ -289,9 +289,8 @@ class _AdminProductState extends State<AdminProduct> {
                   child: Column(
                     children: [
                       const SizedBox(height: 4),
-                      Icon(
-                        Icons.link,
-                        color: UpConfig.of(context).theme.primaryColor,
+                      const UpIcon(
+                        icon: Icons.link,
                       ),
                       const SizedBox(height: 2),
                       UpText(
@@ -328,8 +327,8 @@ class _AdminProductState extends State<AdminProduct> {
                               BorderSide(width: 0, color: Colors.transparent),
                         ),
                   color: view == 3
-                      ? UpConfig.of(context).theme.primaryColor[50]
-                      : Colors.transparent,
+                      ? UpConfig.of(context).theme.baseColor.shade200
+                      : UpConfig.of(context).theme.baseColor.shade50,
                 ),
                 child: SizedBox(
                   width: 120,
@@ -337,9 +336,8 @@ class _AdminProductState extends State<AdminProduct> {
                   child: Column(
                     children: [
                       const SizedBox(height: 4),
-                      Icon(
-                        Icons.data_exploration_sharp,
-                        color: UpConfig.of(context).theme.primaryColor,
+                      const UpIcon(
+                        icon: Icons.data_exploration_sharp,
                       ),
                       const SizedBox(height: 2),
                       UpText(
@@ -376,8 +374,8 @@ class _AdminProductState extends State<AdminProduct> {
                               BorderSide(width: 0, color: Colors.transparent),
                         ),
                   color: view == 5
-                      ? UpConfig.of(context).theme.primaryColor[50]
-                      : Colors.transparent,
+                      ? UpConfig.of(context).theme.baseColor.shade200
+                      : UpConfig.of(context).theme.baseColor.shade50,
                 ),
                 child: SizedBox(
                   width: 120,
@@ -385,9 +383,8 @@ class _AdminProductState extends State<AdminProduct> {
                   child: Column(
                     children: [
                       const SizedBox(height: 4),
-                      Icon(
-                        Icons.photo_filter,
-                        color: UpConfig.of(context).theme.primaryColor,
+                      const UpIcon(
+                        icon: Icons.photo_filter,
                       ),
                       const SizedBox(height: 2),
                       UpText(
@@ -419,8 +416,8 @@ class _AdminProductState extends State<AdminProduct> {
                         bottom: BorderSide(width: 0, color: Colors.transparent),
                       ),
                 color: view == 4
-                    ? UpConfig.of(context).theme.primaryColor[50]
-                    : Colors.transparent,
+                    ? UpConfig.of(context).theme.baseColor.shade200
+                    : UpConfig.of(context).theme.baseColor.shade50,
               ),
               child: SizedBox(
                 width: 120,
@@ -428,9 +425,8 @@ class _AdminProductState extends State<AdminProduct> {
                 child: Column(
                   children: [
                     const SizedBox(height: 4),
-                    Icon(
-                      Icons.add_box_outlined,
-                      color: UpConfig.of(context).theme.primaryColor,
+                    const UpIcon(
+                      icon: Icons.add_box_outlined,
                     ),
                     const SizedBox(height: 2),
                     UpText(
@@ -546,7 +542,7 @@ class _AdminProductState extends State<AdminProduct> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: UpTextField(
                   controller: _discountStartController,
-                  prefixIcon: const Icon(Icons.calendar_today),
+                  prefixIcon: const UpIcon(icon: Icons.calendar_today),
                   label: "Discound Start Date",
                   onTap: () {
                     _discountStartDate();
@@ -557,7 +553,7 @@ class _AdminProductState extends State<AdminProduct> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: UpTextField(
                   controller: _discountEndController,
-                  prefixIcon: const Icon(Icons.calendar_today),
+                  prefixIcon: const UpIcon(icon: Icons.calendar_today),
                   label: "Discound End Date",
                   onTap: () {
                     _discountEndDate();

@@ -36,6 +36,7 @@ class _MediaDialogState extends State<MediaDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: UpConfig.of(context).theme.baseColor,
       title: const Padding(
         padding: EdgeInsets.all(8.0),
         child: UpText(
@@ -49,37 +50,35 @@ class _MediaDialogState extends State<MediaDialog> {
           ? SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: SizedBox(
-                  height: 500,
-                  width: 500,
                   child: Wrap(
-                    children: mediaList
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: selectedMedia == e
-                                            ? UpConfig.of(context)
-                                                .theme
-                                                .primaryColor
-                                            : Colors.transparent)),
-                                child: SizedBox(
-                                  width: 98,
-                                  height: 98,
-                                  child: MediaWidget(
-                                    media: e,
-                                    onChange: () {
-                                      selectedMedia = e;
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
+                children: mediaList
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: selectedMedia == e
+                                        ? UpConfig.of(context)
+                                            .theme
+                                            .primaryColor
+                                        : Colors.transparent)),
+                            child: SizedBox(
+                              width: 98,
+                              height: 98,
+                              child: MediaWidget(
+                                media: e,
+                                onChange: () {
+                                  selectedMedia = e;
+                                  setState(() {});
+                                },
                               ),
-                            ))
-                        .toList(),
-                  )))
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              )))
           : const SizedBox(
               width: 500,
               height: 500,

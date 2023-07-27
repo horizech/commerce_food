@@ -6,12 +6,16 @@ import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/themes/up_themes.dart';
 import 'package:flutter_up/widgets/up_app_bar.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
+import 'package:flutter_up/widgets/up_list_tile.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
@@ -69,172 +73,217 @@ class _AdminProductsMobState extends State<AdminProductsMob> {
   Widget leftSide() {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: Container(
-        width: 300,
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 60,
-        ),
-        child: Column(
-          children: [
-            GestureDetector(
-                onTap: (() {
-                  selectedCollection = const Collection(name: "", id: -1);
-                  nameController.text = selectedCollection.name;
-                  // currentParent = "";
-                  selectedMedia = null;
-                  view = 1;
-                  isReset = false;
-                  setState(() {});
-                  Navigator.pop(context);
-                }),
-                child: Container(
-                  color: selectedCollection.id == -1
-                      ? UpConfig.of(context).theme.primaryColor[50]
-                      : Colors.transparent,
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.add,
-                      color: UpConfig.of(context).theme.primaryColor,
-                    ),
-                    title: UpText(
-                      "Create a new collection",
+      child: UpCard(
+        style: UpStyle(cardWidth: 310, cardBodyPadding: false),
+        body: Container(
+          color: UpConfig.of(context).theme.baseColor,
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: Column(
+            children: [
+              GestureDetector(
+                  onTap: (() {
+                    selectedCollection = const Collection(name: "", id: -1);
+                    nameController.text = selectedCollection.name;
+                    // currentParent = "";
+                    selectedMedia = null;
+                    view = 1;
+                    isReset = false;
+                    setState(() {});
+                    Navigator.pop(context);
+                  }),
+                  child: Container(
+                    color: selectedCollection.id == -1
+                        ? UpConfig.of(context).theme.primaryColor
+                        : Colors.transparent,
+                    child: UpListTile(
+                      leading: UpIcon(
+                        icon: Icons.add,
+                        style: UpStyle(
+                          textColor: selectedCollection.id == -1
+                              ? UpThemes.getContrastColor(
+                                  UpConfig.of(context).theme.primaryColor)
+                              : UpConfig.of(context).theme.baseColor.shade900,
+                        ),
+                      ),
+                      title: "Create a new collection",
                       style: UpStyle(
-                        textWeight: FontWeight.bold,
+                        textColor: selectedCollection.id == -1
+                            ? UpThemes.getContrastColor(
+                                UpConfig.of(context).theme.primaryColor)
+                            : UpConfig.of(context).theme.baseColor.shade900,
                       ),
                     ),
-                  ),
-                )),
-            ...collections
-                .map(
-                  (e) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Visibility(
-                        visible: selectedCollection.id != e.id,
-                        child: GestureDetector(
-                          onTap: (() {
-                            selectedCollection = e;
-                            nameController.text = selectedCollection.name;
-                            mediaController.text =
-                                selectedCollection.media.toString();
-                            currentParent = selectedCollection.parent != null
-                                ? selectedCollection.parent.toString()
-                                : "";
-                            selectedMedia = selectedCollection.media;
-                            view = 1;
-                            setState(() {
-                              isExpanded = true;
-                            });
+                  )),
+              ...collections
+                  .map(
+                    (e) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          visible: selectedCollection.id != e.id,
+                          child: GestureDetector(
+                            onTap: (() {
+                              selectedCollection = e;
+                              nameController.text = selectedCollection.name;
+                              mediaController.text =
+                                  selectedCollection.media.toString();
+                              currentParent = selectedCollection.parent != null
+                                  ? selectedCollection.parent.toString()
+                                  : "";
+                              selectedMedia = selectedCollection.media;
+                              view = 1;
+                              setState(() {
+                                isExpanded = true;
+                              });
 
-                            // Navigator.pop(context);
-                          }),
-                          child: Container(
-                            color: selectedCollection.id == e.id
-                                ? UpConfig.of(context).theme.primaryColor[100]
-                                : Colors.transparent,
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.edit,
-                                color: UpConfig.of(context).theme.primaryColor,
+                              // Navigator.pop(context);
+                            }),
+                            child: Container(
+                              color: selectedCollection.id == e.id
+                                  ? UpConfig.of(context).theme.baseColor[200]
+                                  : Colors.transparent,
+                              child: UpListTile(
+                                leading: const UpIcon(
+                                  icon: Icons.edit,
+                                ),
+                                title: (e.name),
                               ),
-                              title: UpText(e.name),
                             ),
                           ),
                         ),
-                      ),
-                      Visibility(
-                          visible: selectedCollection.id == e.id &&
-                              selectedCollection.id != -1,
-                          child: Container(
-                            color: isExpanded
-                                ? UpConfig.of(context).theme.primaryColor[100]
-                                : Colors.grey[200],
-                            child: UpExpansionTile(
-                              onExpansionChanged: (p0) {
-                                isExpanded = p0;
+                        Visibility(
+                            visible: selectedCollection.id == e.id &&
+                                selectedCollection.id != -1,
+                            child: Container(
+                              color: isExpanded
+                                  ? UpConfig.of(context).theme.baseColor[200]
+                                  : Colors.transparent,
+                              child: UpExpansionTile(
+                                onExpansionChanged: (p0) {
+                                  isExpanded = p0;
 
-                                if (p0) {
-                                  view = 1;
-                                } else {}
-                                setState(() {});
-                              },
-                              leading: Icon(
-                                Icons.edit,
-                                color: UpConfig.of(context).theme.primaryColor,
-                              ),
-                              title: e.name,
-                              expandedCrossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              expandedAlignment: Alignment.topLeft,
-                              childrenPadding: const EdgeInsets.all(0),
-                              initiallyExpanded: true,
-                              children: <Widget>[
-                                Container(
-                                  color: Colors.grey[200],
-                                  child: Column(children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        currentProduct = null;
-                                        view = 2;
-                                        isReset = true;
-                                        isExpanded = false;
-                                        setState(() {});
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        color: view == 2
-                                            ? UpConfig.of(context)
-                                                .theme
-                                                .primaryColor[100]
-                                            : Colors.transparent,
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.playlist_add_outlined,
-                                            color: UpConfig.of(context)
-                                                .theme
-                                                .primaryColor,
-                                          ),
-                                          title: const UpText(
-                                              "Create a new product"),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: (() {
-                                        isExpanded = false;
-
-                                        view = 3;
-                                        isReset = false;
-                                        setState(() {});
-                                        Navigator.pop(context);
-                                      }),
-                                      child: Container(
-                                        color: view == 3 || view == 4
-                                            ? UpConfig.of(context)
-                                                .theme
-                                                .primaryColor[100]
-                                            : Colors.transparent,
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.list,
-                                            color: UpConfig.of(context)
-                                                .theme
-                                                .primaryColor,
-                                          ),
-                                          title: const UpText("All Products"),
-                                        ),
-                                      ),
-                                    ),
-                                  ]),
+                                  if (p0) {
+                                    view = 1;
+                                  } else {}
+                                  setState(() {});
+                                },
+                                leading: const UpIcon(
+                                  icon: Icons.edit,
                                 ),
-                              ],
-                            ),
-                          )),
-                    ],
-                  ),
-                )
-                .toList()
-          ],
+                                title: e.name,
+                                expandedCrossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                expandedAlignment: Alignment.topLeft,
+                                childrenPadding: const EdgeInsets.all(0),
+                                initiallyExpanded: true,
+                                children: <Widget>[
+                                  UpCard(
+                                    body: Column(children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          currentProduct = null;
+                                          view = 2;
+                                          isReset = true;
+                                          isExpanded = false;
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          color: view == 2
+                                              ? UpConfig.of(context)
+                                                  .theme
+                                                  .primaryColor
+                                              : Colors.transparent,
+                                          child: UpListTile(
+                                            leading: UpIcon(
+                                              icon: Icons.playlist_add_outlined,
+                                              style: UpStyle(
+                                                iconColor: view == 2
+                                                    ? UpThemes.getContrastColor(
+                                                        UpConfig.of(context)
+                                                            .theme
+                                                            .primaryColor)
+                                                    : UpConfig.of(context)
+                                                        .theme
+                                                        .baseColor
+                                                        .shade900,
+                                              ),
+                                            ),
+                                            title: ("Create a new product"),
+                                            style: UpStyle(
+                                              textColor: view == 2
+                                                  ? UpThemes.getContrastColor(
+                                                      UpConfig.of(context)
+                                                          .theme
+                                                          .primaryColor)
+                                                  : UpConfig.of(context)
+                                                      .theme
+                                                      .baseColor
+                                                      .shade900,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: (() {
+                                          isExpanded = false;
+
+                                          view = 3;
+                                          isReset = false;
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        }),
+                                        child: Container(
+                                          color: view == 3 || view == 4
+                                              ? UpConfig.of(context)
+                                                  .theme
+                                                  .primaryColor
+                                              : Colors.transparent,
+                                          child: UpListTile(
+                                            style: UpStyle(
+                                              listTileTextColor: view == 3 ||
+                                                      view == 4
+                                                  ? UpThemes.getContrastColor(
+                                                      UpConfig.of(context)
+                                                          .theme
+                                                          .primaryColor)
+                                                  : UpConfig.of(context)
+                                                      .theme
+                                                      .baseColor
+                                                      .shade900,
+                                            ),
+                                            leading: UpIcon(
+                                              icon: Icons.list,
+                                              style: UpStyle(
+                                                iconColor: view == 3 ||
+                                                        view == 4
+                                                    ? UpThemes.getContrastColor(
+                                                        UpConfig.of(context)
+                                                            .theme
+                                                            .primaryColor)
+                                                    : UpConfig.of(context)
+                                                        .theme
+                                                        .baseColor
+                                                        .shade900,
+                                              ),
+                                            ),
+                                            title: ("All Products"),
+                                          ),
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  )
+                  .toList()
+            ],
+          ),
         ),
       ),
     );
@@ -395,115 +444,114 @@ class _AdminProductsMobState extends State<AdminProductsMob> {
     return Column(
       children: [
         const SizedBox(height: 20),
-        UpText(
-          selectedCollection.id == -1
-              ? "Create collection"
-              : "Update collection",
+        UpCard(
+          header: Center(
+            child: UpText(
+              selectedCollection.id == -1
+                  ? "Create collection"
+                  : "Update collection",
+              style: UpStyle(textSize: 24, textFontStyle: FontStyle.italic),
+            ),
+          ),
           style: UpStyle(
-              textSize: 24,
-              textWeight: FontWeight.bold,
-              textFontStyle: FontStyle.italic),
-        ),
-        const SizedBox(height: 20),
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                  color: UpConfig.of(context).theme.primaryColor, width: 1)),
-          child: Padding(
-            padding: const EdgeInsets.all(22.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  child: UpTextField(
-                    controller: nameController,
-                    label: 'Name',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  child: AddMediaWidget(
-                    selectedMedia: selectedMedia,
-                    onChnage: (media) {
-                      selectedMedia = media;
-                      setState(() {});
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    child: UpDropDown(
-                      label: "Parent",
-                      value: currentParent,
-                      itemList: collectionDropdown,
-                      onChanged: (value) {
-                        currentParent = value.toString();
-
-                        setState(() {});
-                      },
-                    )),
-              ),
-              Visibility(
-                visible: selectedCollection.id != -1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    child: const UpText(
-                      "*To delete a collection you must need to delete all its products",
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 1.5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+              cardRadius: 8, cardWidth: MediaQuery.of(context).size.width - 32),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(22.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Visibility(
-                      visible: selectedCollection.id != -1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: 70,
-                          height: 30,
-                          child: UpButton(
-                            onPressed: () {
-                              _deleteCollection(selectedCollection.id!);
-                            },
-                            text: "Delete",
-                          ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: UpTextField(
+                          controller: nameController,
+                          label: 'Name',
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
-                        width: 70,
-                        height: 30,
-                        child: UpButton(
-                          onPressed: () {
-                            _updateCollection(selectedCollection.id != -1
-                                ? selectedCollection
-                                : null);
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: AddMediaWidget(
+                          selectedMedia: selectedMedia,
+                          onChnage: (media) {
+                            selectedMedia = media;
+                            setState(() {});
                           },
-                          text: "Save",
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ]),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: UpDropDown(
+                            label: "Parent",
+                            value: currentParent,
+                            itemList: collectionDropdown,
+                            onChanged: (value) {
+                              currentParent = value.toString();
+
+                              setState(() {});
+                            },
+                          )),
+                    ),
+                    Visibility(
+                      visible: selectedCollection.id != -1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: const UpText(
+                            "*To delete a collection you must need to delete all its products",
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Visibility(
+                            visible: selectedCollection.id != -1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 70,
+                                height: 30,
+                                child: UpButton(
+                                  onPressed: () {
+                                    _deleteCollection(selectedCollection.id!);
+                                  },
+                                  text: "Delete",
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: 70,
+                              height: 30,
+                              child: UpButton(
+                                onPressed: () {
+                                  _updateCollection(selectedCollection.id != -1
+                                      ? selectedCollection
+                                      : null);
+                                },
+                                text: "Save",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+            ),
           ),
         ),
       ],
@@ -607,13 +655,14 @@ class _AdminProductsMobState extends State<AdminProductsMob> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: const UpAppBar(),
       drawer: const NavDrawer(),
       endDrawer: SafeArea(
         child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Drawer(
+            backgroundColor: UpConfig.of(context).theme.basicColor,
             child: leftSide(),
           );
         }),

@@ -6,9 +6,13 @@ import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
 import 'package:flutter_up/models/up_label_value.dart';
 import 'package:flutter_up/themes/up_style.dart';
+import 'package:flutter_up/themes/up_themes.dart';
 import 'package:flutter_up/widgets/up_button.dart';
+import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_dropdown.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
+import 'package:flutter_up/widgets/up_list_tile.dart';
+import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
@@ -62,7 +66,9 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
           return StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                title: Text(value != null
+                // backgroundColor: Colors.black,
+                backgroundColor: UpConfig.of(context).theme.baseColor,
+                title: UpText(value != null
                     ? 'Edit attribute value'
                     : 'Add attribute value'),
                 content: SingleChildScrollView(
@@ -211,7 +217,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return UpScaffold(
       appBar: const AdminAppbar(),
       drawer: const NavDrawer(),
       body: isUserAdmin()
@@ -490,64 +496,75 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
   }
 
   Widget leftSide() {
-    return Container(
-      color: Colors.grey[200],
-      width: 300,
-      height: 900,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            GestureDetector(
-                onTap: (() {
-                  selectedAttribute =
-                      const Attribute(name: "", id: -1, swatch: 0);
-                  nameController.text = selectedAttribute.name;
-                  currentSwatch = "-1";
-
-                  setState(() {});
-                }),
-                child: Container(
-                  color: selectedAttribute.id == -1
-                      ? UpConfig.of(context).theme.primaryColor[100]
-                      : Colors.transparent,
-                  child: const ListTile(
-                    title: UpText("Create a new attribute"),
-                  ),
-                )),
-            ...attributes
-                .map(
-                  (e) => GestureDetector(
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: UpCard(
+        style: UpStyle(cardWidth: 300),
+        body: Container(
+          constraints:
+              BoxConstraints(minHeight: MediaQuery.of(context).size.height - 80),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                GestureDetector(
                     onTap: (() {
-                      selectedAttribute = e;
-                      if (swatches.isNotEmpty &&
-                          swatches.any((element) =>
-                              int.parse(element.value) ==
-                              selectedAttribute.swatch)) {
-                        currentSwatch = swatches
-                            .where((element) =>
-                                int.parse(element.value) ==
-                                selectedAttribute.swatch)
-                            .first
-                            .value
-                            .toString();
-                      }
+                      selectedAttribute =
+                          const Attribute(name: "", id: -1, swatch: 0);
                       nameController.text = selectedAttribute.name;
-                      _setAttributeValues();
+                      currentSwatch = "-1";
+    
                       setState(() {});
                     }),
                     child: Container(
-                      color: selectedAttribute.id == e.id
-                          ? UpConfig.of(context).theme.primaryColor[100]
+                      color: selectedAttribute.id == -1
+                          ? UpConfig.of(context).theme.primaryColor
                           : Colors.transparent,
-                      child: ListTile(
-                        title: UpText(e.name),
+                      child: UpListTile(
+                        title: ("Create a new attribute"),
+                        style: UpStyle(
+                          listTileTextColor: selectedAttribute.id == -1
+                              ? UpThemes.getContrastColor(
+                                  UpConfig.of(context).theme.primaryColor)
+                              : UpConfig.of(context).theme.baseColor.shade900,
+                        ),
                       ),
-                    ),
-                  ),
-                )
-                .toList()
-          ],
+                    )),
+                ...attributes
+                    .map(
+                      (e) => GestureDetector(
+                        onTap: (() {
+                          selectedAttribute = e;
+                          if (swatches.isNotEmpty &&
+                              swatches.any((element) =>
+                                  int.parse(element.value) ==
+                                  selectedAttribute.swatch)) {
+                            currentSwatch = swatches
+                                .where((element) =>
+                                    int.parse(element.value) ==
+                                    selectedAttribute.swatch)
+                                .first
+                                .value
+                                .toString();
+                          }
+                          nameController.text = selectedAttribute.name;
+                          _setAttributeValues();
+                          setState(() {});
+                        }),
+                        child: Container(
+                          color: selectedAttribute.id == e.id
+                              ? UpConfig.of(context).theme.primaryColor
+                              : Colors.transparent,
+                          child: ListTile(
+                            title: UpText(e.name),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList()
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -564,20 +581,24 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       APIResult? result = await AddEditProductService.addEditAttribute(
           data: newAttribute.toJson(newAttribute), attributeId: attribute?.id);
 
-      if (result != null) {if(mounted){
-        UpToast().showToast(
-          context: context,
-          text: result.message ?? "",
-        );}
+      if (result != null) {
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: result.message ?? "",
+          );
+        }
         if (attribute == null) {
           nameController.text = "";
         }
         getAttributes();
-      } else {if(mounted){
-        UpToast().showToast(
-          context: context,
-          text: "An Error Occurred",
-        );}
+      } else {
+        if (mounted) {
+          UpToast().showToast(
+            context: context,
+            text: "An Error Occurred",
+          );
+        }
       }
     } else {
       UpToast().showToast(
@@ -621,16 +642,20 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       if (result == "success") {
         APIResult? result =
             await AddEditProductService.deleteAttribute(attributeId);
-        if (result != null && result.success) {if(mounted){
-          UpToast().showToast(context: context, text: result.message ?? "");}
+        if (result != null && result.success) {
+          if (mounted) {
+            UpToast().showToast(context: context, text: result.message ?? "");
+          }
           nameController.text = "";
           selectedAttribute = const Attribute(name: "", id: -1);
           getAttributes();
-        } else {if(mounted){
-          UpToast().showToast(
-            context: context,
-            text: "An Error Occurred",
-          );}
+        } else {
+          if (mounted) {
+            UpToast().showToast(
+              context: context,
+              text: "An Error Occurred",
+            );
+          }
         }
       }
     });
@@ -647,14 +672,18 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       if (result == "success") {
         APIResult? result =
             await AddEditProductService.deleteAttributeValue(attributeValueId);
-        if (result != null && result.success) {if(mounted){
-          UpToast().showToast(context: context, text: result.message ?? "");
-}          getAttributeValues();
-        } else {if(mounted){
-          UpToast().showToast(
-            context: context,
-            text: "An Error Occurred",
-          );}
+        if (result != null && result.success) {
+          if (mounted) {
+            UpToast().showToast(context: context, text: result.message ?? "");
+          }
+          getAttributeValues();
+        } else {
+          if (mounted) {
+            UpToast().showToast(
+              context: context,
+              text: "An Error Occurred",
+            );
+          }
         }
       }
     });
