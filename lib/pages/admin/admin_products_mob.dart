@@ -513,16 +513,17 @@ class _AdminProductsMobState extends State<AdminProductsMob> {
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width / 1.5,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      child: Wrap(
+                        alignment: WrapAlignment.end,
+                        direction: Axis.horizontal,
                         children: [
                           Visibility(
                             visible: selectedCollection.id != -1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                width: 70,
-                                height: 30,
+                                width: 120,
+                                height: 40,
                                 child: UpButton(
                                   onPressed: () {
                                     _deleteCollection(selectedCollection.id!);
@@ -535,8 +536,8 @@ class _AdminProductsMobState extends State<AdminProductsMob> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
-                              width: 70,
-                              height: 30,
+                              width: 120,
+                              height: 40,
                               child: UpButton(
                                 onPressed: () {
                                   _updateCollection(selectedCollection.id != -1

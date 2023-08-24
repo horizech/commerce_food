@@ -66,7 +66,6 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
           return StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                // backgroundColor: Colors.black,
                 backgroundColor: UpConfig.of(context).theme.baseColor,
                 title: UpText(value != null
                     ? 'Edit attribute value'
@@ -328,9 +327,10 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: SizedBox(
-                                                      width: 70,
+                                                      width: 90,
                                                       height: 30,
                                                       child: UpButton(
+                                                        
                                                         onPressed: () {
                                                           _deleteAttribute(
                                                               selectedAttribute
@@ -348,6 +348,10 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                                                     width: 70,
                                                     height: 30,
                                                     child: UpButton(
+                                                      style: UpStyle(
+                                                          buttonTextWeight:
+                                                              FontWeight
+                                                                  .normal),
                                                       onPressed: () {
                                                         _updateAttribute(
                                                           selectedAttribute
@@ -501,8 +505,8 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
       child: UpCard(
         style: UpStyle(cardWidth: 300),
         body: Container(
-          constraints:
-              BoxConstraints(minHeight: MediaQuery.of(context).size.height - 80),
+          constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 80),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
@@ -513,7 +517,7 @@ class _AdminProductOptionsState extends State<AdminProductOptions> {
                           const Attribute(name: "", id: -1, swatch: 0);
                       nameController.text = selectedAttribute.name;
                       currentSwatch = "-1";
-    
+
                       setState(() {});
                     }),
                     child: Container(

@@ -25,7 +25,9 @@ import 'package:shop/pages/cart/food_cart_mob_page.dart';
 import 'package:shop/pages/cart/food_cart_page.dart';
 import 'package:shop/pages/chef/chef.dart';
 import 'package:shop/pages/order/user_order_status.dart';
-import 'package:shop/pages/products/products_mob.dart';
+import 'package:shop/pages/products/products_grid.dart';
+import 'package:shop/pages/products/products_grid_mob.dart';
+import 'package:shop/pages/products/products_list_mob.dart';
 import 'package:shop/pages/rider/rider.dart';
 import 'package:shop/widgets/cart/cart_cubit.dart';
 import 'package:shop/widgets/media/media_cubit.dart';
@@ -35,7 +37,7 @@ import 'package:flutter_up/models/up_route.dart';
 import 'package:flutter_up/models/up_router_state.dart';
 import 'package:shop/pages/authentication/loginsignup.dart';
 
-import 'package:shop/pages/products/products.dart';
+import 'package:shop/pages/products/products_list.dart';
 import 'package:shop/pages/store_dependant_page.dart';
 
 class ShopApp extends StatelessWidget {
@@ -81,10 +83,10 @@ class ShopApp extends StatelessWidget {
                 pageBuilder: (BuildContext context, UpRouterState state) =>
                     const UpResponsivePage(
                   desktopPage: StoreDependantPage(
-                    page: Products(),
+                    page: ProductsGrid(),
                   ),
                   mobilePage: StoreDependantPage(
-                    page: ProductsMob(),
+                    page: ProductsGridMob(),
                   ),
                 ),
               ),

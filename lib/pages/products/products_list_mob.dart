@@ -26,16 +26,16 @@ import 'package:shop/widgets/footer/food_footer.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class ProductsMob extends StatefulWidget {
-  const ProductsMob({
+class ProductsListMob extends StatefulWidget {
+  const ProductsListMob({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ProductsMob> createState() => _AllProductsState();
+  State<ProductsListMob> createState() => _AllProductsState();
 }
 
-class _AllProductsState extends State<ProductsMob> {
+class _AllProductsState extends State<ProductsListMob> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();

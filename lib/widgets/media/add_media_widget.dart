@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_up/config/up_config.dart';
-import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:shop/dialogs/media_dialog.dart';
@@ -37,16 +35,21 @@ class _AddMediaWidgetState extends State<AddMediaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Column(
+        Align(
+            alignment: Alignment.topLeft,
+            child: UpText(widget.title ?? "Thumbnail :")),
+        Wrap(
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.spaceBetween,
           children: [
-            UpText(widget.title ?? "Thumbnail"),
             Padding(
-              padding: const EdgeInsets.only(top: 5.0),
+              padding: const EdgeInsets.only(
+                top: 26.0,
+              ),
               child: SizedBox(
-                width: 70,
+                width: 120,
                 child: UpButton(
                   text: "Select",
                   onPressed: () {
@@ -55,36 +58,38 @@ class _AddMediaWidgetState extends State<AddMediaWidget> {
                 ),
               ),
             ),
-          ],
-        ),
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Visibility(
-                visible: widget.selectedMedia == null,
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Image.asset(
-                    "ef3-placeholder-image.jpg",
-                  ),
-                  // color: Colors.grey,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Visibility(
-                visible: widget.selectedMedia != null,
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: MediaWidget(
-                    mediaId: widget.selectedMedia,
+            const SizedBox(width: 20),
+            Wrap(
+              direction: Axis.horizontal,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Visibility(
+                    visible: widget.selectedMedia == null,
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset(
+                        "ef3-placeholder-image.jpg",
+                      ),
+                      // color: Colors.grey,
+                    ),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 8),
+                  child: Visibility(
+                    visible: widget.selectedMedia != null,
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: MediaWidget(
+                        mediaId: widget.selectedMedia,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

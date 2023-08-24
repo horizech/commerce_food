@@ -438,8 +438,8 @@ class _AdminProductsState extends State<AdminProducts> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    width: 70,
-                    height: 30,
+                    width: 120,
+                    height: 40,
                     child: UpButton(
                       onPressed: () {
                         _deleteCollection(selectedCollection.id!);
@@ -452,8 +452,8 @@ class _AdminProductsState extends State<AdminProducts> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                  width: 70,
-                  height: 30,
+                  width: 110,
+                  height: 40,
                   child: UpButton(
                     onPressed: () {
                       _updateCollection(selectedCollection.id != -1

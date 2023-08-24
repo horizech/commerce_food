@@ -9,7 +9,6 @@ import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_orientational_column_row.dart';
 import 'package:flutter_up/widgets/up_scaffold.dart';
-// import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shop/models/collection.dart';
@@ -25,16 +24,16 @@ import 'package:shop/widgets/footer/food_footer.dart';
 import 'package:shop/widgets/media/media_widget.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
-class Products extends StatefulWidget {
-  const Products({
+class ProductsList extends StatefulWidget {
+  const ProductsList({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<Products> createState() => _AllProductsState();
+  State<ProductsList> createState() => _AllProductsState();
 }
 
-class _AllProductsState extends State<Products> {
+class _AllProductsState extends State<ProductsList> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
@@ -78,6 +77,7 @@ class _AllProductsState extends State<Products> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: UpConfig.of(context).theme.baseColor.shade200,
           contentPadding: EdgeInsets.zero,
           content: Padding(
             padding: const EdgeInsets.all(0),

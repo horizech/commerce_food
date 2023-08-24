@@ -1,5 +1,6 @@
 import 'package:apiraiser/apiraiser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/text_style.dart';
 import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/helpers/up_toast.dart';
@@ -35,6 +36,7 @@ class _AddEditAttributeValueDialogState
     }
 
     return AlertDialog(
+      backgroundColor: UpConfig.of(context).theme.baseColor.shade200,
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: UpText(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_up/config/up_config.dart';
 import 'package:flutter_up/enums/up_color_type.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_text.dart';
@@ -11,6 +12,7 @@ class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: UpConfig.of(context).theme.baseColor.shade200,
       title: const Padding(
         padding: EdgeInsets.all(8.0),
         child: UpText(
