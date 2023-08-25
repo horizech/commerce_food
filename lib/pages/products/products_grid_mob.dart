@@ -11,7 +11,6 @@ import 'package:flutter_up/widgets/up_orientational_column_row.dart';
 import 'package:flutter_up/widgets/up_scaffold.dart';
 import 'package:flutter_up/widgets/up_text.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/collection.dart';
 import 'package:shop/models/combo.dart';
 import 'package:shop/models/product.dart';
@@ -22,7 +21,6 @@ import 'package:shop/pages/cart/cart_footer.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/media/media_widget.dart';
-import 'package:shop/widgets/price/price.dart';
 import 'package:shop/widgets/store/store_cubit.dart';
 
 class ProductsGridMob extends StatefulWidget {

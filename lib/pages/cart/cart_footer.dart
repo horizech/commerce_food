@@ -88,7 +88,7 @@ class _CartFooterState extends State<CartFooter> {
                               UpConfig.of(context).theme.primaryColor,
                               UpConfig.of(context).theme.primaryColor,
                               UpConfig.of(context).theme.primaryColor,
-                              Color.fromARGB(255, 222, 82, 82),
+                              const Color.fromARGB(255, 222, 82, 82),
                               UpConfig.of(context).theme.primaryColor,
                               UpConfig.of(context).theme.primaryColor,
                               UpConfig.of(context).theme.primaryColor,

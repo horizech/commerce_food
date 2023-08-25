@@ -9,6 +9,7 @@ Future<DateTime> getPicker(BuildContext context) async {
     lastDate: DateTime(2101),
   );
 
+  // ignore: use_build_context_synchronously
   TimeOfDay? pickedTime = await UpDateTimeHelper.upTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),

@@ -20,7 +20,6 @@ import 'package:flutter_up/widgets/up_textfield.dart';
 import 'package:shop/dialogs/delete_dialog.dart';
 import 'package:shop/is_user_admin.dart';
 import 'package:shop/models/collection.dart';
-import 'package:shop/models/media.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/pages/admin/admin_product.dart';
 import 'package:shop/services/add_edit_product_service/add_edit_product_service.dart';

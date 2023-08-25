@@ -6,7 +6,6 @@ import 'package:flutter_up/themes/up_style.dart';
 import 'package:flutter_up/widgets/up_button.dart';
 import 'package:flutter_up/widgets/up_card.dart';
 import 'package:flutter_up/widgets/up_circualar_progress.dart';
-import 'package:flutter_up/widgets/up_expansion_tile.dart';
 import 'package:flutter_up/widgets/up_icon.dart';
 import 'package:flutter_up/widgets/up_orientational_column_row.dart';
 import 'package:flutter_up/widgets/up_scaffold.dart';
@@ -456,8 +455,8 @@ class _AllProductsState extends State<ProductsGrid> {
                                     ],
                                   ),
                                 ),
-                                Center(
-                                  child: const Padding(
+                               const Center(
+                                  child:  Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: CartWidget(
                                       isVisible: true,
