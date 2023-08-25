@@ -18,6 +18,7 @@ import 'package:shop/models/product.dart';
 import 'package:shop/models/product_combo.dart';
 import 'package:shop/models/product_variation.dart';
 import 'package:shop/pages/cart/cart_dialog_widget.dart';
+import 'package:shop/pages/cart/cart_footer.dart';
 import 'package:shop/services/products_service.dart';
 import 'package:shop/widgets/app_bars/food_appbar.dart';
 import 'package:shop/widgets/media/media_widget.dart';
@@ -797,68 +798,68 @@ class _FoodCategoriesListWidgetState extends State<FoodCategoriesListWidget> {
   }
 }
 
-class CartFooter extends StatefulWidget {
-  const CartFooter({super.key});
+// class CartFooter extends StatefulWidget {
+//   const CartFooter({super.key});
 
-  @override
-  State<CartFooter> createState() => _CartFooterState();
-}
+//   @override
+//   State<CartFooter> createState() => _CartFooterState();
+// }
 
-class _CartFooterState extends State<CartFooter> {
-  double subtotal = 0;
-  int itemcount = 0;
-  calculatesubtotal(List<CartItem> cartItems) {
-    subtotal = cartItems
-        .map((e) => (getPrice(e as Product)))
-        .reduce((value, subtotalPrice) => value + subtotalPrice);
-    subtotal;
-  }
+// class _CartFooterState extends State<CartFooter> {
+//   double subtotal = 0;
+//   int itemcount = 0;
+//   calculatesubtotal(List<CartItem> cartItems) {
+//     subtotal = cartItems
+//         .map((e) => (getPrice(e as Product)))
+//         .reduce((value, subtotalPrice) => value + subtotalPrice);
+//     subtotal;
+//   }
 
-  calculateitemcount(List<CartItem> cartItems) {
-    itemcount = cartItems.length;
-    itemcount;
-  }
+//   calculateitemcount(List<CartItem> cartItems) {
+//     itemcount = cartItems.length;
+//     itemcount;
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: <Color>[
-                  UpConfig.of(context).theme.primaryColor,
-                  UpConfig.of(context).theme.baseColor.shade600
-                ]),
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(32), topRight: Radius.circular(32))),
-        height: 60,
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  UpText(itemcount.toString()),
-                  const UpText("  Item | £ "),
-                  UpText(subtotal.toString()),
-                ],
-              ),
-              GestureDetector(
-                  onTap: () {},
-                  child: const Text(
-                    "Admin Login",
-                    style: TextStyle(color: Colors.white),
-                  ))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//       child: Container(
+//         decoration: BoxDecoration(
+//             gradient: LinearGradient(
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.topRight,
+//                 colors: <Color>[
+//                   UpConfig.of(context).theme.primaryColor,
+//                   UpConfig.of(context).theme.baseColor.shade600
+//                 ]),
+//             borderRadius: const BorderRadius.only(
+//                 topLeft: Radius.circular(32), topRight: Radius.circular(32))),
+//         height: 60,
+//         width: double.infinity,
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 20),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               Row(
+//                 children: [
+//                   UpText(itemcount.toString()),
+//                   const UpText("  Item | £ "),
+//                   UpText(subtotal.toString()),
+//                 ],
+//               ),
+//               GestureDetector(
+//                   onTap: () {},
+//                   child: const Text(
+//                     "Admin Login",
+//                     style: TextStyle(color: Colors.white),
+//                   ))
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

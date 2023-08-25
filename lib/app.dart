@@ -67,7 +67,8 @@ class ShopApp extends StatelessWidget {
             theme: UpThemes.generateThemeByColor(
               // primaryColor: Colors.greenAccent,
               isDark: true,
-              baseColor: const Color.fromARGB(255, 54, 54, 54),
+              baseColor: const Color.fromARGB(255, 23, 23, 23),
+              // baseColor: const Color.fromARGB(255, 54, 54, 54),
               primaryColor: const Color.fromRGBO(200, 16, 46, 1.0),
               secondaryColor: Colors.white,
               tertiaryColor: const Color.fromARGB(255, 222, 84, 107),

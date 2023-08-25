@@ -254,8 +254,8 @@ class _UserDetailsState extends State<UserDetails> {
                 : Theme(
                     data: Theme.of(context).copyWith(
                       canvasColor: UpConfig.of(context).theme.baseColor,
-                      colorScheme: const ColorScheme.light(
-                        primary: Color.fromRGBO(200, 16, 46, 1.0),
+                      colorScheme: ColorScheme.light(
+                        primary: UpConfig.of(context).theme.primaryColor,
                       ),
                     ),
                     child: Stepper(
@@ -290,12 +290,10 @@ class _UserDetailsState extends State<UserDetails> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: ElevatedButton(
-                                  onPressed: details.onStepContinue,
-                                  child:
-                                      UpText(isLastStep ? "CONFIRM" : "NEXT"),
-                                ),
-                              ),
+                                  child: ElevatedButton(
+                                onPressed: details.onStepContinue,
+                                child: UpText(isLastStep ? "CONFIRM" : "NEXT"),
+                              )),
                               const SizedBox(width: 12),
                               if (currentStep != 0)
                                 Expanded(
